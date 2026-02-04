@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
 
 // Swal.fire({
@@ -8,20 +9,29 @@ import Swal from "sweetalert2";
 //   confirmButtonText: "OK",
 // });
 
-Swal.fire({
-  title: "Are you sure?",
-  text: "You are about to edit your profile.",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#DC2626", // red
-  cancelButtonColor: "#9CA3AF", // gray
-  confirmButtonText: "Yes, edit",
-});
-
+// Swal.fire({
+//   title: "Are you sure?",
+//   text: "You are about to edit your profile.",
+//   icon: "warning",
+//   showCancelButton: true,
+//   confirmButtonColor: "#DC2626", // red
+//   cancelButtonColor: "#9CA3AF", // gray
+//   confirmButtonText: "Yes, edit",
+// });
 
 export default function Login4() {
   const [showPassword, setShowPassword] = useState(false);
-  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { loginUser } = useContext(AuthContext);
+
+  const handleLogin = async () => {
+    const loginData = {
+      email: email,
+      password: password,
+    };
+    loginUser(loginData);
+  };
 
   return (
     <div className="flex justify-center items-center gap-6 md:gap-12 min-h-screen">
@@ -131,6 +141,8 @@ export default function Login4() {
                     className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
                     placeholder=""
                     name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <label
                     htmlFor="email"
@@ -164,6 +176,8 @@ export default function Login4() {
                     className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md pr-10"
                     placeholder=" "
                     name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
 
                   <label
@@ -250,7 +264,10 @@ export default function Login4() {
                 </div>
 
                 {/* Login Button */}
-                <button className="mt-6 w-full py-3 rounded bg-gradient-to-r from-[#D7263D] to-red-600 text-white font-semibold hover:from-[#D7263D] hover:to-red-700 transition-all duration-300 hover:scale-105 cursor-pointer shadow shadow-gray-700">
+                <button 
+                  className="mt-6 w-full py-3 rounded bg-gradient-to-r from-[#D7263D] to-red-600 text-white font-semibold hover:from-[#D7263D] hover:to-red-700 transition-all duration-300 hover:scale-105 cursor-pointer shadow shadow-gray-700"
+                  onClick={handleLogin}
+                >
                   <h2 className="text-base uppercase font-bold tracking-widest">
                     Login
                   </h2>
