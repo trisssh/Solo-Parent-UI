@@ -1,7 +1,6 @@
 import { useState } from "react";
 // import { Link, useNavigate } from "react-router-dom";
 
-
-export default function UserRegister() { 
-    return <div>UserRegister</div>;
+export default function UserProfile() {
+  return <div>UserProfile</div>;
 }
