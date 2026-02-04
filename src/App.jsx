@@ -5,6 +5,7 @@ import './App.css'
 
 import Login3 from './pages/Login3'
 import Login4 from './pages/Login4'
+import UserRegister from './pages/UserRegister'
 
 function App() {
 

@@ -1,7 +1,22 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
 
+// Swal.fire({
+//   title: "Success!",
+//   text: "SweetAlert2 is working 🎉",
+//   icon: "success",
+//   confirmButtonText: "OK",
+// });
 
-
+Swal.fire({
+  title: "Are you sure?",
+  text: "You are about to edit your profile.",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#DC2626", // red
+  cancelButtonColor: "#9CA3AF", // gray
+  confirmButtonText: "Yes, edit",
+});
 
 
 export default function Login4() {
