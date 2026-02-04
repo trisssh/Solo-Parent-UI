@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
 
 
 // Swal.fire({
@@ -12,30 +14,97 @@ import Swal from "sweetalert2";
 //   confirmButtonText: "Yes, edit",
 // });
 
+// ---------------------------
+// DUMMY ACCOUNTS (UI ONLY)
+// ---------------------------
+const DUMMY_USERS = [
+  {
+    email: "user@test.com",
+    password: "123456",
+    role: "user",
+  },
+  {
+    email: "admin@test.com",
+    password: "123456",
+    role: "admin",
+  },
+  {
+    email: "superadmin@test.com",
+    password: "123456",
+    role: "superadmin",
+  },
+];
+
+
 export default function Login4() {
   //USESTATE
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  //handleLogin function (UI-only logic)
-  const handleLogin = () => {
-    if (!email || !password) {
-      showAlert({
-        title: "Login Failed",
-        message: "Please enter your email and password.",
-        icon: "error",
-      });
-      return;
-    }
+const navigate = useNavigate();
 
-    // UI-only success (no backend yet)
+  //handleLogin function (UI-only logic)
+const handleLogin = () => {
+  // 1. Empty fields check
+  if (!email || !password) {
     showAlert({
-      title: "Login Successful",
-      message: "Welcome! You may now access your account.",
-      icon: "success",
+      title: "Login Failed",
+      message: "Please enter your email and password.",
+      icon: "error",
     });
-  };
+    return;
+  }
+
+  // 2. Find user in dummy list
+  const foundUser = DUMMY_USERS.find(
+    (user) => user.email === email && user.password === password,
+  );
+
+  // 3. Invalid credentials
+  if (!foundUser) {
+    showAlert({
+      title: "Invalid Credentials",
+      message: "Email or password is incorrect.",
+      icon: "error",
+    });
+    return;
+  }
+
+  // 4. Success
+  localStorage.setItem("role", foundUser.role); 
+  localStorage.setItem("email", foundUser.email);
+
+  // Swal.fire({
+  //   title: `<p class="text-2xl font-semibold text-gray-800">Login Successful</p>`,
+  //   html: `<p class="text-xl text-gray-600 mt-1">Welcome! Redirecting...</p>`,
+  //   icon: "success",
+  //   iconColor: "#DC2626",
+  //   timer: 1500,
+  //   showConfirmButton: false,
+  // }).then(() => {
+  //   navigate("/dashboard");
+  // });
+  Swal.fire({
+    title: `<p class="text-2xl font-semibold text-gray-800">Login Successful</p>`,
+    html: `<p class="text-xl text-gray-600 mt-1">Welcome! Redirecting...</p>`,
+    icon: "success", 
+    iconColor: "#DC2626",
+    showConfirmButton: true,
+    confirmButtonText: "Okay",
+    buttonsStyling: false,
+    customClass: {
+      popup: "rounded-xl px-6 py-4",
+      confirmButton:
+        "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+    },
+  }).then(() => {
+    navigate("/dashboard");
+  });
+
+
+};
+
 
   // ---------------------------
   // SWEET ALERT (POP-UP)
@@ -45,7 +114,7 @@ export default function Login4() {
       title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
       html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
       icon,
-      iconColor: "#d33",
+      iconColor: "#DC2626",
       background: "#ffffff",
       showConfirmButton: true,
       confirmButtonText: "Okay",
@@ -80,6 +149,8 @@ export default function Login4() {
           </div>
         </div>
       </div>
+
+      
 
       {/* Right Section (Login Form) */}
       <div className="flex flex-col justify-center items-center gap-6 mx-4">

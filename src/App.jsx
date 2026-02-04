@@ -2,24 +2,21 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login3 from './pages/Login3'
-import Login4 from './pages/Login4'
-import UserRegister from './pages/UserRegister'
-import UserProfile from './pages/UserProfile'
+import Login4 from "./pages/Login4";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
-
-
   return (
-    <>
-      <div className="web_container flex">
-        <main className="flex-1 transition-all duration-500">
-          <Login4 />
-        </main>
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login4 />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App
+export default App;
+
