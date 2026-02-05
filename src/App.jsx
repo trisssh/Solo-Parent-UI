@@ -4,8 +4,10 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Sidebar from "./components/Sidebar";
 import Login4 from "./pages/Login4";
 import Dashboard from "./pages/Dashboard";
+
 
 function App() {
   return (
