@@ -54,7 +54,7 @@ export default function UserDashboard() {
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
         {/* HEADER */}
-        <header className="bg-gradient-to-br from-[#FF2424] to-[#8B1E2F] flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2 p-2 drop-shadow-[0_0_0.25rem_#CC3535]">
+        {/* <header className="bg-gradient-to-br from-[#FF2424] border-b border-red-200 to-[#8B1E2F] flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2 p-2 drop-shadow-[0_0_0.25rem_#CC3535]">
           <button
             className="md:hidden text-white mr-3"
             onClick={() => setSidebarOpen(true)}
@@ -91,6 +91,49 @@ export default function UserDashboard() {
                 Solo Parent System
               </h2>
               <p className="text-white/80 text-xs">
+                City of San Juan, Metro Manila
+              </p>
+            </div>
+          </div>
+        </header> */}
+        <header className="bg-white border-b border-red-200 flex flex-row items-center justify-center md:justify-between md:px-6 p-2 shadow-sm">
+          <button
+            className="md:hidden text-gray-800 mr-3"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="size-6"
+            >
+              <path
+                fillRule="evenodd"
+                d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 hidden md:block">
+              Profile
+            </h2>
+            <p className="text-gray-500 text-sm font-medium hidden md:block">
+              View and manage your personal information
+            </p>
+          </div>
+
+          <div className="flex items-center">
+            <div className="bg-white size-14 rounded-full border border-red-200 shadow flex justify-center items-center">
+              <img src="spc.png" className="size-12 object-contain" />
+            </div>
+
+            <div className="leading-tight mx-2 md:mx-4">
+              <h2 className="font-bold uppercase text-gray-900 text-sm sm:text-base">
+                Solo Parent System
+              </h2>
+              <p className="text-gray-500 text-xs">
                 City of San Juan, Metro Manila
               </p>
             </div>

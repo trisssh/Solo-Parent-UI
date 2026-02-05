@@ -71,7 +71,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       {/* HEADER */}
       <div className="flex items-center justify-between p-4 border-b border-white/20">
         <div className="flex items-center gap-2">
-          <div className="bg-white w-10 h-10 rounded-full" />
+          <div className="bg-white size-10 rounded-full border border-red-200 shadow flex justify-center items-center">
+            <img src="spc.png" className="size-9 object-contain" />
+          </div>
           <h2 className="text-sm font-bold uppercase">Solo Parent System</h2>
         </div>
 
