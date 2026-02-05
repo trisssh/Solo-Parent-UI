@@ -49,9 +49,12 @@ export default function UserDashboard() {
       {/* HEADER */}
       <header className="bg-[#CC3535] flex flex-col md:flex-row items-center justify-between px-6 py-2 drop-shadow-[0_0_0.25rem_#CC3535]">
         <div>
-          <h3 className="text-4xl font-bold text-white hidden md:block">
-            My Profile
-          </h3>
+          <h2 className="text-3xl font-bold text-white hidden md:block">
+            Profile
+          </h2>
+          <p className="text-white/90 text-sm font-semibold hidden md:block">
+            Here you can view and edit your information
+          </p>
         </div>
         <div className="flex items-center">
           <div className="bg-white size-14 rounded-full shadow-md shadow-red-700 flex justify-center items-center">
@@ -67,6 +70,8 @@ export default function UserDashboard() {
             </p>
           </div>
         </div>
+
+     
       </header>
 
       <main className="flex-1 overflow-y-auto  bg-gradient-to-br from-gray-50 via-white to-gray-50 p-5 sm:p-6">
@@ -299,7 +304,7 @@ export default function UserDashboard() {
 
             {/* ACTION BUTTONS FOR EDIT */}
             <div className="flex justify-center md:justify-end gap-3">
-            {/* <div className="bg-white backdrop-blur  rounded-2xl shadow-md flex justify-end gap-3"> */}
+              {/* <div className="bg-white backdrop-blur  rounded-2xl shadow-md flex justify-end gap-3"> */}
               <div className="p-0">
                 {isEdit ? (
                   <div className="space-y-4">
