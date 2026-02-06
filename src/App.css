@@ -1,2 +1,12 @@
 @import "tailwindcss";
 
+:root {
+  /* GRAYS */
+  --gray1: #6B7280; /* Cancel btn */
+  --gray2: #A6A6A6; /* Shadow / bg */
+
+  /* REDS */
+  --red1: #FF2424; /* Borders */
+  --red2: #D7263D; /* Drop shadow / sidebar */
+  --red3: #DC2626; /* Buttons / modals */
+}
