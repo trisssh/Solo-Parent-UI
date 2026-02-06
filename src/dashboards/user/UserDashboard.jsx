@@ -116,10 +116,10 @@ export default function UserDashboard() {
           </button>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 hidden md:block">
+            <h2 className="text-2xl font-bold text-gray-800 hidden md:block">
               Profile
             </h2>
-            <p className="text-gray-500 text-sm font-medium hidden md:block">
+            <p className="text-gray-600 text-sm font-medium hidden md:block">
               View and manage your personal information
             </p>
           </div>
@@ -140,9 +140,9 @@ export default function UserDashboard() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto  bg-gradient-to-br from-gray-50 via-white to-gray-50 p-5 sm:p-6">
+        <main className="flex-1 overflow-y-auto  bg-gradient-to-tr from-gray-100 via-white to-gray-50 p-5 sm:p-6">
           {/* MAIN GRID */}
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:hidden block">
+          <h3 className="text-2xl font-bold text-gray-900 mb-3 md:hidden block">
             My Profile
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
