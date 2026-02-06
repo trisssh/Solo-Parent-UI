@@ -161,7 +161,7 @@ export default function Login4() {
                     />
                     <label
                       htmlFor="email"
-                      className="absolute text-2xl font-bold text-[#A6A6A6] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
+                      className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
                     >
                       Email
                     </label>
@@ -180,7 +180,7 @@ export default function Login4() {
                     />
                     <label
                       htmlFor="password"
-                      className="absolute text-2xl font-bold text-[#A6A6A6] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2
+                      className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2
                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0
                       peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
                     >
@@ -251,7 +251,7 @@ export default function Login4() {
                   Don’t have an account?
                   <a
                     href="#"
-                    className="text-[#D7263D] ml-1 font-bold hover:underline"
+                    className="text-[var(--red-2)] ml-1 font-bold hover:underline"
                   >
                     Create an account
                   </a>
