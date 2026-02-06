@@ -30,7 +30,7 @@ export default function UserDashboard() {
     //     <div className="space-y-4">
     //       <p>Email: {email}</p>
     //       <button
-    //         className="bg-[#DC2626] flex gap-1 items-center shadow shadow-gray-700 text-white px-10 py-2 rounded-lg font-semibold"
+    //         className="bg-[var(--red-3)] flex gap-1 items-center shadow shadow-gray-700 text-white px-10 py-2 rounded-lg font-semibold"
     //         onClick={() => setIsEdit(true)}
     //       >
     //         <svg
@@ -54,7 +54,7 @@ export default function UserDashboard() {
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
         {/* HEADER */}
-        {/* <header className="bg-gradient-to-br from-[#FF2424] border-b border-red-200 to-[#8B1E2F] flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2 p-2 drop-shadow-[0_0_0.25rem_#CC3535]">
+        {/* <header className="bg-gradient-to-br from-[var(--red-1)] border-b border-red-200 to-[#8B1E2F] flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2 p-2 drop-shadow-[0_0_0.25rem_#CC3535]">
           <button
             className="md:hidden text-white mr-3"
             onClick={() => setSidebarOpen(true)}
@@ -386,13 +386,13 @@ export default function UserDashboard() {
 
                       <div className="flex gap-4">
                         <button
-                          className="bg-[#6B7280] text-white font-semibold shadow shadow-gray-700 px-4 md:px-10 py-2 rounded-lg"
+                          className="bg-[var(--gray-1)] text-white font-semibold shadow shadow-gray-700 px-4 md:px-10 py-2 rounded-lg"
                           onClick={() => setIsEdit(false)}
                         >
                           Cancel
                         </button>
                         <button
-                          className="bg-[#DC2626] text-white font-semibold shadow shadow-gray-700 px-6 md:px-10 py-2 rounded-lg"
+                          className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 px-6 md:px-10 py-2 rounded-lg"
                           onClick={() => setIsEdit(false)}
                         >
                           Save Changes
@@ -403,8 +403,8 @@ export default function UserDashboard() {
                     <div className="space-y-4">
                       <p className="hidden">Email: {email}</p>
                       <button
-                        className="bg-white border-2 border-[#DC2626] text-[#DC2626] flex gap-1 items-center shadow shadow-gray-700  px-10 py-1.5 rounded-lg font-semibold"
-                        // className="bg-[#DC2626] border-2 flex gap-1 items-center shadow shadow-gray-700 text-white px-10 py-2 rounded-lg font-semibold"
+                        className="bg-white border-2 border-[var(--red-3)] text-[var(--red-3)] flex gap-1 items-center shadow shadow-gray-700  px-10 py-1.5 rounded-lg font-semibold"
+                        // className="bg-[var(--red-3)] border-2 flex[var(--red-3)] gap-1 items-center shadow shadow-gray-700 text-white px-10 py-2 rounded-lg font-semibold"
                         onClick={() => setIsEdit(true)}
                       >
                         <svg

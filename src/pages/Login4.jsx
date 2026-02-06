@@ -241,7 +241,7 @@ export default function Login4() {
                   {/* Login Button */}
                   <button
                     type="submit"
-                    className="text-base uppercase font-bold tracking-widest mt-6 w-full py-3 rounded bg-gradient-to-r from-[#D7263D] to-red-600 text-white font-semibold hover:from-[#D7263D] hover:to-red-700 transition-all duration-300 hover:scale-105 cursor-pointer shadow shadow-gray-700"
+                    className="text-base uppercase font-bold tracking-widest mt-6 w-full py-3 rounded bg-gradient-to-r from-[var(--red-2)] to-red-600 text-white font-semibold hover:from-[var(--red-2)] hover:to-red-700 transition-all duration-300 hover:scale-105 cursor-pointer shadow shadow-gray-700"
                   >
                     Login
                   </button>
