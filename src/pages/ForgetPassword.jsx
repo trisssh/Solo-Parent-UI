@@ -9,28 +9,6 @@ export default function ForgetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-    // ---------------------------
-    // SWEET ALERT
-    // ---------------------------
-    const showAlert = ({ title, message, icon = "error" }) => {
-      Swal.fire({
-        title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-        html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
-        icon,
-        iconColor: "#DC2626",
-        background: "#ffffff",
-        showConfirmButton: true,
-        confirmButtonText: "Okay",
-        buttonsStyling: false,
-        customClass: {
-          popup: "rounded-xl px-6 py-4",
-          confirmButton:
-            "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
-        },
-      });
-    };
-
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-white mx-3">
       <div className="relative p-1 rounded-2xl overflow-hidden">
@@ -270,7 +248,7 @@ const handleReset = () => {
         icon: "success",
         iconColor: "#DC2626",
         title: `<p class="text-2xl font-semibold text-gray-800">Password Reset Successful</p>`,
-        html: `<p class="text-xl text-gray-600 mt-1">Password updated successfully. Please log in again.</p>`,
+        html: `<p class="text-xl text-gray-600 mt-1">Your password has been updated. Please log in again using your new password.</p>`,
         showConfirmButton: true,
         confirmButtonText: "Okay",
         buttonsStyling: false,
