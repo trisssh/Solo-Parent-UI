@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ export default function ForgetPassword() {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white mx-3">
@@ -114,7 +115,7 @@ function StepEmail({ email, setEmail, onNext }) {
 
       <Link
         to="/"
-        className="font-semibold flex justify-center py-1.5 text-xs hover:underline hover:text-gray-700 text-gray-600"
+        className="font-semibold flex justify-center my-2 text-xs hover:underline hover:text-gray-700 text-gray-600"
       >
         Go back to Login
       </Link>
@@ -123,6 +124,29 @@ function StepEmail({ email, setEmail, onNext }) {
 }
 
 function StepOTP({ otp, setOtp, onNext, onBack }) {
+     const RESEND_INTERVAL = 30 * 60; // 30 minutes in seconds
+     const [secondsLeft, setSecondsLeft] = useState(RESEND_INTERVAL);
+
+     // Countdown timer
+     useEffect(() => {
+       if (secondsLeft <= 0) return; // stop countdown
+       const interval = setInterval(
+         () => setSecondsLeft((prev) => prev - 1),
+         1000,
+       );
+       return () => clearInterval(interval);
+     }, [secondsLeft]);
+
+     const handleResend = () => {
+       console.log("Resend OTP clicked!"); // replace with actual resend logic
+       setSecondsLeft(RESEND_INTERVAL); // reset timer
+     };
+
+     // Format minutes and seconds
+     const minutes = Math.floor(secondsLeft / 60);
+     const seconds = secondsLeft % 60;
+
+
   return (
     <div>
       <article className="mb-6">
@@ -139,7 +163,7 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
       <div className="relative w-full my-6 rounded-lg">
         <input
           type="text"
-          placeholder=""
+          placeholder="xxxx"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
           className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
@@ -165,9 +189,21 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
         </button>
       </div>
 
+      <button
+        disabled={secondsLeft > 0}
+        onClick={handleResend}
+        className={`mt-4 w-full py-1 rounded-lg font-semibold ${
+          secondsLeft > 0
+            ? "cursor-not-allowed"
+            : "bg-red-500 hover:bg-red-600 text-white"
+        }`}
+      >
+        Resend OTP {secondsLeft > 0 && `(${minutes}m ${seconds}s)`}
+      </button>
+
       <Link
         to="/"
-        className="font-semibold flex justify-center py-1.5 text-xs hover:underline hover:text-gray-700 text-gray-600"
+        className="font-semibold flex justify-center my-2 text-xs hover:underline hover:text-gray-700 text-gray-600"
       >
         Go back to Login
       </Link>
@@ -183,6 +219,23 @@ function StepResetPassword({
   onBack,
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  // 1️ password rules
+  const MIN_LENGTH = 8;
+
+  // 2 derived logic (NO useState)
+  const isMatch = newPassword === confirmPassword;
+  const isStrongEnough = newPassword.length >= MIN_LENGTH;
+
+  // 3️ final guard
+  const canReset = isMatch && isStrongEnough;
+
+  // 1 Calculate strength
+//   const strengthPoints = [
+//     newPassword.length >= 8,
+//     /[A-Z]/.test(newPassword),
+//     /\d/.test(newPassword),
+//     /[!@#$%^&*]/.test(newPassword),
+//   ].filter(Boolean).length;
 
   return (
     <div>
@@ -195,7 +248,6 @@ function StepResetPassword({
           passwords match.
         </p>
       </article>
-
       {/* New Password */}
       <div className="relative w-full mt-4 rounded-lg">
         <input
@@ -210,7 +262,6 @@ function StepResetPassword({
           New Password
         </label>
       </div>
-
       {/* Confirm Password */}
       <div className="relative w-full mt-4 rounded-lg">
         <input
@@ -272,7 +323,42 @@ function StepResetPassword({
           )}
         </button>
       </div>
+      {!isMatch && confirmPassword.length > 0 && (
+        <p className="text-red-600 text-sm mt-1">Passwords do not match</p>
+      )}
+      {!isStrongEnough && newPassword.length > 0 && (
+        <p className="text-red-600 text-sm mt-1">
+          Password too short (min 8 chars)
+        </p>
+      )}
 
+
+      {/* Strength bar (4 segments) */}
+      {/* <div className="flex mt-2 gap-1">
+        {[1, 2, 3, 4].map((level) => (
+          <div
+            key={level}
+            className={`h-1 flex-1 rounded ${
+              strengthPoints >= level
+                ? level === 1
+                  ? "bg-yellow-500"
+                  : level === 2
+                    ? "bg-orange-500"
+                    : "bg-red-500"
+                : "bg-gray-300"
+            }`}
+          ></div>
+        ))}
+      </div> */}
+      {/* Optional text label */}
+      {/* <p className="text-xs tracking-wide mt-1 font-semibold">
+        {strengthPoints <= 1
+          ? "Weak"
+          : strengthPoints === 2
+            ? "Medium"
+            : "Strong"}
+      </p> */}
+      
       <div className="flex gap-3 mt-4">
         <button
           className="bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
@@ -282,16 +368,15 @@ function StepResetPassword({
         </button>
 
         <button
-          disabled={newPassword !== confirmPassword || !newPassword}
+          disabled={!canReset}
           className="disabled:bg-gray-400 bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
         >
           Reset Password
         </button>
       </div>
-
       <Link
         to="/"
-        className="font-semibold flex justify-center py-1.5 text-xs hover:underline hover:text-gray-700 text-gray-600"
+        className="font-semibold flex justify-center my-2 text-xs hover:underline hover:text-gray-700 text-gray-600"
       >
         Go back to Login
       </Link>
