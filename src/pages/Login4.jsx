@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ---------------------------
 // DUMMY ACCOUNTS (UI ONLY)
@@ -233,9 +233,12 @@ export default function Login4() {
                   </div>
                   {/* Forgot Password Link */}
                   <div className="text-right">
-                    <span className="text-xs underline hover:text-red-600 text-red-500 cursor-pointer">
-                      <a href="#">Forgot Password?</a>
-                    </span>
+                    <Link
+                      to="/forgot-password"
+                      className="text-xs underline hover:text-red-600 text-red-500 cursor-pointer"
+                    >
+                      Forgot Password?
+                    </Link>
                   </div>
 
                   {/* Login Button */}
