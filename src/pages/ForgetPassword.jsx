@@ -195,10 +195,12 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
         className={`mt-4 w-full py-1 rounded-lg font-semibold ${
           secondsLeft > 0
             ? "cursor-not-allowed"
-            : "bg-red-500 hover:bg-red-600 text-white"
+            : "bg-[var(--red-1)] hover:bg-[var(--red-4)] cursor-pointer border-2 border-white text-white shadow shadow-gray-700  py-1.5 rounded-lg font-semibold"
         }`}
       >
-        Resend OTP {secondsLeft > 0 && `(${minutes}m ${seconds}s)`}
+        Resend OTP: {""}
+        {/* {secondsLeft > 0 && `(${minutes}m ${seconds}s)`} */}
+        {minutes}m {seconds.toString().padStart(2, "0")}s
       </button>
 
       <Link
@@ -218,6 +220,7 @@ function StepResetPassword({
   setConfirmPassword,
   onBack,
 }) {
+const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   // 1️ password rules
   const MIN_LENGTH = 8;
@@ -236,6 +239,38 @@ function StepResetPassword({
 //     /\d/.test(newPassword),
 //     /[!@#$%^&*]/.test(newPassword),
 //   ].filter(Boolean).length;
+
+
+const handleReset = () => {
+  // Example: Fake API call
+  fakeResetPasswordAPI(newPassword)
+    .then(() => {
+      Swal.fire({
+        icon: "success",
+        title: "Password Reset Successful",
+        text: "Your password has been updated.",
+        confirmButtonText: "Okay",
+      }).then(() => {
+        navigate("/"); // redirect to login
+      });
+    })
+    .catch((err) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Something went wrong. Please try again.",
+      });
+    });
+};
+
+const fakeResetPasswordAPI = (password) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      password ? resolve(true) : reject();
+    }, 1000);
+  });
+
+
 
   return (
     <div>
@@ -332,7 +367,6 @@ function StepResetPassword({
         </p>
       )}
 
-
       {/* Strength bar (4 segments) */}
       {/* <div className="flex mt-2 gap-1">
         {[1, 2, 3, 4].map((level) => (
@@ -358,7 +392,7 @@ function StepResetPassword({
             ? "Medium"
             : "Strong"}
       </p> */}
-      
+
       <div className="flex gap-3 mt-4">
         <button
           className="bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
@@ -369,6 +403,7 @@ function StepResetPassword({
 
         <button
           disabled={!canReset}
+          onClick={handleReset}
           className="disabled:bg-gray-400 bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
         >
           Reset Password
