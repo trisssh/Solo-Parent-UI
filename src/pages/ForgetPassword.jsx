@@ -88,13 +88,6 @@ const showError = (title, message) => {
 }
 
 function StepEmail({ email, setEmail, onNext }) {
-const handleSendOTP = () => {
-  if (!email.trim()) {
-    showError("Email required", "Please enter your registered email address.");
-    return;
-  }
-  onNext();
-};
 
 const showError = (title, message) => {
   Swal.fire({
@@ -115,6 +108,23 @@ const showError = (title, message) => {
   });
 };
 
+  const handleSendOTP = () => {
+    if (!email.trim()) {
+      showError(
+        "Email required",
+        "Please enter your registered email address.",
+      );
+      return;
+    }
+    onNext();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); //stops page refresh
+    handleSendOTP();
+  };
+
+
   return (
     <div>
       <article className="mb-6">
@@ -127,7 +137,7 @@ const showError = (title, message) => {
       </article>
 
       {/* Email */}
-      <div className="relative w-full my-6 rounded-lg">
+      <form onSubmit={handleSubmit} className="relative w-full my-6 rounded-lg">
         <input
           type="email"
           id="email"
@@ -143,14 +153,14 @@ const showError = (title, message) => {
         >
           Email
         </label>
-      </div>
 
-      <button
-        className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-full py-2 rounded-lg"
-        onClick={handleSendOTP}
-      >
-        Send OTP
-      </button>
+        <button
+          type="submit"
+          className="mt-6 bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-full py-2 rounded-lg"
+        >
+          Send OTP
+        </button>
+      </form>
 
       <Link
         to="/"
@@ -185,17 +195,32 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
      const minutes = Math.floor(secondsLeft / 60);
      const seconds = secondsLeft % 60;
 
+
+     //auto-submit
+    //  useEffect(() => {
+    //    if (otp.length === 4) {
+    //      handleSendOTP();
+    //    }
+    //  }, [otp]);
+
+
      //Error message, empty input
     const handleSendOTP = () => {
-    if (!otp.trim()) {
-    showError(
-    "OTP code required",
-    "Please check your email and enter the one-time password (OTP) sent to you to continue.",
-    );
-    return;
-    }
+      if (!otp.trim()) {
+        showError(
+          "OTP code required",
+          "Please check your email and enter the one-time password (OTP) sent to you to continue.",
+        );
+        return;
+      }
 
-    onNext();
+      //Error message, numbers only
+      if (!/^\d{4}$/.test(otp)) {
+        showError("Invalid OTP", "OTP must be exactly 4 numbers only.");
+        return;
+      }
+
+      onNext();
     };
 
     const showError = (title, message) => {
@@ -218,6 +243,13 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
     };
 
 
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      handleSendOTP();
+    };
+
+
+
   return (
     <div>
       <article className="mb-6">
@@ -231,18 +263,26 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
       </article>
 
       {/*OTP Verification */}
-      <div className="relative w-full my-6 rounded-lg">
+      <form 
+       onSubmit={handleSubmit}
+       className="relative w-full my-6 rounded-lg">
         <input
           type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={4}
           placeholder="xxxx"
           value={otp}
-          onChange={(e) => setOtp(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, ""); // remove non-numbers
+            setOtp(value.slice(0, 4)); // limit to 4 digits
+          }}
           className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
         />
         <label className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3">
           Enter OTP
         </label>
-      </div>
+      </form>
 
       <div className="flex gap-3">
         <button
@@ -253,6 +293,7 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
         </button>
 
         <button
+        type="submit"
           className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
           onClick={handleSendOTP}
         >
@@ -349,7 +390,10 @@ const fakeResetPasswordAPI = (password) =>
     }, 1000);
   });
 
-
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
+    handleReset();
+  };
 
   return (
     <div>
@@ -362,92 +406,94 @@ const fakeResetPasswordAPI = (password) =>
           passwords match.
         </p>
       </article>
-      {/* New Password */}
-      <div className="relative w-full mt-4 rounded-lg">
-        <input
-          type={showPassword ? "text" : "password"}
-          id="newPassword"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          placeholder=" "
-          className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
-        />
-        <label className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3">
-          New Password
-        </label>
-      </div>
-      {/* Confirm Password */}
-      <div className="relative w-full mt-4 rounded-lg">
-        <input
-          type={showPassword ? "text" : "password"}
-          id="confirmPassword"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder=" "
-          className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
-        />
-        <label
-          htmlFor="confirmPassword"
-          className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
-        >
-          Confirm Password
-        </label>
 
-        {/* Eye icon (shared) */}
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-        >
-          {showPassword ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-              />
-            </svg>
-          )}
-        </button>
-      </div>
-      {!isMatch && confirmPassword.length > 0 && (
-        <p className="text-red-600 text-sm mt-1">Passwords do not match</p>
-      )}
-      {!isStrongEnough && newPassword.length > 0 && (
-        <p className="text-red-600 text-sm mt-1">
-          Password too short (min 8 chars)
-        </p>
-      )}
+      <form onSubmit={handleSubmit}>
+        {/* New Password */}
+        <div className="relative w-full mt-4 rounded-lg">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="newPassword"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder=" "
+            className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
+          />
+          <label className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3">
+            New Password
+          </label>
+        </div>
+        {/* Confirm Password */}
+        <div className="relative w-full mt-4 rounded-lg">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder=" "
+            className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
+          />
+          <label
+            htmlFor="confirmPassword"
+            className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
+          >
+            Confirm Password
+          </label>
 
-      {/* Strength bar (4 segments) */}
-      {/* <div className="flex mt-2 gap-1">
+          {/* Eye icon (shared) */}
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+          >
+            {showPassword ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+        {!isMatch && confirmPassword.length > 0 && (
+          <p className="text-red-600 text-sm mt-1">Passwords do not match</p>
+        )}
+        {!isStrongEnough && newPassword.length > 0 && (
+          <p className="text-red-600 text-sm mt-1">
+            Password too short (min 8 chars)
+          </p>
+        )}
+
+        {/* Strength bar (4 segments) */}
+        {/* <div className="flex mt-2 gap-1">
         {[1, 2, 3, 4].map((level) => (
           <div
             key={level}
@@ -463,8 +509,8 @@ const fakeResetPasswordAPI = (password) =>
           ></div>
         ))}
       </div> */}
-      {/* Optional text label */}
-      {/* <p className="text-xs tracking-wide mt-1 font-semibold">
+        {/* Optional text label */}
+        {/* <p className="text-xs tracking-wide mt-1 font-semibold">
         {strengthPoints <= 1
           ? "Weak"
           : strengthPoints === 2
@@ -472,22 +518,24 @@ const fakeResetPasswordAPI = (password) =>
             : "Strong"}
       </p> */}
 
-      <div className="flex gap-3 mt-4">
-        <button
-          className="bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
-          onClick={onBack}
-        >
-          Back
-        </button>
+        <div className="flex gap-3 mt-4">
+          <button
+          type="button"
+            className="bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+            onClick={onBack}
+          >
+            Back
+          </button>
 
-        <button
-          disabled={!canReset}
-          onClick={handleReset}
-          className="disabled:bg-gray-400 bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
-        >
-          Reset Password
-        </button>
-      </div>
+          <button
+            type="submit"
+            disabled={!canReset}
+            className="disabled:bg-gray-400 bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+          >
+            Reset Password
+          </button>
+        </div>
+      </form>
       <Link
         to="/"
         className="font-semibold flex justify-center my-2 text-xs hover:underline hover:text-gray-700 text-gray-600"
