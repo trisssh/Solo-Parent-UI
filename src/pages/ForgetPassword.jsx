@@ -9,6 +9,16 @@ export default function ForgetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+const showError = (title, message) => {
+  Swal.fire({
+    icon: "error",
+    title,
+    text: message,
+    confirmButtonText: "Okay",
+  });
+};
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white mx-3">
       <div className="relative p-1 rounded-2xl overflow-hidden">
@@ -47,6 +57,7 @@ export default function ForgetPassword() {
               email={email}
               setEmail={setEmail}
               onNext={() => setStep(2)}
+              showError={showError}
             />
           )}
 
@@ -56,6 +67,7 @@ export default function ForgetPassword() {
               setOtp={setOtp}
               onBack={() => setStep(1)}
               onNext={() => setStep(3)}
+              showError={showError}
             />
           )}
 
@@ -66,6 +78,7 @@ export default function ForgetPassword() {
               confirmPassword={confirmPassword}
               setConfirmPassword={setConfirmPassword}
               onBack={() => setStep(2)}
+              showError={showError}
             />
           )}
         </div>
@@ -75,6 +88,33 @@ export default function ForgetPassword() {
 }
 
 function StepEmail({ email, setEmail, onNext }) {
+const handleSendOTP = () => {
+  if (!email.trim()) {
+    showError("Email required", "Please enter your registered email address.");
+    return;
+  }
+  onNext();
+};
+
+const showError = (title, message) => {
+  Swal.fire({
+    icon: "error",
+    title,
+    iconColor: "#DC2626",
+    background: "#ffffff",
+    showConfirmButton: true,
+    confirmButtonText: "Okay",
+    buttonsStyling: false,
+    customClass: {
+      popup: "rounded-xl px-6 py-4",
+      confirmButton:
+        "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+    },
+    text: message,
+    confirmButtonText: "Okay",
+  });
+};
+
   return (
     <div>
       <article className="mb-6">
@@ -107,7 +147,7 @@ function StepEmail({ email, setEmail, onNext }) {
 
       <button
         className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-full py-2 rounded-lg"
-        onClick={onNext}
+        onClick={handleSendOTP}
       >
         Send OTP
       </button>
