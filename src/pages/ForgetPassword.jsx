@@ -185,6 +185,38 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
      const minutes = Math.floor(secondsLeft / 60);
      const seconds = secondsLeft % 60;
 
+     //Error message, empty input
+    const handleSendOTP = () => {
+    if (!otp.trim()) {
+    showError(
+    "OTP code required",
+    "Please check your email and enter the one-time password (OTP) sent to you to continue.",
+    );
+    return;
+    }
+
+    onNext();
+    };
+
+    const showError = (title, message) => {
+    Swal.fire({
+    icon: "error",
+    title,
+    iconColor: "#DC2626",
+    background: "#ffffff",
+    showConfirmButton: true,
+    confirmButtonText: "Okay",
+    buttonsStyling: false,
+    customClass: {
+    popup: "rounded-xl px-6 py-4",
+    confirmButton:
+    "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+    },
+    text: message,
+    confirmButtonText: "Okay",
+    });
+    };
+
 
   return (
     <div>
@@ -222,7 +254,7 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
 
         <button
           className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
-          onClick={onNext}
+          onClick={handleSendOTP}
         >
           Verify
         </button>
