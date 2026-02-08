@@ -197,7 +197,7 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
             : "bg-[var(--red-1)] hover:bg-[var(--red-4)] cursor-pointer border-2 border-white text-white shadow shadow-gray-700  py-1.5 rounded-lg font-semibold"
         }`}
       >
-        Resend OTP: {""}
+        Resend OTP in {""}
         {/* {secondsLeft > 0 && `(${minutes}m ${seconds}s)`} */}
         {minutes}m {seconds.toString().padStart(2, "0")}s
       </button>
