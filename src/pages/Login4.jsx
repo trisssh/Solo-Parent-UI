@@ -258,12 +258,12 @@ export default function Login4() {
               {/* Link */}
               <div className="mt-2 text-center text-sm text-gray-600">
                 Don’t have an account?
-                <a
-                  href="#"
+               <Link
+                    to="/user-register"
                   className="text-[var(--red-2)] ml-1 font-bold hover:underline"
                 >
                   Create an account
-                </a>
+                </Link>
               </div>
             </div>
           </div>

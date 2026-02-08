@@ -8,7 +8,7 @@ import Sidebar from "./components/Sidebar";
 import Login4 from "./pages/Login4";
 import Dashboard from "./pages/Dashboard";
 import ForgetPassword from './pages/ForgetPassword';
-
+import UserRegister from './pages/UserRegister';
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
         <Route path="/" element={<Login4 />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/forgot-password" element={<ForgetPassword />} />
+        <Route path="/user-register" element={<UserRegister />} />
       </Routes>
     </BrowserRouter>
   );
