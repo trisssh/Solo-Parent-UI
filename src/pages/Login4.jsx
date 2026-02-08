@@ -6,9 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 // DUMMY ACCOUNTS (UI ONLY)
 // ---------------------------
 const DUMMY_USERS = [
-  { email: "user@test.com", password: "123456", role: "user" },
-  { email: "admin@test.com", password: "123456", role: "admin" },
-  { email: "superadmin@test.com", password: "123456", role: "superadmin" },
+  { email: "user@test.com", password: "12345678", role: "user" },
+  { email: "admin@test.com", password: "12345678", role: "admin" },
+  { email: "superadmin@test.com", password: "12345678", role: "superadmin" },
 ];
 
 export default function Login4() {
