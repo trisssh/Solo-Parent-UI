@@ -1,7 +1,11 @@
+import uuid
 from django.db import transaction
+from django.contrib.auth import authenticate
 from .models import User, Parent, Child, Image
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -9,12 +13,33 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
-        token['id'] = user.id
+        token['pk'] = user.pk
         token['email'] = user.email
+        token['username'] = user.username
         token['is_staff'] = user.is_staff
         token['is_superuser'] = user.is_superuser
 
         return token
+
+    username_field = 'identifier'
+    def validate(self, attrs):
+        identifier = attrs.get('identifier')
+        password = attrs.get('password')
+
+        user = authenticate(
+            identifier=identifier,
+            password=password
+        )
+
+        if not user:
+            raise AuthenticationFailed('Invalid credentials.')
+
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
     
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,42 +54,92 @@ class UserSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
 
-class DeleteAccountSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(max_length=180, write_only=True)
+class ParentInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parent
+        fields = [
+            'id',
+            'first_name',
+            'middle_name',
+            'last_name',
+            'suffix',
+            'birthday',
+            'age',
+            'gender',
+            'house',
+            'street',
+            'barangay',
+            'subdivision',
+            'city',
+            'province',
+            'reason',
+            'is_verified',
+            'uuid'
+        ]
+
+class CreateAdminSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'is_superuser']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate(self, data):
+        if any(char.isspace() for char in data['username']):
+            raise serializers.ValidationError({
+                'username': 'Username cannot contain whitespace.'
+            })
+
+        if any(char.isspace() for char in data['password']):
+            raise serializers.ValidationError({
+                'password': 'Password cannot contain whitespace.'
+            })
+
+        return data
+
+    def create(self, validated_data):
+        is_superuser = validated_data.pop('is_superuser', False)
+        if is_superuser:
+            return User.objects.create_superuser(**validated_data)
+
+        return User.objects.create_staff(**validated_data)
+
+class DeleteParentSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        max_length=180, 
+        write_only=True
+    )
     password_confirmation = serializers.CharField(
         max_length=180, 
         write_only=True
     )
 
     def validate(self, data):
-        if data['password'] != data['password_confirmation']:
-            raise serializers.ValidationError({
-                'password_confirmation': 'Passwords do not match.'
-            })
+        pk = self.context.get('pk')
 
         try:
-            user = User.objects.get(id=data['pk'])
+            user = User.objects.get(pk=pk)
         except User.DoesNotExist:
             raise serializers.ValidationError({
                 'pk': 'User does not exist.'
             })
 
-        if not user.email == data['email']:
-            raise serializers.ValidationError({
-                'email': 'Invalid email credential.'
-            })
-
         if not user.check_password(data['password']):
             raise serializers.ValidationError({
-                'password': 'Invalid password credential.'
+                'password': 'Invalid password.'
+            })
+
+        if data['password'] != data['password_confirmation']:
+            raise serializers.ValidationError({
+                'password_confirmation': 'Passwords do not match.'
             })
 
         data['user'] = user
         return data
-        
 
 class EmailPasswordSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
     password_confirmation = serializers.CharField(
         max_length=180, 
         write_only=True
@@ -73,18 +148,154 @@ class EmailPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password', 'password_confirmation']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'password_confirmation': {'write_only': True},
+        }
     
     def validate(self, data):
         if data['password'] != data['password_confirmation']:
             raise serializers.ValidationError({
                 'password_confirmation': 'Passwords do not match.'
             })
+
+        if any(char.isspace() for char in data['password']):
+            raise serializers.ValidationError({
+                'password': 'Password cannot contain whitespace.'
+            })
+
         return data
 
     def create(self, validated_data):
         validated_data.pop('password_confirmation')
         return User.objects.create_user(**validated_data)
+
+class ChangeEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+
+    def validate(self, data):
+        instance = self.instance
+
+        if User.objects.filter(username=data['email']).exists():
+            raise serializers.ValidationError({
+                'email': 'Email already exists.'
+            })
+
+        if instance.is_staff:
+            raise serializers.ValidationError({
+                'is_staff': 'User is admin.'
+            })
+
+        return data
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+
+class ChangeUsernameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
+
+    def validate(self, data):
+        instance = self.instance
+
+        if User.objects.filter(username=data['username']).exists():
+            raise serializers.ValidationError({
+                'username': 'Username already exists.'
+            })
+
+        if instance.email:
+            raise serializers.ValidationError({
+                'email': 'User is parent.'
+            })
+
+        if any(char.isspace() for char in data['username']):
+            raise serializers.ValidationError({
+                'username': 'Username cannot contain whitespace.'
+            })
+
+        return data
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return super().update(instance, validated_data)
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    password_confirmation = serializers.CharField(
+        max_length=180, 
+        write_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = ['password', 'password_confirmation']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate(self, data):
+        if data['password'] != data['password_confirmation']:
+            raise serializers.ValidationError({
+                'password_confirmation': 'Passwords do not match.'
+            })
+
+        if any(char.isspace() for char in data['password']):
+            raise serializers.ValidationError({
+                'password': 'Password cannot contain whitespace.'
+            })
+
+        return data
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password')
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.set_password(password)
+        instance.save()
+        return instance
+
+class AdminChangePasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate(self, data):
+        pk = self.context.get('pk')
+        instance = self.instance
+
+        user = User.objects.get(pk=pk)
+
+        if user.is_superuser:
+            ...
+        elif instance.is_staff:
+            raise serializers.ValidationError({
+                'is_superuser': 'Not enough privelege.'
+            })
+
+        if any(char.isspace() for char in data['password']):
+            raise serializers.ValidationError({
+                'password': 'Password cannot contain whitespace.'
+            })
+
+        return data
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password')
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.set_password(password)
+        instance.save()
+        return instance
 
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
