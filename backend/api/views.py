@@ -1,6 +1,6 @@
 import datetime
 from django.db import transaction
-from django.db.models import Avg, F, Count
+from django.db.models import Avg, F, Count, Sum, FloatField, ExpressionWrapper
 from django.db.models.functions import ExtractYear
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -182,23 +182,36 @@ class AdminStatisticsView(APIView):
                 is_superuser=False
             ).count()
 
-            most_single_parents_barangays = (
-                Parent.objects.values('barangay')
-                .annotate(count=Count('barangay'))
-                .order_by('-count', 'barangay')
-                [:5]
-            )
+            # most_single_parents_barangays = (
+            #     Parent.objects.values('barangay')
+            #     .annotate(count=Count('barangay'))
+            #     .order_by('-count', 'barangay')
+            #     [:5]
+            # )
 
             males_count = Parent.objects.filter(gender='male').count()
             females_count = Parent.objects.filter(gender='female').count()
 
-
-
+            single_parents_by_barangay = (
+                Parent.objects.values('barangay')
+                .annotate(count=Count('id'))
+            )
+            total_single_parents = (single_parents_by_barangay.aggregate(
+                total=Sum('count')
+            ))['total']
+            single_parents = (
+                single_parents_by_barangay.annotate(
+                    share_of_total=ExpressionWrapper(
+                        F('count') / total_single_parents,
+                        output_field=FloatField(),
+                    )
+                )
+            ) 
             data = {
                 'parents_count': parents_count,
                 'average_age_query': average_age_query['average_age'],
-                'most_single_parents_barangays': most_single_parents_barangays,
                 'admins_count': admins_count,
+                'single_parents': single_parents,
             }
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
