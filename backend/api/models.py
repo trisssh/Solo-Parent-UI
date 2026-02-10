@@ -69,6 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+
     def __str__(self):
         return self.email or self.username
 
@@ -389,6 +390,13 @@ class Parent(models.Model):
         User,
         on_delete=models.CASCADE
     )
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            self.is_verified = (
+                Parent._meta.get_field('is_verified').get_default()
+            )
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name} {self.middle_name}"

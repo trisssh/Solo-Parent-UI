@@ -1,6 +1,6 @@
 import datetime
 from django.db import transaction
-from django.db.models import Avg, F, Count, Sum, FloatField, ExpressionWrapper
+from django.db.models import Avg, Q, F, Count, Sum, FloatField, ExpressionWrapper
 from django.db.models.functions import ExtractYear
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -14,7 +14,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
 from .models import User, Parent, Child, Image
-from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -156,6 +156,53 @@ class RegistrationView(GenericAPIView):
 
         return Response(response_data, status=status.HTTP_201_CREATED)
 
+class ChangeInfoView(GenericAPIView):
+    serializer_class = ChangeInfoSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def put(self, request, pk):
+        if self.request.user.pk != pk:
+            raise PermissionDenied('You are not this User.')
+
+        data = request.data.copy()
+        images = []
+
+        if 'id' in request.FILES:
+            images.append({
+                'image': request.FILES['id'], 
+                'image_type': 'id'
+            })
+        if 'signature' in request.FILES:
+            images.append({
+                'image': request.FILES['signature'], 
+                'image_type': 'signature'
+            })
+
+        data['images'] = images
+
+        parent = get_object_or_404(Parent, user_id=pk)
+        serializer = self.get_serializer(parent, data=data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            with transaction.atomic():
+                parent = serializer.save()
+        except Exception as e:
+            return Response(
+                {"detail": str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        response_data = {
+            "parent": {
+                "id": parent.id,
+                "first_name": parent.first_name,
+                "last_name": parent.last_name,
+            },
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
 class ParentInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -169,28 +216,17 @@ class AdminStatisticsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        if not self.request.user.is_staff:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         if self.request.user.is_staff:
-            parents_count = Parent.objects.all().count()
-
             current_year = datetime.date.today().year
-            average_age_query = Parent.objects.aggregate(
-            average_age=Avg(current_year - ExtractYear('birthday')) 
+            single_parents = Parent.objects.aggregate(
+                male_count=Count('id', filter=Q(gender='male')),
+                female_count=Count('id', filter=Q(gender='female')),
+                parents_count=Count('id'),
+                average_age=Avg(current_year - ExtractYear('birthday')),
             )
-
-            admins_count = User.objects.filter(
-                is_staff=True, 
-                is_superuser=False
-            ).count()
-
-            # most_single_parents_barangays = (
-            #     Parent.objects.values('barangay')
-            #     .annotate(count=Count('barangay'))
-            #     .order_by('-count', 'barangay')
-            #     [:5]
-            # )
-
-            males_count = Parent.objects.filter(gender='male').count()
-            females_count = Parent.objects.filter(gender='female').count()
 
             single_parents_by_barangay = (
                 Parent.objects.values('barangay')
@@ -199,22 +235,36 @@ class AdminStatisticsView(APIView):
             total_single_parents = (single_parents_by_barangay.aggregate(
                 total=Sum('count')
             ))['total']
-            single_parents = (
+            single_parents_by_barangay = (
                 single_parents_by_barangay.annotate(
+                    male_count=Count('id', filter=Q(gender='male')),
+                    female_count=Count('id', filter=Q(gender='female')),
+                    average_age=Avg(current_year - ExtractYear('birthday')),
                     share_of_total=ExpressionWrapper(
                         F('count') / total_single_parents,
                         output_field=FloatField(),
-                    )
+                    ),
                 )
             ) 
-            data = {
-                'parents_count': parents_count,
-                'average_age_query': average_age_query['average_age'],
-                'admins_count': admins_count,
-                'single_parents': single_parents,
-            }
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        if self.request.user.is_superuser:
+            admins = User.objects.filter(
+                is_staff=True, 
+                is_superuser=False
+            ).count()
+
+            superadmins = User.objects.filter(
+                is_staff=True,
+                is_superuser=True
+            ).count()
+
+        data = {
+            'single_parents': single_parents,
+            'single_parents_by_barangay': single_parents_by_barangay,
+        }
+
+        if self.request.user.is_superuser:
+            data.update({'admins': admins, 'superadmins': superadmins})
 
         return Response(data, status=status.HTTP_200_OK)
 

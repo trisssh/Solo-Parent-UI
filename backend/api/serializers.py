@@ -364,6 +364,53 @@ class RegistrationSerializer(serializers.Serializer):
 
         return parent
 
+class ChangeInfoSerializer(serializers.Serializer):
+    def validate(self, data):
+        request = self.context['request']
+        errors = {}
+
+        parent_data = request.data
+        # images = request.FILES
+
+        parent_serializer = ParentSerializer(data=parent_data)
+
+        if not parent_serializer.is_valid():
+            errors['parent'] = parent_serializer.errors
+
+        # if 'id' not in images or 'signature' not in images:
+        #     errors['images'] = 'ID and signature are required.'
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        data['parent_serializer'] = parent_serializer
+        return data
+
+    def update(self, instance, validated_data):
+        request = self.context['request']
+        parent_serializer = validated_data['parent_serializer']
+
+        with transaction.atomic():
+            parent_serializer.instance = instance
+            parent = parent_serializer.save()
+
+            files = request.FILES
+            if 'id' in files:
+                Image.objects.update_or_create(
+                    parent=parent,
+                    image_type='id',
+                    image=files['id']
+                )
+
+            if 'signature' in files:
+                Image.objects.update_or_create(
+                    parent=parent,
+                    image_type='id',
+                    image=files['signature']
+                )
+
+        return parent
+
 class ChildSerializer(serializers.Serializer):
     class Meta:
         model = Child

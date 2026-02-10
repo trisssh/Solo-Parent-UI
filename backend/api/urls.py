@@ -1,12 +1,17 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, ChangeUsernameView, AdminChangeEmailView, SuperadminChangeUsernameView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView
+from .views import RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, ChangeUsernameView, AdminChangeEmailView, SuperadminChangeUsernameView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView
 
 urlpatterns = [
     path('token', MyTokenObtainPairView.as_view(), name='get_token'),
     path('token/refresh', TokenRefreshView.as_view(), name='refresh_token'),
     # path('parents', ParentView.as_view(), name='show_parents'),
     path('parent/create', RegistrationView.as_view(), name='create_parent'),
+    path(
+        'parent/edit/<int:pk>', 
+        ChangeInfoView.as_view(), 
+        name='edit_parent'
+    ),
     path(
         'parent/delete/<int:pk>', 
         DeleteParentView.as_view(),
