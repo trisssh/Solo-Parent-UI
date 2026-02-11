@@ -4,9 +4,9 @@ from django.db.models import Avg, Q, F, Count, Sum, FloatField, ExpressionWrappe
 from django.db.models.functions import ExtractYear
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import UserPassesTestMixin
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +15,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
 from .models import User, Parent, Child, Image
 from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .pagination import CustomPagination
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -203,21 +204,53 @@ class ChangeInfoView(GenericAPIView):
 
         return Response(response_data, status=status.HTTP_200_OK)
 
+# class AdminChangeInfoView()
+
 class ParentInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         parent = Parent.objects.get(user_id=self.request.user.pk)
-        serializer = ParentInfoSerializer(parent, many=False)
+        serializer = ParentSerializer(parent, many=False)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ParentListView(ListAPIView):
+    queryset = Parent.objects.all().order_by('last_name')
+    permission_classes = [IsAuthenticated]
+    serializer_class = ParentSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['uuid', 'last_name']
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return self.queryset
+        else:
+            raise PermissionDenied('Admins only.')
+
+
+class AdminListView(ListAPIView):
+    queryset = User.objects.filter(is_staff=True)
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username']
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            excluded_queryset = self.queryset.exclude(
+                username=self.request.user.username
+            ).order_by('id')
+            return excluded_queryset
+        else:
+            raise PermissionDenied('Superadmin only.')
 
 class AdminStatisticsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         if not self.request.user.is_staff:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            raise PermissionDenied('Admins only.')
 
         if self.request.user.is_staff:
             current_year = datetime.date.today().year
@@ -267,7 +300,6 @@ class AdminStatisticsView(APIView):
             data.update({'admins': admins, 'superadmins': superadmins})
 
         return Response(data, status=status.HTTP_200_OK)
-
 
 class DeleteUserView(APIView, UserPassesTestMixin):
     permission_classes = [IsAuthenticated]

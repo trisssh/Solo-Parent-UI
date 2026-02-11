@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, ChangeUsernameView, AdminChangeEmailView, SuperadminChangeUsernameView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView
+from .views import RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, ChangeUsernameView, AdminChangeEmailView, SuperadminChangeUsernameView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView, ParentListView, AdminListView
 
 urlpatterns = [
     path('token', MyTokenObtainPairView.as_view(), name='get_token'),
@@ -18,6 +18,7 @@ urlpatterns = [
         name='delete_parent'
     ),
     path('parent/info', ParentInfoView.as_view(), name='info_parent'),
+    path('parent/list', ParentListView.as_view(), name='list_parent'),
     path('user/delete/<int:pk>', DeleteUserView.as_view(), name='delete_user'),
     path('user/email/<int:pk>', ChangeEmailView.as_view(), name='change_email'),
     path(
@@ -31,6 +32,7 @@ urlpatterns = [
         name='change_password'
     ),
     path('admin/create', CreateAdminView.as_view(), name='create_admin'),
+    path('admin/list', AdminListView.as_view(), name='list_admin'),
     path(
         'admin/statistics', 
         AdminStatisticsView.as_view(), 

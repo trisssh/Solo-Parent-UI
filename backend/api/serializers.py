@@ -47,11 +47,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'email', 
-            'password', 
+            'username',
             'is_staff', 
             'is_superuser', 
-            'created_at', 
-            'updated_at',
         ]
 
 class ParentInfoSerializer(serializers.ModelSerializer):
@@ -305,7 +303,24 @@ class ImageSerializer(serializers.ModelSerializer):
 class ParentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parent
-        fields = '__all__'
+        fields = [
+            'first_name', 
+            'middle_name',
+            'last_name',
+            'suffix',
+            'birthday',
+            'age',
+            'gender',
+            'house',
+            'street',
+            'barangay',
+            'subdivision',
+            'city',
+            'province',
+            'reason',
+            'user',
+            'uuid'
+        ]
         extra_kwargs = {'user': {'read_only': True}}
 
 class RegistrationSerializer(serializers.Serializer):
