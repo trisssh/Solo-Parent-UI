@@ -14,7 +14,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
 from .models import User, Parent, Child, Image
-from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, ChangeVerificationSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .utils.emailer import emailer
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -208,11 +209,20 @@ class ChangeInfoView(GenericAPIView):
 class ParentInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        parent = Parent.objects.get(user_id=self.request.user.pk)
-        serializer = ParentSerializer(parent, many=False)
+    def get(self, request, pk):
+        if self.request.user.pk != pk:
+            raise PermissionDenied('You are not this User.')
+        
+        parent = get_object_or_404(Parent, user_id=self.request.user.pk)
+        parent_serializer = ParentSerializer(parent, many=False)
+        image = Image.objects.filter(parent_id=parent_serializer.data['id'])
+        image_serializer = ImageSerializer(image, many=True) 
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = {
+            'parent': parent_serializer.data,
+            'image': image_serializer.data,
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
 class ParentListView(ListAPIView):
     queryset = Parent.objects.all().order_by('last_name')
@@ -347,6 +357,39 @@ class ChangeEmailView(APIView):
 
         if serializer.is_valid():
             serializer.save()
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class SendEmailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        if not self.request.user.is_staff:
+            raise PermissionDenied('Admins only.')
+
+        parent = get_object_or_404(Parent, user_id=pk)
+        serializer = ChangeVerificationSerializer(parent, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            parent = serializer.instance
+            
+            emailer(
+                parent.is_verified,
+                parent.user.email,
+                parent.last_name,
+                parent.first_name,
+                parent.middle_name,
+                parent.city,
+                parent.province,
+                parent.suffix,
+                request.data.get('remarks'),
+            )
         else:
             return Response(
                 serializer.errors,

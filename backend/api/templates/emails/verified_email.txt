@@ -1,0 +1,1 @@
+Congratulations, {{ last_name }}, {{ first_name }} , {{ middle_name }} {{ suffix }} you have been verified by the {{ city }}, {{ province }} LGU as a solo parent citizen. You are now eligible for benefits as prescribed to you by the R.A. 8972.

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 import environ
 from datetime import timedelta
 from pathlib import Path
@@ -20,7 +21,8 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-FILE_FOLDER = env('FILE_FOLDER', default='/files/')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = env('MEDIA_URL', default='/media/')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -65,7 +67,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'api/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -155,3 +157,9 @@ SIMPLE_JWT = {
 AUTHENTICATION_BACKENDS = [
     'api.backends.EmailOrUsernameBackend',
 ]
+
+EMAIL_HOST=env('EMAIL_HOST')
+EMAIL_PORT=env('EMAIL_PORT')
+EMAIL_HOST_USER=env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS=env('EMAIL_USE_TLS')

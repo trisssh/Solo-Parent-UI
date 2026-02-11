@@ -89,8 +89,10 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-backend/images/*
-!backend/images/.gitkeep
+backend/media/images/*
+!backend/media/images/.gitkeep
+backend/media/temp/*
+!backend/media/temp/.gitkeep
 
 # Flask stuff:
 instance/

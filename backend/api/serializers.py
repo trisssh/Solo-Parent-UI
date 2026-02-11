@@ -225,7 +225,7 @@ class ChangeUsernameSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
 
         instance.save()
-        return super().update(instance, validated_data)
+        return instance
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     password_confirmation = serializers.CharField(
@@ -298,12 +298,17 @@ class AdminChangePasswordSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = '__all__'
+        fields = [
+            'image', 
+            'image_type', 
+            'parent',
+        ]
 
 class ParentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parent
         fields = [
+            'id',
             'first_name', 
             'middle_name',
             'last_name',
@@ -426,6 +431,18 @@ class ChangeInfoSerializer(serializers.Serializer):
 
         return parent
 
+class ChangeVerificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parent
+        fields = ['is_verified']
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+
 class ChildSerializer(serializers.Serializer):
     class Meta:
         model = Child
@@ -441,16 +458,3 @@ class ChildSerializer(serializers.Serializer):
             'is_incapable',
             'parent',
         ]
-
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = [
-            'id',
-            'image', 
-            'image_type', 
-            'created_at', 
-            'updated_at', 
-            'parent',
-        ]
-        extra_kwargs = {'parent': {'read_only': True}}
