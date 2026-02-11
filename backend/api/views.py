@@ -15,7 +15,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
 from .models import User, Parent, Child, Image
 from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
-from .pagination import CustomPagination
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -227,7 +226,6 @@ class ParentListView(ListAPIView):
             return self.queryset
         else:
             raise PermissionDenied('Admins only.')
-
 
 class AdminListView(ListAPIView):
     queryset = User.objects.filter(is_staff=True)
