@@ -1,7 +1,6 @@
-import uuid
 from django.db import transaction
 from django.contrib.auth import authenticate
-from .models import User, Parent, Child, Image
+from .models import User, Parent, Child, Image, Contact
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
@@ -62,7 +61,7 @@ class ParentInfoSerializer(serializers.ModelSerializer):
             'last_name',
             'suffix',
             'birthday',
-            'age',
+            'phone',
             'gender',
             'house',
             'street',
@@ -72,7 +71,7 @@ class ParentInfoSerializer(serializers.ModelSerializer):
             'province',
             'reason',
             'is_verified',
-            'uuid'
+            'uuid',
         ]
 
 class CreateAdminSerializer(serializers.ModelSerializer):
@@ -298,11 +297,7 @@ class AdminChangePasswordSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
-        fields = [
-            'image', 
-            'image_type', 
-            'parent',
-        ]
+        fields = ['image', 'image_type', 'parent']
 
 class ParentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -314,7 +309,7 @@ class ParentSerializer(serializers.ModelSerializer):
             'last_name',
             'suffix',
             'birthday',
-            'age',
+            'phone',
             'gender',
             'house',
             'street',
@@ -324,9 +319,21 @@ class ParentSerializer(serializers.ModelSerializer):
             'province',
             'reason',
             'user',
-            'uuid'
+            'uuid',
         ]
         extra_kwargs = {'user': {'read_only': True}}
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'suffix',
+            'phone',
+            'parent',
+        ]
 
 class RegistrationSerializer(serializers.Serializer):
     # only fields that are NOT model-backed
@@ -341,6 +348,8 @@ class RegistrationSerializer(serializers.Serializer):
             'password': request.data.get('password'),
             'password_confirmation': request.data.get('password_confirmation'),
         }
+        
+        contact_data = {}
 
         parent_data = request.data
         images = request.FILES
@@ -447,13 +456,11 @@ class ChildSerializer(serializers.Serializer):
     class Meta:
         model = Child
         fields = [
-            'id'
             'first_name',
             'middle_name',
             'last_name',
             'suffix',
             'birthday',
-            'age',
             'gender',
             'is_incapable',
             'parent',

@@ -365,7 +365,7 @@ class ChangeEmailView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class SendEmailView(APIView):
+class ChangeVerificationView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, pk):
@@ -381,13 +381,7 @@ class SendEmailView(APIView):
             
             emailer(
                 parent.is_verified,
-                parent.user.email,
-                parent.last_name,
-                parent.first_name,
-                parent.middle_name,
-                parent.city,
-                parent.province,
-                parent.suffix,
+                parent,
                 request.data.get('remarks'),
             )
         else:
@@ -427,6 +421,9 @@ class AdminChangePasswordView(APIView):
 
         if not self.request.user.is_staff:
             raise PermissionDenied('Admins only.')
+
+        if user.is_superuser:
+            raise PermissionDenied('Admins may only change user passwords.')
             
         serializer = AdminChangePasswordSerializer(
             user, 

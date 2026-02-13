@@ -1,7 +1,8 @@
-import uuid
 from django.db import models
 from django.core.validators import MinLengthValidator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from phonenumber_field.modelfields import PhoneNumberField
+from .utils.generate_uuid import generate_uuid
 
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -74,17 +75,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email or self.username
 
 class Parent(models.Model):
-    uuid = models.UUIDField(
+    uuid = models.CharField(
+        max_length=10,
         editable=False, 
         unique=True, 
-        default=uuid.uuid4
+        default=generate_uuid
     )
     first_name = models.CharField(max_length=180)
     middle_name = models.CharField(max_length=180)
     last_name = models.CharField(max_length=180)
     suffix = models.CharField(max_length=180, blank=True, null=True)
+    phone = PhoneNumberField(unique=True)
     birthday = models.DateField()
-    age = models.IntegerField()
 
     GENDER_CHOICES = (
         ('female', 'Female'),
@@ -401,13 +403,30 @@ class Parent(models.Model):
     def __str__(self):
         return f"{self.last_name}, {self.first_name} {self.middle_name}"
 
+class Contact(models.Model):
+    first_name = models.CharField(max_length=180)
+    middle_name = models.CharField(max_length=180)
+    last_name = models.CharField(max_length=180)
+    suffix = models.CharField(max_length=180, blank=True, null=True)
+    phone = PhoneNumberField(unique=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    parent = models.OneToOneField(
+        Parent,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f"{self.last_name}, {self.first_name} {self.middle_name}"
+
 class Child(models.Model):
     first_name = models.CharField(max_length=180)
     middle_name = models.CharField(max_length=180)
     last_name = models.CharField(max_length=180)
     suffix = models.CharField(max_length=180, blank=True, null=True)
     birthday = models.DateField()
-    age = models.IntegerField()
     
     GENDER_CHOICES = (
         ('female', 'Female'),
