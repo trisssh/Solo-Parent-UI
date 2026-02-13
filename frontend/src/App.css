@@ -1,2 +1,18 @@
 @import "tailwindcss";
+@tailwind utilities;
 
+:root {
+  /* GRAYS */
+  --gray-1: #6B7280; /* Cancel btn */ 
+  --gray-2: #A6A6A6; /* Shadow / bg */
+
+  /* REDS */
+  --red-1: #FF2424; /* Borders & btn*/
+  --red-2: #D7263D; /* Drop shadow / sidebar (rose red) */
+  --red-3: #DC2626; /* Buttons of modals */
+  --red-4: #f31212; /* Hover btn for 1 */
+}
+
+/* HOW TO USE EXAMPLE: 
+bg-[var(--gray-1)] , 
+text-[var(--gray-1)] */

@@ -28,17 +28,18 @@ export function AuthProvider({ children }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: loginData.email,
+          identifier: loginData.identifier,
           password: loginData.password,
         }),
       });
       const data = await res.json();
 
       if (res.ok) {
+        alert('here')
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
         localStorage.setItem("authTokens", JSON.stringify(data));
-        navigate("/");
+        navigate("/dashboard");
       } else {
         alert("Login Unsuccessful");
       }

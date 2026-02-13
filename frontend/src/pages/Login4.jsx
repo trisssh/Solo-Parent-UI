@@ -1,36 +1,106 @@
 import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
 
-// Swal.fire({
-//   title: "Success!",
-//   text: "SweetAlert2 is working 🎉",
-//   icon: "success",
-//   confirmButtonText: "OK",
-// });
-
-// Swal.fire({
-//   title: "Are you sure?",
-//   text: "You are about to edit your profile.",
-//   icon: "warning",
-//   showCancelButton: true,
-//   confirmButtonColor: "#DC2626", // red
-//   cancelButtonColor: "#9CA3AF", // gray
-//   confirmButtonText: "Yes, edit",
-// });
+// ---------------------------
+// DUMMY ACCOUNTS (UI ONLY)
+// ---------------------------
+const DUMMY_USERS = [
+  { email: "user@test.com", password: "12345678", role: "user" },
+  { email: "admin@test.com", password: "12345678", role: "admin" },
+  { email: "superadmin@test.com", password: "12345678", role: "superadmin" },
+];
 
 export default function Login4() {
-  const [showPassword, setShowPassword] = useState(false);
+  //USESTATE
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loginUser } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const { loginUser } = useContext(AuthContext)
 
-  const handleLogin = async () => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
     const loginData = {
-      email: email,
+      identifier: email,
       password: password,
     };
-    loginUser(loginData);
+    await loginUser(loginData);
+  };
+
+  //handleLogin function (UI-only logic)
+  // const handleLogin = (e) => {
+  //   e.preventDefault(); // Prevent page reload
+
+  //   // 1. Empty fields check
+  //   if (!email || !password) {
+  //     showAlert({
+  //       title: "Login Failed",
+  //       message: "Please enter your email and password.",
+  //       icon: "error",
+  //     });
+  //     return;
+  //   }
+
+  //   // 2. Find user in dummy list
+  //   const foundUser = DUMMY_USERS.find(
+  //     (u) => u.email === email && u.password === password,
+  //   );
+
+  //   // 3. Invalid credentials
+  //   if (!foundUser) {
+  //     showAlert({
+  //       title: "Invalid Credentials",
+  //       message: "Email or password is incorrect.",
+  //       icon: "error",
+  //     });
+  //     return;
+  //   }
+
+  //   // 4. Success
+  //   localStorage.setItem("role", foundUser.role);
+  //   localStorage.setItem("email", foundUser.email);
+
+  //   Swal.fire({
+  //     title: `<p class="text-2xl font-semibold text-gray-800">Login Successful</p>`,
+  //     html: `<p class="text-xl text-gray-600 mt-1">Welcome! Redirecting...</p>`,
+  //     icon: "success",
+  //     iconColor: "#DC2626",
+  //     showConfirmButton: true,
+  //     confirmButtonText: "Okay",
+  //     buttonsStyling: false,
+  //     customClass: {
+  //       popup: "rounded-xl px-6 py-4",
+  //       confirmButton:
+  //         "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+  //     },
+  //   }).then(() => {
+  //     navigate("/dashboard");
+  //   });
+  // };
+
+  // ---------------------------
+  // SWEET ALERT
+  // ---------------------------
+  const showAlert = ({ title, message, icon = "error" }) => {
+    Swal.fire({
+      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+      icon,
+      iconColor: "#DC2626",
+      background: "#ffffff",
+      showConfirmButton: true,
+      confirmButtonText: "Okay",
+      buttonsStyling: false,
+      customClass: {
+        popup: "rounded-xl px-6 py-4",
+        confirmButton:
+          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+      },
+    });
   };
 
   return (
@@ -38,28 +108,12 @@ export default function Login4() {
       {/* Left Section */}
       <div className="hidden md:block bg-white flex flex-col justify-center items-center text-center p-10 relative overflow-hidden rounded-2xl">
         <div className="relative z-10 flex flex-col items-center gap-5">
-          {/* Avatar */}
-          {/* <div className="flex justify-center sm:justify-start">
-            <div className="size-20 md:size-72 rounded-full bg-white flex items-center justify-center shadow-lg filter drop-shadow-[0_0_0.25rem_#242424]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="size-20 md:size-64 text-red-600"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176 7.547 7.547 0 0 1-1.705-1.715.75.75 0 0 0-1.152-.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-          </div> */}
           {/* Logo Img Example */}
           <img
-            src="spc.png"
+            src="SP.png"
             className="size-90 drop-shadow-[0_0_0.5rem_#A6A6A6]"
           />
+          {/* Title */}
           <div className="text-gray-800 text-center flex flex-col">
             <h3 className="text-2xl md:text-4xl font-bold uppercase">
               Solo Parent System
@@ -72,119 +126,80 @@ export default function Login4() {
       </div>
 
       {/* Right Section (Login Form) */}
-      <div className="flex flex-col justify-center items-center gap-6 mx-4">
-        <div className="relative p-1 rounded-2xl overflow-hidden ">
+      <div className="flex flex-col justify-center items-center gap-6 mx-3">
+        <div className="relative p-1 rounded-2xl overflow-hidden">
           {/* Animated Border */}
-          <div
+          {/* <div
             className="absolute inset-1 rounded-2xl 
             bg-[conic-gradient(from_0deg,#ff2424,#ff9a9a,#ff2424)]
             animate-[spin_10s_linear_infinite]"
-          ></div>
-          {/* <div className="w-64 h-64 bg-[conic-gradient(red,yellow,blue,red)]"></div> */}
+          ></div> */}
 
           {/* Content */}
-          <div className="relative bg-white drop-shadow-[0_0_0.5rem_#FF2424] rounded-2xl">
-            {/* <div className="relative bg-white drop-shadow-[0_0_0.5rem_#FF2424] rounded-2xl m-2"> */}
-            <div className="p-6 md:p-10 rounded-2xl">
-              <div className="flex items-center justify-between">
-                <div className="bg-fireicon bg-white size-14 rounded-full flex justify-center items-center ">
-                  {/* <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="text-[#FF2424] "
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.963 2.286a.75.75 0 0 0-1.071-.136 9.742 9.742 0 0 0-3.539 6.176 7.547 7.547 0 0 1-1.705-1.715.75.75 0 0 0-1.152-.082A9 9 0 1 0 15.68 4.534a7.46 7.46 0 0 1-2.717-2.248ZM15.75 14.25a3.75 3.75 0 1 1-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 0 1 1.925-3.546 3.75 3.75 0 0 1 3.255 3.718Z"
-                      clipRule="evenodd"
-                    />
-                  </svg> */}
-                  {/* Logo Img Example */}
-                  <img src="spc.png" className="size-14" />
-                </div>
-                <div className="ml-2 md:ml-6 text-center">
-                  <h2 className="font-bold md:tracking-widest uppercase text-xl sm:text-2xl text-gray-800">
-                    Solo Parent System
-                  </h2>
-                  <p className="capitalize font-semibold text-xs md:text-right tracking-wide text-gray-600 ">
-                    City of San Juan, Metro Manila
-                  </p>
-                </div>
+          <div className="bg-white drop-shadow-[0_0_0.5rem_#FF2424]  shadow-lg rounded-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-center mb-6">
+              {/* Logo Img Example */}
+              <div className="bg-white size-14 rounded-full flex justify-center items-center">
+                <img src="SP.png" className="size-14" />
               </div>
+              <div className="ml-2 md:ml-6 text-center">
+                <h2 className="font-bold uppercase text-base sm:text-xl text-gray-800">
+                  Solo Parent System
+                </h2>
+                <p className="capitalize font-semibold text-xs md:text-right tracking-wide text-gray-600">
+                  City of San Juan, Metro Manila
+                </p>
+              </div>
+            </div>
 
-              <div className="w-full max-w-md mt-4 md:mt-6">
-                <h2 className="text-xl md:text-2xl font-bold text-gray-800">
+            <div>
+              <article className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-800 mb-1">
                   Log in to your Account
                 </h2>
+                <p className="font-semibold text-base text-gray-600 text-justify ">
+                  Please make sure you have a registered account before logging
+                  in.
+                </p>
+              </article>
 
-                {/* Email Input */}
-                {/* <div className="relative w-full mt-4 rounded-lg">
-                  <input
-                    type="email"
-                    id="username"
-                    className="block px-2.5 pb-2.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded border-2 border-red-600 appearance-none focus:outline-none focus:ring-0 focus:border-red-600 peer"
-                    placeholder=""
-                    name="username"
-                  />
-                  <label
-                    htmlFor="email"
-                    className="absolute text-xl font-semibold text-red-600 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
-                  >
-                    Email
-                  </label>
-                </div> */}
-                <div className="relative w-full mt-4 rounded-lg">
+              {/* FORM */}
+              <form onSubmit={handleLogin}>
+                {/* Email */}
+                <div className="relative w-full my-4 rounded-lg">
                   <input
                     type="email"
                     id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md"
                     placeholder=""
                     name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <label
                     htmlFor="email"
-                    className="absolute text-2xl font-bold text-[#A6A6A6] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
+                    className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
                   >
                     Email
                   </label>
                 </div>
 
-                {/* Password Input */}
-                {/* <div className="relative w-full mt-4 rounded-lg">
-                  <input
-                    type="password"
-                    id="password"
-                    className="block px-3 pb-2.5 pt-3 w-full text-sm text-[#A6A6A6] bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border--[#A6A6A6] focus:border-gray-500 peer shadow-md"
-                    placeholder=""
-                    name="password"
-                  />
-
-                  <label
-                    htmlFor="password"
-                    className="absolute text-xl font-bold text-[#A6A6A6] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
-                  >
-                    Password
-                  </label>
-                </div> */}
+                {/* Password */}
                 <div className="relative w-full mt-4 rounded-lg">
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="block px-3 pb-2.5 pt-3 w-full text-lg text-gray-800 font-semibold bg-transparent rounded appearance-none focus:outline-none focus:ring-0 border border-[#A6A6A6] focus:border-gray-500 peer shadow-md pr-10"
                     placeholder=" "
                     name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                   />
-
                   <label
                     htmlFor="password"
-                    className="absolute text-2xl font-bold text-[#A6A6A6] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2
-                    peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0
-                    peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
+                    className="absolute text-2xl font-bold text-[var(--gray-2)] duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2
+                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0
+                      peer-focus:scale-75 peer-focus:-translate-y-4 left-3"
                   >
                     Password
                   </label>
@@ -233,57 +248,35 @@ export default function Login4() {
                     )}
                   </button>
                 </div>
-
-                {/* 
-                <div>
-                  <label className="block text-gray-700 font-medium">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-red-500"
-                  />
-                  <div className="flex justify-end">
-                   
-                    <a
-                   
-                      className="text-xs text-red-600 hover:underline"
-                    >
-                      Forgot Password?
-                    </a>
-                  </div>
-                </div> */}
-
                 {/* Forgot Password Link */}
                 <div className="text-right">
-                  <span className="text-xs underline hover:text-red-600 text-red-500 cursor-pointer">
-                    <a href="#">Forgot Password?</a>
-                  </span>
+                  <Link
+                    to="/forgot-password"
+                    className="text-xs underline hover:text-red-600 text-red-500 cursor-pointer"
+                  >
+                    Forgot Password?
+                  </Link>
                 </div>
 
                 {/* Login Button */}
-                <button 
-                  className="mt-6 w-full py-3 rounded bg-gradient-to-r from-[#D7263D] to-red-600 text-white font-semibold hover:from-[#D7263D] hover:to-red-700 transition-all duration-300 hover:scale-105 cursor-pointer shadow shadow-gray-700"
-                  onClick={handleLogin}
+                <button
+                  type="submit"
+                  className="text-base uppercase font-bold tracking-widest mt-6 w-full py-3 rounded bg-gradient-to-r from-[var(--red-2)] to-red-600 text-white font-semibold hover:from-[var(--red-2)] hover:to-red-700 transition-all duration-300 hover:scale-105 cursor-pointer shadow shadow-gray-700"
                 >
-                  <h2 className="text-base uppercase font-bold tracking-widest">
-                    Login
-                  </h2>
+                  Login
                 </button>
+              </form>
 
-                {/* Footer */}
-                <div className="mt-2 text-center text-sm text-gray-600">
-                  Don’t have an account?
-                  <a
-                    href="#"
-                    className="text-[#D7263D] ml-1 font-bold hover:underline"
-                  >
-                    Create an account
-                  </a>
-                </div>
-              </div>
+              {/* Link */}
+              <span className="flex justify-center mt-2 text-center text-sm text-gray-600">
+                Don’t have an account?
+                <Link
+                  to="/user-register"
+                  className="text-[var(--red-2)] ml-1 font-bold hover:underline"
+                >
+                  Create an account
+                </Link>
+              </span>
             </div>
           </div>
         </div>
