@@ -9,10 +9,6 @@ export default function UserDashboard() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const navigate = useNavigate();
 
-  // const handleLogout = () => {
-  //   localStorage.clear();
-  //   navigate("/");
-  // };
 
   const handleLogout = () => {
     Swal.fire({

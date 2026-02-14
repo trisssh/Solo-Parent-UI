@@ -99,7 +99,6 @@ export default function UserRegister() {
     <main className="min-h-screen bg-white flex flex-col">
       {/* HEADER */}
       <header className="bg-gradient-to-br from-[var(--red-1)] border-b border-red-200 to-[#8B1E2F] flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2 p-2 drop-shadow-[0_0_0.25rem_#CC3535]">
-        {/* <h1 className="text-lg font-semibold text-white">Create Account</h1> */}
         <div className="flex items-center">
           <div className="bg-white size-14 rounded-full border border-red-200 shadow flex justify-center items-center">
             <img src="SP.png" className="size-12 object-contain" />
@@ -141,14 +140,18 @@ export default function UserRegister() {
 
             <button
               onClick={() => setStep(2)}
-              className="w-full bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition"
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-2 rounded-lg"
             >
               Continue
             </button>
 
             <p className="text-sm text-center text-gray-600">
               Already have an account?{" "}
-              <Link to="/" className="text-red-600 font-medium">
+              <Link
+                to="/"
+                // className="text-red-600 font-medium"
+                className="text-[var(--red-1)] font-semibold"
+              >
                 Login
               </Link>
             </p>
@@ -209,13 +212,13 @@ export default function UserRegister() {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(1)}
-                className="w-1/2 border border-gray-400 text-gray-700 py-2 rounded-lg"
+                className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
                 Back
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="w-1/2 bg-red-600 text-white py-2 rounded-lg"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
                 Continue
               </button>
@@ -235,30 +238,25 @@ export default function UserRegister() {
               </p>
             </article>
 
-            
-              <Input label="Contact Number" name="contactNumber" type="tel" />
-              <Input
-                label="Emergency Contact First Name"
-                name="emergencyFirst"
-              />
-              <Input label="Emergency Contact Last Name" name="emergencyLast" />
-              <Input
-                label="Emergency Contact Number"
-                name="emergencyContact"
-                type="tel"
-              />
-            
+            <Input label="Contact Number" name="contactNumber" type="tel" />
+            <Input label="Emergency Contact First Name" name="emergencyFirst" />
+            <Input label="Emergency Contact Last Name" name="emergencyLast" />
+            <Input
+              label="Emergency Contact Number"
+              name="emergencyContact"
+              type="tel"
+            />
 
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(2)}
-                className="w-1/2 border border-gray-400 text-gray-700 py-2 rounded-lg"
+                className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
                 Back
               </button>
               <button
                 onClick={() => setStep(4)}
-                className="w-1/2 bg-red-600 text-white py-2 rounded-lg"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
                 Continue
               </button>
@@ -300,13 +298,14 @@ export default function UserRegister() {
             <div className="flex gap-3">
               <button
                 onClick={() => setStep(3)}
-                className="w-1/2 border border-gray-400 text-gray-700 py-2 rounded-lg"
+                className="bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                // className="w-1/2 border border-gray-400  text-gray-500 font-semibold shadow shadow-gray-700 py-2 rounded-lg"
               >
                 Back
               </button>
               <button
                 onClick={handleSubmit}
-                className="w-1/2 bg-red-600 text-white py-2 rounded-lg"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-2 rounded-lg"
               >
                 Submit
               </button>

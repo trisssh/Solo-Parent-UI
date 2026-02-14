@@ -278,7 +278,7 @@ export default function Login4() {
                 Don’t have an account?
                 <Link
                   to="/user-register"
-                  className="text-[var(--red-2)] ml-1 font-bold hover:underline"
+                  className="text-[var(--red-1)] ml-1 font-semibold"
                 >
                   Create an account
                 </Link>
