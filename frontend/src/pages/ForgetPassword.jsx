@@ -156,7 +156,7 @@ const showError = (title, message) => {
 
         <button
           type="submit"
-          className="mt-6 bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-full py-2 rounded-lg"
+          className="mt-6 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-full py-2 rounded-lg"
         >
           Send OTP
         </button>
@@ -263,9 +263,7 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
       </article>
 
       {/*OTP Verification */}
-      <form 
-       onSubmit={handleSubmit}
-       className="relative w-full my-6 rounded-lg">
+      <form onSubmit={handleSubmit} className="relative w-full my-6 rounded-lg">
         <input
           type="text"
           inputMode="numeric"
@@ -293,8 +291,8 @@ function StepOTP({ otp, setOtp, onNext, onBack }) {
         </button>
 
         <button
-        type="submit"
-          className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+          type="submit"
+          className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
           onClick={handleSendOTP}
         >
           Verify
@@ -520,7 +518,7 @@ const fakeResetPasswordAPI = (password) =>
 
         <div className="flex gap-3 mt-4">
           <button
-          type="button"
+            type="button"
             className="bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
             onClick={onBack}
           >
@@ -530,7 +528,7 @@ const fakeResetPasswordAPI = (password) =>
           <button
             type="submit"
             disabled={!canReset}
-            className="disabled:bg-gray-400 bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+            className="disabled:bg-gray-400 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
           >
             Reset Password
           </button>
