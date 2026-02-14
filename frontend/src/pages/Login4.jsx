@@ -3,20 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
 
-// ---------------------------
-// DUMMY ACCOUNTS (UI ONLY)
-// ---------------------------
-const DUMMY_USERS = [
-  { email: "user@test.com", password: "12345678", role: "user" },
-  { email: "admin@test.com", password: "12345678", role: "admin" },
-  { email: "superadmin@test.com", password: "12345678", role: "superadmin" },
-];
 
 export default function Login4() {
   //USESTATE
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { loginUser } = useContext(AuthContext)
 
   const navigate = useNavigate();
@@ -24,12 +18,29 @@ export default function Login4() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const loginData = {
-      identifier: email,
-      password: password,
-    };
-    await loginUser(loginData);
+    // Empty fields check
+    if (!email || !password) {
+      showAlert({
+        title: "Login Failed",
+        message: "Please enter your email and password.",
+        icon: "error",
+      });
+      return;
+    }
+
+     setLoading(true);
+
+     const loginData = {
+       identifier: email,  //email or username
+       password: password,
+     };
+
+     await loginUser(loginData);
+
+     setLoading(false);
   };
+
+
 
   //handleLogin function (UI-only logic)
   // const handleLogin = (e) => {
@@ -128,12 +139,6 @@ export default function Login4() {
       {/* Right Section (Login Form) */}
       <div className="flex flex-col justify-center items-center gap-6 mx-3">
         <div className="relative p-1 rounded-2xl overflow-hidden">
-          {/* Animated Border */}
-          {/* <div
-            className="absolute inset-1 rounded-2xl 
-            bg-[conic-gradient(from_0deg,#ff2424,#ff9a9a,#ff2424)]
-            animate-[spin_10s_linear_infinite]"
-          ></div> */}
 
           {/* Content */}
           <div className="bg-white drop-shadow-[0_0_0.5rem_#FF2424]  shadow-lg rounded-xl w-full max-w-md p-6">
@@ -261,9 +266,10 @@ export default function Login4() {
                 {/* Login Button */}
                 <button
                   type="submit"
+                  disabled={loading}
                   className="text-base uppercase font-bold tracking-widest mt-6 w-full py-3 rounded bg-gradient-to-r from-[var(--red-2)] to-red-600 text-white font-semibold hover:from-[var(--red-2)] hover:to-red-700 transition-all duration-300 hover:scale-105 cursor-pointer shadow shadow-gray-700"
                 >
-                  Login
+                  {loading ? "Logging in..." : "Login"}
                 </button>
               </form>
 

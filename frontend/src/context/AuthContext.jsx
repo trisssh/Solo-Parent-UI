@@ -35,7 +35,6 @@ export function AuthProvider({ children }) {
       const data = await res.json();
 
       if (res.ok) {
-        alert('here')
         setAuthTokens(data);
         setUser(jwtDecode(data.access));
         localStorage.setItem("authTokens", JSON.stringify(data));
