@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import UserList from "../../pages/ListofUsers";
 
 export default function SuperAdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -56,6 +57,8 @@ export default function SuperAdminDashboard() {
         </header>
         {/* <h2 className="text-2xl font-bold">SuperAdmin Dashboard</h2>
         <p>Full access to all system features and settings.</p> */}
+
+        <UserList user={{ is_staff: true, is_superuser: true }} />
       </div>
     </div>
   );

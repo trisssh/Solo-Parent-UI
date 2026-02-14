@@ -25,7 +25,7 @@ export default function Dashboard() {
   // }, [navigate]);
 
   if (!user) {
-    return <p>Loading...</p>; // Optional: show spinner later
+    return <p>Loading...</p>;
   }
 
   // Render dashboard based on role

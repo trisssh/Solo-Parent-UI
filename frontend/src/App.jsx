@@ -11,6 +11,10 @@ import Login4 from "./pages/Login4";
 import Dashboard from "./pages/Dashboard";
 import ForgetPassword from './pages/ForgetPassword';
 import UserRegister from './pages/UserRegister';
+import UserList from './pages/ListofUsers';
+import SuperAdminDashboard from './dashboards/superadmin/SuperAdminDashboard';
+// import SuperAdminUserList from
+
 
 function App() {
   return (
@@ -18,14 +22,19 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Login4 />} />
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } exact 
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+            exact
           />
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/user-register" element={<UserRegister />} />
+
+          <Route path="/superadmin-dashboard" element={<SuperAdminDashboard />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

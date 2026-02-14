@@ -47,14 +47,14 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
     admin: [
       { name: "Dashboard", link: "/admin-dashboard" },
-      { name: "List of Seniors", link: "/users-list" },
+      { name: "List of Parents", link: "/users-list" },
       { name: "Edit Account", link: "/admins-edit" },
       { name: "Logout", action: handleLogout },
     ],
 
     superadmin: [
       { name: "Dashboard", link: "/superadmin-dashboard" },
-      { name: "List of Seniors", link: "/users-list" },
+      { name: "List of Parents", link: "/users-list" },
       { name: "List of Admins", link: "/admins-list" },
       { name: "Edit Account", link: "/admins-edit" },
       { name: "Logout", action: handleLogout },
