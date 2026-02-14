@@ -57,14 +57,6 @@ export default function UserDashboard() {
       <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
         {/* HEADER */}
         <header className="relative z-50 bg-gradient-to-br from-[var(--red-1)] border-b border-red-200 to-[#8B1E2F] flex flex-row items-center justify-between px-6 md:py-2 p-2 drop-shadow-[0_0_0.25rem_#CC3535]">
-          {/* <div>
-            <h2 className="text-3xl font-bold text-white hidden md:block">
-              Profile
-            </h2>
-            <p className="text-white/90 text-sm font-semibold hidden md:block">
-              Here you can view and edit your information
-            </p>
-          </div> */}
           <div className="flex items-center">
             <div className="bg-white size-14 rounded-full shadow-md shadow-red-700 flex justify-center items-center">
               <img src="SP.png" className="size-13 object-contain" />
@@ -120,12 +112,12 @@ export default function UserDashboard() {
 
             {/* DROPDOWN */}
             {openDropdown && (
-              <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+              <div className="absolute right-0 mt-2 w-30 md:w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 <ul className="py-2 text-sm text-gray-700">
                   <li>
                     <Link
                       to="/edit-profile"
-                      className="block px-4 py-2 hover:bg-gray-100"
+                      className="block px-4 py-2 hover:bg-gray-100  md:text-center"
                       onClick={() => setOpenDropdown(false)}
                     >
                       Edit Profile
@@ -134,7 +126,7 @@ export default function UserDashboard() {
                   <li>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600  md:text-center"
                     >
                       Logout
                     </button>
