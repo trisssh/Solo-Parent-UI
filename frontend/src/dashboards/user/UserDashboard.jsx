@@ -9,9 +9,25 @@ export default function UserDashboard() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const navigate = useNavigate();
 
+  // const handleLogout = () => {
+  //   localStorage.clear();
+  //   navigate("/");
+  // };
+
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account",
+      icon: "warning",
+      confirmButtonColor: "#DC2626",
+      showCancelButton: true,
+      confirmButtonText: "Logout",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        navigate("/");
+      }
+    });
   };
 
   useEffect(() => {
