@@ -11,6 +11,28 @@ export default function UserList() {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
+
+    // ---------------------------
+    // SWEET ALERT
+    // ---------------------------
+    const showAlert = ({ title, message, icon = "error" }) => {
+      Swal.fire({
+        title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+        html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+        icon,
+        iconColor: "#DC2626",
+        background: "#ffffff",
+        showConfirmButton: true,
+        confirmButtonText: "Okay",
+        buttonsStyling: false,
+        customClass: {
+          popup: "rounded-xl px-6 py-4",
+          confirmButton:
+            "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+        },
+      });
+    };
+
   useEffect(() => {
     setUsers([
       {
@@ -53,7 +75,11 @@ export default function UserList() {
 
   const handleSave = () => {
     setUsers(users.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
-    Swal.fire("Saved!", "User updated successfully.", "success");
+     showAlert({
+       title: "Saved",
+       message: "Solo Parent details updated successfully.",
+       icon: "success",
+     });
     setIsEdit(false);
     setShowModal(false);
   };
@@ -163,38 +189,45 @@ export default function UserList() {
               )}
             </p>
 
-            <div className="flex justify-end gap-3 mt-4">
+            <div className="grid grid-cols-1 gap-3 mt-4">
               {isEdit ? (
                 <>
-                  <button
-                    className="bg-[var(--gray-1)] text-white font-semibold shadow shadow-gray-700 px-4 md:px-10 py-2 rounded-lg"
-                    onClick={() => setIsEdit(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 px-6 md:px-10 py-2 rounded-lg"
-                    onClick={handleSave}
-                  >
-                    Save Changes
+                  <div className="flex gap-2">
+                    <button
+                      className="bg-[var(--gray-1)] hover:bg-gray-600 text-white font-semibold shadow shadow-gray-700 px-4 md:px-10 py-2 rounded-lg"
+                      onClick={() => setIsEdit(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 px-6 md:px-10 py-2 rounded-lg"
+                      onClick={handleSave}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                  <button className="w-full bg-white text-red-600 font-semibold border-2 py-1.5 shadow shadow-gray-700 rounded-lg">
+                    Delete Account
                   </button>
                 </>
               ) : (
-                <button
-                  className="bg-red-600 hover:bg-red-700 text-white flex gap-2 items-center shadow shadow-gray-700 px-10 py-1.5 rounded-lg font-semibold"
-                  onClick={() => setIsEdit(true)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="size-5"
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    className="bg-red-600 hover:bg-red-700 text-white flex gap-2 items-center shadow shadow-gray-700 px-10 py-1.5 rounded-lg font-semibold"
+                    onClick={() => setIsEdit(true)}
                   >
-                    <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                    <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                  </svg>
-                  <p>Edit</p>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-5"
+                    >
+                      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                      <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                    </svg>
+                    <p>Edit</p>
+                  </button>
+                </div>
               )}
             </div>
 
