@@ -119,7 +119,7 @@ export default function UserDashboard() {
                       Profile
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       to="/edit-profile"
                       className="block px-4 py-2 hover:bg-gray-100  md:text-center"
@@ -127,7 +127,7 @@ export default function UserDashboard() {
                     >
                       Edit Profile
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <button
                       onClick={handleLogout}
