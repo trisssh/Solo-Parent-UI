@@ -3,7 +3,7 @@ import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
 
 export default function UserList() {
-  const { user } = useContext(AuthContext);
+  const { authTokens, user } = useContext(AuthContext);
   const tempUser = user || { is_staff: true, is_superuser: true };
 
   const [users, setUsers] = useState([]);
@@ -11,54 +11,57 @@ export default function UserList() {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
+  // ---------------------------
+  // SWEET ALERT
+  // ---------------------------
+  const showAlert = ({ title, message, icon = "error" }) => {
+    Swal.fire({
+      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+      icon,
+      iconColor: "#DC2626",
+      background: "#ffffff",
+      showConfirmButton: true,
+      confirmButtonText: "Okay",
+      buttonsStyling: false,
+      customClass: {
+        popup: "rounded-xl px-6 py-4",
+        confirmButton:
+          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+      },
+    });
+  };
 
-    // ---------------------------
-    // SWEET ALERT
-    // ---------------------------
-    const showAlert = ({ title, message, icon = "error" }) => {
-      Swal.fire({
-        title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-        html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
-        icon,
-        iconColor: "#DC2626",
-        background: "#ffffff",
-        showConfirmButton: true,
-        confirmButtonText: "Okay",
-        buttonsStyling: false,
-        customClass: {
-          popup: "rounded-xl px-6 py-4",
-          confirmButton:
-            "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+  // FETCH PARENTS
+  const fetchParents = async () => {
+    if (!authTokens?.access) return;
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/parent/list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
         },
       });
-    };
+
+      if (!res.ok) throw new Error("Failed to fetch parents");
+
+      const data = await res.json();
+      setUsers(data.results);
+    } catch (err) {
+      console.error(err);
+      showAlert({ title: "Error", message: err.message });
+    }
+  };
 
   useEffect(() => {
-    setUsers([
-      {
-        id: 1,
-        full_name: "Juan Dela Cruz",
-        birthday: "1990-05-21",
-        gender: "Male",
-        status: "Unverified",
-      },
-      {
-        id: 2,
-        full_name: "Maria Santos",
-        birthday: "1992-08-14",
-        gender: "Female",
-        status: "Verified",
-      },
-    ]);
-  }, []);
+    fetchParents();
+  }, [authTokens]);
 
-  if (!tempUser.is_staff) {
-    return (
-      <p className="text-center mt-10 text-red-600 font-bold">Access Denied</p>
-    );
-  }
-
+  // MODAL HANDLERS
   const handleView = (u) => {
+    console.log(u);
     setSelectedUser(u);
     setIsEdit(false);
     setShowModal(true);
@@ -70,18 +73,135 @@ export default function UserList() {
     setShowModal(false);
   };
 
-  const handleChange = (e) =>
-    setSelectedUser({ ...selectedUser, [e.target.name]: e.target.value });
+  // const handleChange = (e) =>
+  //   setSelectedUser({ ...selectedUser, [e.target.name]: e.target.value });
 
-  const handleSave = () => {
-    setUsers(users.map((u) => (u.id === selectedUser.id ? selectedUser : u)));
-     showAlert({
-       title: "Saved",
-       message: "Solo Parent details updated successfully.",
-       icon: "success",
-     });
-    setIsEdit(false);
-    setShowModal(false);
+  // // ---------------------------
+  // // SAVE CHANGES
+  // // ---------------------------
+  // const handleSave = async () => {
+  //   if (!authTokens?.access) return;
+
+  //   try {
+  //     const res = await fetch(
+  //       `http://127.0.0.1:8000/api/parent/${selectedUser.id}/`,
+  //       {
+  //         method: "PATCH",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${authTokens.access}`,
+  //         },
+  //         body: JSON.stringify(selectedUser),
+  //       },
+  //     );
+
+  //     if (!res.ok) throw new Error("Failed to update parent");
+
+  //     const updatedData = await res.json();
+  //     setUsers(users.map((u) => (u.id === updatedData.id ? updatedData : u)));
+  //     showAlert({
+  //       title: "Saved",
+  //       message: "Solo Parent details updated successfully.",
+  //       icon: "success",
+  //     });
+  //     setIsEdit(false);
+  //     setShowModal(false);
+  //   } catch (err) {
+  //     console.error(err);
+  //     showAlert({ title: "Error", message: err.message });
+  //   }
+  // };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "is_verified") {
+      setSelectedUser({ ...selectedUser, [name]: value === "true" });
+    } else {
+      setSelectedUser({ ...selectedUser, [name]: value });
+    }
+  };
+
+  const handleSave = async () => {
+    if (!authTokens?.access) return;
+
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/parent/${selectedUser.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+          body: JSON.stringify(selectedUser),
+        },
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(
+          errorData.detail || "Failed to update parent. Check console.",
+        );
+      }
+
+      const updatedData = await res.json();
+      setUsers(users.map((u) => (u.id === updatedData.id ? updatedData : u)));
+
+      showAlert({
+        title: "Saved",
+        message: "Solo Parent details updated successfully.",
+        icon: "success",
+      });
+
+      setIsEdit(false);
+      setShowModal(false);
+    } catch (err) {
+      console.error(err);
+      showAlert({ title: "Error", message: err.message });
+    }
+  };
+
+  // DELETE
+  const handleDelete = async () => {
+    if (!authTokens?.access) return;
+
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/parent/${selectedUser.id}/`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        },
+      );
+
+      if (!res.ok) throw new Error("Failed to delete parent");
+
+      setUsers(users.filter((u) => u.id !== selectedUser.id));
+      showAlert({
+        title: "Deleted",
+        message: "Parent deleted successfully.",
+        icon: "success",
+      });
+      handleCloseModal();
+    } catch (err) {
+      console.error(err);
+      showAlert({ title: "Error", message: err.message });
+    }
+  };
+
+  // RENDER
+  if (!tempUser.is_staff) {
+    return (
+      <p className="text-center mt-10 text-red-600 font-bold">Access Denied</p>
+    );
+  }
+
+  // helper to combine name parts
+  const getFullName = (u) => {
+    return [u.first_name, u.middle_name, u.last_name, u.suffix]
+      .filter(Boolean)
+      .join(" ");
   };
 
   return (
@@ -104,12 +224,11 @@ export default function UserList() {
           {users.map((u) => (
             <tr key={u.id} className="hover:bg-gray-100">
               <td className="p-3 border">{u.id}</td>
-              <td className="p-3 border">{u.full_name}</td>
+              <td className="p-3 border">{getFullName(u)}</td>
               <td className="p-3 border">{u.birthday}</td>
               <td className="p-3 border">{u.gender}</td>
               <td className="p-3 border text-center">
                 <button
-                  //   className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
                   className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 px-4 py-1.5 rounded-lg"
                   onClick={() => handleView(u)}
                 >
@@ -133,13 +252,14 @@ export default function UserList() {
               <strong>Full Name:</strong>{" "}
               {isEdit ? (
                 <input
-                  name="full_name"
-                  value={selectedUser.full_name}
+                  name="first_name"
+                  value={selectedUser.first_name || ""}
                   onChange={handleChange}
                   className="border p-1 rounded w-full"
+                  placeholder="First Name"
                 />
               ) : (
-                selectedUser.full_name
+                getFullName(selectedUser)
               )}
             </p>
             <p>
@@ -148,7 +268,7 @@ export default function UserList() {
                 <input
                   type="date"
                   name="birthday"
-                  value={selectedUser.birthday}
+                  value={selectedUser.birthday || ""}
                   onChange={handleChange}
                   className="border p-1 rounded w-full"
                 />
@@ -161,23 +281,26 @@ export default function UserList() {
               {isEdit ? (
                 <select
                   name="gender"
-                  value={selectedUser.gender}
+                  value={selectedUser.gender || ""}
                   onChange={handleChange}
                   className="border p-1 rounded w-full"
                 >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
                 </select>
               ) : (
                 selectedUser.gender
               )}
             </p>
+
             <p>
               <strong>Status:</strong>{" "}
               {isEdit ? (
                 <select
-                  name="status"
-                  value={selectedUser.status}
+                  name="is_verified"
+                  value={
+                    (selectedUser.is_verified && "Verified") || "Unverified"
+                  }
                   onChange={handleChange}
                   className="border p-1 rounded w-full"
                 >
@@ -185,47 +308,33 @@ export default function UserList() {
                   <option value="Unverified">Unverified</option>
                 </select>
               ) : (
-                selectedUser.status
+                (selectedUser.is_verified && "Verified") || "Unverified"
               )}
             </p>
 
             <div className="grid grid-cols-1 gap-3 mt-4">
               {isEdit ? (
-                <>
-                  <div className="flex gap-2">
-                    <button
-                      className="bg-[var(--gray-1)] hover:bg-gray-600 text-white font-semibold shadow shadow-gray-700 px-4 md:px-10 py-2 rounded-lg"
-                      onClick={() => setIsEdit(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 px-6 md:px-10 py-2 rounded-lg"
-                      onClick={handleSave}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
-                  <button className="w-full bg-white text-red-600 font-semibold border-2 py-1.5 shadow shadow-gray-700 rounded-lg">
-                    Delete Account
+                <div className="flex gap-2">
+                  <button
+                    className="bg-[var(--gray-1)] hover:bg-gray-600 text-white font-semibold shadow shadow-gray-700 px-4 md:px-10 py-2 rounded-lg"
+                    onClick={() => setIsEdit(false)}
+                  >
+                    Cancel
                   </button>
-                </>
+                  <button
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 px-6 md:px-10 py-2 rounded-lg"
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </button>
+                </div>
               ) : (
                 <div className="flex justify-end gap-3 mt-4">
                   <button
                     className="bg-red-600 hover:bg-red-700 text-white flex gap-2 items-center shadow shadow-gray-700 px-10 py-1.5 rounded-lg font-semibold"
                     onClick={() => setIsEdit(true)}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-5"
-                    >
-                      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                      <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                    </svg>
-                    <p>Edit</p>
+                    Edit
                   </button>
                 </div>
               )}

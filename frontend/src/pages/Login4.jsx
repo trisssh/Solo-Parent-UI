@@ -41,7 +41,6 @@ export default function Login4() {
   };
 
 
-
   //handleLogin function (UI-only logic)
   // const handleLogin = (e) => {
   //   e.preventDefault(); // Prevent page reload
@@ -173,7 +172,7 @@ export default function Login4() {
                 {/* Email */}
                 <div className="relative w-full my-4 rounded-lg">
                   <input
-                    type="email"
+                    type="text"
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

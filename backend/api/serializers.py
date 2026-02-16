@@ -33,7 +33,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         if not user:
             raise AuthenticationFailed('Invalid credentials.')
 
-        refresh = RefreshToken.for_user(user)
+        refresh = self.get_token(user)
 
         return {
             'refresh': str(refresh),
@@ -320,6 +320,7 @@ class ParentSerializer(serializers.ModelSerializer):
             'reason',
             'user',
             'uuid',
+            'is_verified'
         ]
         extra_kwargs = {'user': {'read_only': True}}
 

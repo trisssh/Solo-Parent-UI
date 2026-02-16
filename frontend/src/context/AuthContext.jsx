@@ -54,6 +54,8 @@ export function AuthProvider({ children }) {
     navigate("/login");
   };
 
+      // console.log(authTokens);
+
   const updateToken = async () => {
     try {
       const res = await fetch("/api/token/refresh", {
