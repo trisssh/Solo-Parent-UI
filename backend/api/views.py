@@ -441,6 +441,30 @@ class AdminChangePasswordView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class AdminChangeParentInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        parent = get_object_or_404(Parent, pk=pk)
+
+        if not self.request.user.is_staff:
+            raise PermissionDenied('Admins only.')
+
+        serializer = ParentInfoSerializer(
+            parent,
+            data=request.data
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class SuperadminChangeUsernameView(APIView):
     permission_classes = [IsAuthenticated]
 

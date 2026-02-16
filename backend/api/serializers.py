@@ -55,7 +55,6 @@ class ParentInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parent
         fields = [
-            'id',
             'first_name',
             'middle_name',
             'last_name',
@@ -71,7 +70,6 @@ class ParentInfoSerializer(serializers.ModelSerializer):
             'province',
             'reason',
             'is_verified',
-            'uuid',
         ]
 
 class CreateAdminSerializer(serializers.ModelSerializer):
