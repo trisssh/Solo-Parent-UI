@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
-import Sidebar from "../../components/Sidebar";
+// import axios from "axios";
 
 export default function UserDashboard() {
-  const [isEdit, setIsEdit] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
   const navigate = useNavigate();
 
@@ -38,6 +36,22 @@ export default function UserDashboard() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+    // useEffect(() => {
+    //   const fetchUser = async () => {
+    //     try {
+    //       const token = localStorage.getItem("token"); // if your API requires auth
+    //       const response = await axios.get("http://your-backend.com/api/user", {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //       });
+    //       setUser(response.data);
+    //     } catch (err) {
+    //       console.error("Error fetching user:", err);
+    //     }
+    //   };
+
+    //   fetchUser();
+    // }, []);
 
 
 
@@ -108,30 +122,30 @@ export default function UserDashboard() {
 
             {/* DROPDOWN */}
             {openDropdown && (
-              <div className="absolute right-0 mt-2 w-30 md:w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+              <div className="absolute right-0 mt-2 w-36 md:w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                 <ul className="py-2 text-sm text-gray-700">
                   <li>
                     <Link
                       to="/dashboard"
-                      className="block px-4 py-2 hover:bg-gray-100  md:text-center"
+                      className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setOpenDropdown(false)}
                     >
                       Profile
                     </Link>
                   </li>
-                  {/* <li>
+                  <li>
                     <Link
-                      to="/edit-profile"
-                      className="block px-4 py-2 hover:bg-gray-100  md:text-center"
+                      to="/change-password"
+                      className="block px-4 py-2 hover:bg-gray-100"
                       onClick={() => setOpenDropdown(false)}
                     >
-                      Edit Profile
+                      Change Password
                     </Link>
-                  </li> */}
+                  </li>
                   <li>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600  md:text-center"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
                     >
                       Logout
                     </button>

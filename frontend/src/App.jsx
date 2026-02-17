@@ -10,6 +10,7 @@ import Sidebar from "./components/Sidebar";
 import Login4 from "./pages/Login4";
 import Dashboard from "./pages/Dashboard";
 import ForgetPassword from './pages/ForgetPassword';
+import ChangePassword from './pages/ChangePassword';
 import UserRegister from './pages/UserRegister';
 import UserList from './pages/ListofUsers';
 import EditAccount from "./pages/EditAccount";
@@ -50,7 +51,7 @@ function App() {
           <Route path="/" element={<Login4 />} />
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/user-register" element={<UserRegister />} />
-          {/* <Route path="/change-password" element={<ChangePassword />} /> */}
+          <Route path="/change-password" element={<ChangePassword />} />
 
           {/* PROTECTED ROUTES */}
           <Route
