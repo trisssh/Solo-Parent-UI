@@ -12,16 +12,47 @@ import Dashboard from "./pages/Dashboard";
 import ForgetPassword from './pages/ForgetPassword';
 import UserRegister from './pages/UserRegister';
 import UserList from './pages/ListofUsers';
+import EditAccount from "./pages/EditAccount";
 import SuperAdminDashboard from './dashboards/superadmin/SuperAdminDashboard';
 // import SuperAdminUserList from
 
 
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <AuthProvider>
+//         <Routes>
+//           <Route path="/" element={<Login4 />} />
+//           <Route
+//             path="/dashboard"
+//             element={
+//               <ProtectedRoute>
+//                 <Dashboard />
+//               </ProtectedRoute>
+//             }
+//             exact
+//           />
+//           <Route path="/forgot-password" element={<ForgetPassword />} />
+//           <Route path="/user-register" element={<UserRegister />} />
+
+//           <Route path="/superadmin-dashboard" element={<SuperAdminDashboard />} />
+//         </Routes>
+//       </AuthProvider>
+//     </BrowserRouter>
+//   );
+// }
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* PUBLIC ROUTES */}
           <Route path="/" element={<Login4 />} />
+          <Route path="/forgot-password" element={<ForgetPassword />} />
+          <Route path="/user-register" element={<UserRegister />} />
+          {/* <Route path="/change-password" element={<ChangePassword />} /> */}
+
+          {/* PROTECTED ROUTES */}
           <Route
             path="/dashboard"
             element={
@@ -29,12 +60,25 @@ function App() {
                 <Dashboard />
               </ProtectedRoute>
             }
-            exact
           />
-          <Route path="/forgot-password" element={<ForgetPassword />} />
-          <Route path="/user-register" element={<UserRegister />} />
 
-          <Route path="/superadmin-dashboard" element={<SuperAdminDashboard />} />
+          {/* <Route
+            path="/list-of-users"
+            element={
+              <ProtectedRoute>
+                <ListofUsers />
+              </ProtectedRoute>
+            }
+          /> */}
+
+          <Route
+            path="/edit-account"
+            element={
+              <ProtectedRoute>
+                <EditAccount />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
