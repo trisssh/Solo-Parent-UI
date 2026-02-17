@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, ChangeUsernameView, AdminChangeEmailView, SuperadminChangeUsernameView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView, AdminChangeParentInfoView
+from .views import RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, ChangeUsernameView, AdminChangeEmailView, SuperadminChangeUsernameView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView, AdminChangeParentInfoView, PasswordResetEmailView, PasswordResetConfirmView
 
 urlpatterns = [
     # login
@@ -40,6 +40,18 @@ urlpatterns = [
         'user/password/<int:pk>', 
         ChangePasswordView.as_view(), 
         name='change_password'
+    ),
+    # admins* and parents reset password email
+    path(
+        'user/reset-password-request', 
+        PasswordResetEmailView.as_view(), 
+        name='reset_password_request'
+    ),
+    # admins* and parents reset password confirm
+    path(
+        'user/reset-password-confirm/<str:uid>/<str:token>', 
+        PasswordResetConfirmView.as_view(), 
+        name='reset_password_confirm'
     ),
     # superadmin create admins
     path('admin/create', CreateAdminView.as_view(), name='create_admin'),

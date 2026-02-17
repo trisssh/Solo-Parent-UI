@@ -6,55 +6,42 @@ from .utils.generate_uuid import generate_uuid
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def _create_user(self, password, email=None, username=None, **extra_fields):
+    def _create_user(self, password, email, **extra_fields):
         if email:
             email = self.normalize_email(email)
 
-        if (email and username) or (not email and not username):
-            raise ValueError(
-                'Exactly one of email or username must be provided.'
-            )
-
-        if email and User.objects.filter(email=email).exists():
-            raise ValueError('Email is already registered.')
-        if username and User.objects.filter(username=username).exists():
-            raise ValueError('Username is already registered.') 
-
-        user = self.model(email=email, username=username, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, password, email=None, username=None, **extra_fields):
+    def create_user(self, password, email, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(password, email, username, **extra_fields)
+        return self._create_user(password, email, **extra_fields)
 
     def create_staff(
         self, 
         password, 
-        email=None, 
-        username=None,  
+        email, 
         **extra_fields
     ):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(password, email, username, **extra_fields)
+        return self._create_user(password, email, **extra_fields)
 
     def create_superuser(
         self, 
         password, 
-        email=None, 
-        username=None,  
+        email, 
         **extra_fields
     ):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self._create_user(password, email, username, **extra_fields)
+        return self._create_user(password, email, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=180, blank=True, null=True)
-    username = models.CharField(max_length=180, blank=True, null=True)
+    email = models.EmailField(max_length=180, unique=True)
     password = models.CharField(
         max_length=180,
         validators=[MinLengthValidator(8)]
@@ -66,10 +53,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    USERNAME_FIELD = 'id'
+    USERNAME_FIELD = 'email'
 
     objects = UserManager()
-
 
     def __str__(self):
         return self.email or self.username

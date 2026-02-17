@@ -155,9 +155,9 @@ SIMPLE_JWT = {
     'TOKEN_OBTAIN_SERIALIZER': 'api.serializers.MyTokenObtainPairSerializer',
 }
 
-AUTHENTICATION_BACKENDS = [
-    'api.backends.EmailOrUsernameBackend',
-]
+# AUTHENTICATION_BACKENDS = [
+#     'api.backends.EmailOrUsernameBackend',
+# ]
 
 EMAIL_HOST=env('EMAIL_HOST')
 EMAIL_PORT=env('EMAIL_PORT')
@@ -166,3 +166,5 @@ EMAIL_HOST_PASSWORD=env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS=env('EMAIL_USE_TLS')
 
 PHONENUMBER_DEFAULT_REGION = 'PH'
+
+PASSWORD_RESET_TIMEOUT = 1800

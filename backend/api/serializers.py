@@ -14,31 +14,31 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token['pk'] = user.pk
         token['email'] = user.email
-        token['username'] = user.username
+        # token['username'] = user.username
         token['is_staff'] = user.is_staff
         token['is_superuser'] = user.is_superuser
 
         return token
 
-    username_field = 'identifier'
-    def validate(self, attrs):
-        identifier = attrs.get('identifier')
-        password = attrs.get('password')
+    # username_field = 'identifier'
+    # def validate(self, attrs):
+    #     identifier = attrs.get('identifier')
+    #     password = attrs.get('password')
 
-        user = authenticate(
-            identifier=identifier,
-            password=password
-        )
+    #     user = authenticate(
+    #         identifier=identifier,
+    #         password=password
+    #     )
 
-        if not user:
-            raise AuthenticationFailed('Invalid credentials.')
+    #     if not user:
+    #         raise AuthenticationFailed('Invalid credentials.')
 
-        refresh = self.get_token(user)
+    #     refresh = self.get_token(user)
 
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
+    #     return {
+    #         'refresh': str(refresh),
+    #         'access': str(refresh.access_token),
+    #     }
     
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,7 +46,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'email', 
-            'username',
             'is_staff', 
             'is_superuser', 
         ]
@@ -73,19 +72,12 @@ class ParentInfoSerializer(serializers.ModelSerializer):
         ]
 
 class CreateAdminSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=True)
-
     class Meta:
         model = User
-        fields = ['username', 'password', 'is_superuser']
+        fields = ['email', 'password', 'is_superuser']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
-        if any(char.isspace() for char in data['username']):
-            raise serializers.ValidationError({
-                'username': 'Username cannot contain whitespace.'
-            })
-
         if any(char.isspace() for char in data['password']):
             raise serializers.ValidationError({
                 'password': 'Password cannot contain whitespace.'
@@ -333,6 +325,7 @@ class ContactSerializer(serializers.ModelSerializer):
             'phone',
             'parent',
         ]
+        extra_kwargs = {'parent': {'read_only': True}}
 
 class RegistrationSerializer(serializers.Serializer):
     # only fields that are NOT model-backed
@@ -348,19 +341,29 @@ class RegistrationSerializer(serializers.Serializer):
             'password_confirmation': request.data.get('password_confirmation'),
         }
         
-        contact_data = {}
+        contact_data = {
+            'first_name': request.data.get('contact_first_name'),
+            'middle_name': request.data.get('contact_middle_name'),
+            'last_name': request.data.get('contact_last_name'),
+            'suffix': request.data.get('contact_suffix'),
+            'phone': request.data.get('contact_phone'),
+        }
 
         parent_data = request.data
         images = request.FILES
 
         user_serializer = EmailPasswordSerializer(data=user_data)
         parent_serializer = ParentSerializer(data=parent_data)
+        contact_serializer = ContactSerializer(data=contact_data)
 
         if not user_serializer.is_valid():
             errors['user'] = user_serializer.errors
 
         if not parent_serializer.is_valid():
             errors['parent'] = parent_serializer.errors
+
+        if not contact_serializer.is_valid():
+            errors['contact'] = contact_serializer.errors
 
         if 'id' not in images or 'signature' not in images:
             errors['images'] = 'ID and signature are required.'
@@ -370,6 +373,7 @@ class RegistrationSerializer(serializers.Serializer):
 
         data['user_serializer'] = user_serializer
         data['parent_serializer'] = parent_serializer
+        data['contact_serializer'] = contact_serializer
         return data
 
     def create(self, validated_data):
@@ -378,6 +382,7 @@ class RegistrationSerializer(serializers.Serializer):
         with transaction.atomic():
             user = validated_data['user_serializer'].save()
             parent = validated_data['parent_serializer'].save(user=user)
+            contact = validated_data['contact_serializer'].save(parent=parent)
 
             Image.objects.create(
                 parent=parent,
@@ -390,7 +395,39 @@ class RegistrationSerializer(serializers.Serializer):
                 image_type='signature'
             )
 
-        return parent
+        response = {
+            'user': {
+                'id': user.id,
+                'email': user.email,
+            },
+            'parent': {
+                'id': parent.id,
+                'first_name': parent.first_name,
+                'middle_name': parent.middle_name,
+                'last_name': parent.last_name,
+                'suffix': parent.suffix,
+                'birthday': parent.birthday,
+                'phone': str(parent.phone),
+                'gender': parent.gender,
+                'house': parent.house,
+                'street': parent.street,
+                'barangay': parent.barangay,
+                'subdivision': parent.subdivision,
+                'city': parent.city,
+                'province': parent.province,
+                'reason': parent.reason,
+                'uuid': parent.uuid,
+            },
+            'contact': {
+                'first_name': contact.first_name,
+                'middle_name': contact.middle_name,
+                'last_name': contact.last_name,
+                'suffix': contact.suffix,
+                'phone': str(contact.phone),
+            }
+        }
+
+        return response
 
 class ChangeInfoSerializer(serializers.Serializer):
     def validate(self, data):
