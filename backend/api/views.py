@@ -4,6 +4,8 @@ from django.db.models import Avg, Q, F, Count, Sum, FloatField, ExpressionWrappe
 from django.db.models.functions import ExtractYear
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
 from rest_framework import status, filters
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, ListAPIView
@@ -16,6 +18,7 @@ from django.contrib.auth.hashers import check_password
 from .models import User, Parent, Child, Image
 from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, ChangeVerificationSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
 from .utils.emailer import emailer
+from .utils.send_password_reset_email import send_password_reset_email
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -136,26 +139,15 @@ class RegistrationView(GenericAPIView):
 
         try:
             with transaction.atomic():
-                parent = serializer.save()
+                response = serializer.save()
         except Exception as e:
             return Response(
                 {"detail": str(e)}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        response_data = {
-            "user": {
-                "id": parent.user.id,
-                "email": parent.user.email,
-            },
-            "parent": {
-                "id": parent.id,
-                "first_name": parent.first_name,
-                "last_name": parent.last_name,
-            },
-        }
 
-        return Response(response_data, status=status.HTTP_201_CREATED)
+        return Response(response, status=status.HTTP_201_CREATED)
 
 class ChangeInfoView(GenericAPIView):
     serializer_class = ChangeInfoSerializer
@@ -546,3 +538,39 @@ class CreateAdminView(APIView):
             )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class PasswordResetEmailView(APIView):
+    def post(self, request):
+        user = get_object_or_404(User, email=request.data.get('email'))
+
+        if user:
+            send_password_reset_email(user)
+
+        return Response(status=status.HTTP_200_OK)
+
+class PasswordResetConfirmView(APIView):
+    def post(self, request, uid, token):
+        try:
+            uid = urlsafe_base64_decode(uid).decode()
+        except Exception as e:
+            return Response({'uid': e}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(User, pk=uid)
+
+        if not default_token_generator.check_token(user, token):
+            return Response(
+                {'token': 'Invalid or expired token.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = ChangePasswordSerializer(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
