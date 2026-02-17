@@ -90,7 +90,8 @@ export default function UserRegister() {
         name={name}
         value={form[name]}
         onChange={handleChange}
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+        className="mt-1 w-full border rounded px-3 py-2"
+        // className="w-full border border-gray-300 rounded-lg px-3 py-2 text-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
       />
     </div>
   );

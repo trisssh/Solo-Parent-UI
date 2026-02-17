@@ -329,8 +329,8 @@ export default function ChangePassword() {
                   >
                     Old Password
                   </label>
-                  <input
-                    className="mt-1 w-full border rounded px-3 py-2"
+                  <input className="mt-1 w-full border rounded px-3 py-2"
+                   
                     type="password"
                     name="old_password"
                     value={form.old_password}
