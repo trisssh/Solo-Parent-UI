@@ -105,12 +105,7 @@ class DeleteParentSerializer(serializers.Serializer):
     def validate(self, data):
         pk = self.context.get('pk')
 
-        try:
-            user = User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise serializers.ValidationError({
-                'pk': 'User does not exist.'
-            })
+        user = User.objects.get(pk=pk)
 
         if not user.check_password(data['password']):
             raise serializers.ValidationError({
@@ -122,7 +117,6 @@ class DeleteParentSerializer(serializers.Serializer):
                 'password_confirmation': 'Passwords do not match.'
             })
 
-        data['user'] = user
         return data
 
 class EmailPasswordSerializer(serializers.ModelSerializer):
@@ -488,7 +482,7 @@ class ChangeVerificationSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class ChildSerializer(serializers.Serializer):
+class ChildSerializer(serializers.ModelSerializer):
     class Meta:
         model = Child
         fields = [
@@ -500,4 +494,18 @@ class ChildSerializer(serializers.Serializer):
             'gender',
             'is_incapable',
             'parent',
+        ]
+        extra_kwargs = {'parent': {'read_only': True}}
+
+class ChildInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Child
+        fields = [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'suffix',
+            'birthday',
+            'gender',
+            'is_incapable',
         ]
