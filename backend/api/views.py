@@ -16,7 +16,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
 from .models import User, Parent, Child, Image
-from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, ChangeVerificationSerializer, ChildInfoSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeVerificationSerializer, ChildInfoSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
 from .utils.emailer import emailer
 from .utils.send_password_reset_email import send_password_reset_email
 
@@ -371,47 +371,47 @@ class AdminChangeParentInfoView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class SuperadminChangeUsernameView(APIView):
-    permission_classes = [IsAuthenticated]
+# class SuperadminChangeUsernameView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def put(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
+#     def put(self, request, pk):
+#         user = get_object_or_404(User, pk=pk)
 
-        if not self.request.user.is_superuser:
-            raise PermissionDenied('Superuser only.')
+#         if not self.request.user.is_superuser:
+#             raise PermissionDenied('Superuser only.')
             
-        serializer = ChangeUsernameSerializer(user, data=request.data)
+#         serializer = ChangeUsernameSerializer(user, data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+#         if serializer.is_valid():
+#             serializer.save()
+#         else:
+#             return Response(
+#                 serializer.errors,
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class ChangeUsernameView(APIView):
-    permission_classes = [IsAuthenticated]
+# class ChangeUsernameView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def put(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
+#     def put(self, request, pk):
+#         user = get_object_or_404(User, pk=pk)
 
-        if self.request.user.pk != user.pk:
-            raise PermissionDenied('You are not this User.')
+#         if self.request.user.pk != user.pk:
+#             raise PermissionDenied('You are not this User.')
             
-        serializer = ChangeUsernameSerializer(user, data=request.data)
+#         serializer = ChangeUsernameSerializer(user, data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+#         if serializer.is_valid():
+#             serializer.save()
+#         else:
+#             return Response(
+#                 serializer.errors,
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]

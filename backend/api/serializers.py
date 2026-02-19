@@ -178,37 +178,37 @@ class ChangeEmailSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class ChangeUsernameSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username']
+# class ChangeUsernameSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['username']
 
-    def validate(self, data):
-        instance = self.instance
+#     def validate(self, data):
+#         instance = self.instance
 
-        if User.objects.filter(username=data['username']).exists():
-            raise serializers.ValidationError({
-                'username': 'Username already exists.'
-            })
+#         if User.objects.filter(username=data['username']).exists():
+#             raise serializers.ValidationError({
+#                 'username': 'Username already exists.'
+#             })
 
-        if instance.email:
-            raise serializers.ValidationError({
-                'email': 'User is parent.'
-            })
+#         if instance.email:
+#             raise serializers.ValidationError({
+#                 'email': 'User is parent.'
+#             })
 
-        if any(char.isspace() for char in data['username']):
-            raise serializers.ValidationError({
-                'username': 'Username cannot contain whitespace.'
-            })
+#         if any(char.isspace() for char in data['username']):
+#             raise serializers.ValidationError({
+#                 'username': 'Username cannot contain whitespace.'
+#             })
 
-        return data
+#         return data
 
-    def update(self, instance, validated_data):
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
+#     def update(self, instance, validated_data):
+#         for attr, value in validated_data.items():
+#             setattr(instance, attr, value)
 
-        instance.save()
-        return instance
+#         instance.save()
+#         return instance
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     password_confirmation = serializers.CharField(

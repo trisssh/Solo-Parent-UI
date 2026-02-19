@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import AdminChangeChildView, AdminChildListView, AdminDeleteChildView, ChildListView, RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, ChangeUsernameView, AdminChangeEmailView, SuperadminChangeUsernameView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView, AdminChangeParentInfoView, PasswordResetEmailView, PasswordResetConfirmView, CreateChildView, ChangeChildView, DeleteChildView
+from .views import AdminChangeChildView, AdminChildListView, AdminDeleteChildView, ChildListView, RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, AdminChangeEmailView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView, AdminChangeParentInfoView, PasswordResetEmailView, PasswordResetConfirmView, CreateChildView, ChangeChildView, DeleteChildView
 
 urlpatterns = [
     # login
@@ -48,11 +48,11 @@ urlpatterns = [
     # parent change own email
     path('user/email/<int:pk>', ChangeEmailView.as_view(), name='change_email'),
     # admin change own username
-    path(
-        'user/username/<int:pk>', 
-        ChangeUsernameView.as_view(), 
-        name='change_username'
-    ),
+    # path(
+    #     'user/username/<int:pk>', 
+    #     ChangeUsernameView.as_view(), 
+    #     name='change_username'
+    # ),
     # admins and parents change password
     path(
         'user/password/<int:pk>', 
@@ -94,16 +94,16 @@ urlpatterns = [
         name='admin_edit_parent'
     ),
     # superadmin change admin username
-    path(
-        'superadmin/user/username/<int:pk>', 
-        SuperadminChangeUsernameView.as_view(), 
-        name='superadmin_edit_username'
-    ),
+    # path(
+    #     'superadmin/user/username/<int:pk>', 
+    #     SuperadminChangeUsernameView.as_view(), 
+    #     name='superadmin_edit_username'
+    # ),
     # admins change parent password
     path(
         'admin/user/password/<int:pk>', 
         AdminChangePasswordView.as_view(), 
-        name='admin_edit_email'
+        name='admin_edit_password'
     ),
     # admin edit child
     path(
