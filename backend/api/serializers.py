@@ -105,12 +105,7 @@ class DeleteParentSerializer(serializers.Serializer):
     def validate(self, data):
         pk = self.context.get('pk')
 
-        try:
-            user = User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise serializers.ValidationError({
-                'pk': 'User does not exist.'
-            })
+        user = User.objects.get(pk=pk)
 
         if not user.check_password(data['password']):
             raise serializers.ValidationError({
@@ -122,7 +117,6 @@ class DeleteParentSerializer(serializers.Serializer):
                 'password_confirmation': 'Passwords do not match.'
             })
 
-        data['user'] = user
         return data
 
 class EmailPasswordSerializer(serializers.ModelSerializer):
@@ -184,37 +178,37 @@ class ChangeEmailSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class ChangeUsernameSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username']
+# class ChangeUsernameSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['username']
 
-    def validate(self, data):
-        instance = self.instance
+#     def validate(self, data):
+#         instance = self.instance
 
-        if User.objects.filter(username=data['username']).exists():
-            raise serializers.ValidationError({
-                'username': 'Username already exists.'
-            })
+#         if User.objects.filter(username=data['username']).exists():
+#             raise serializers.ValidationError({
+#                 'username': 'Username already exists.'
+#             })
 
-        if instance.email:
-            raise serializers.ValidationError({
-                'email': 'User is parent.'
-            })
+#         if instance.email:
+#             raise serializers.ValidationError({
+#                 'email': 'User is parent.'
+#             })
 
-        if any(char.isspace() for char in data['username']):
-            raise serializers.ValidationError({
-                'username': 'Username cannot contain whitespace.'
-            })
+#         if any(char.isspace() for char in data['username']):
+#             raise serializers.ValidationError({
+#                 'username': 'Username cannot contain whitespace.'
+#             })
 
-        return data
+#         return data
 
-    def update(self, instance, validated_data):
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
+#     def update(self, instance, validated_data):
+#         for attr, value in validated_data.items():
+#             setattr(instance, attr, value)
 
-        instance.save()
-        return instance
+#         instance.save()
+#         return instance
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     password_confirmation = serializers.CharField(
@@ -488,7 +482,7 @@ class ChangeVerificationSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-class ChildSerializer(serializers.Serializer):
+class ChildSerializer(serializers.ModelSerializer):
     class Meta:
         model = Child
         fields = [
@@ -500,4 +494,18 @@ class ChildSerializer(serializers.Serializer):
             'gender',
             'is_incapable',
             'parent',
+        ]
+        extra_kwargs = {'parent': {'read_only': True}}
+
+class ChildInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Child
+        fields = [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'suffix',
+            'birthday',
+            'gender',
+            'is_incapable',
         ]

@@ -16,103 +16,12 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
 from .models import User, Parent, Child, Image
-from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeUsernameSerializer, ChangeVerificationSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeVerificationSerializer, ChildInfoSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
 from .utils.emailer import emailer
 from .utils.send_password_reset_email import send_password_reset_email
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
-# class ParentView(APIView):
-#     parser_classes = (MultiPartParser, FormParser)
-
-#     def get(self, request):
-#         parents = Parent.objects.all()
-#         serializer = ParentSerializer(
-#             parents, 
-#             many=True
-#         ).data
-#         return Response(serializer, status=status.HTTP_200_OK)
-
-#     def post(self, request):
-#         data = request.data
-#         email = data.get('email')
-#         password = data.get('password')
-#         password_confirmation = data.get('password_confirmation')
-
-#         if password != password_confirmation:
-#             errors = {'password_confirmation': ['Passwords are not similar.']}
-#             return Response(
-#                 errors,
-#                 status=status.HTTP_400_BAD_REQUEST                
-#             )
-
-#         user_serializer = UserSerializer(data={
-#             'email': email,
-#             'password': password
-#         })
-#         if not user_serializer.is_valid():
-#             return Response(
-#                 user_serializer.errors, 
-#                 status=status.HTTP_400_BAD_REQUEST
-#         )
-
-#         parent_serializer = ParentSerializer(data=data)
-#         if parent_serializer.is_valid():
-#             user = user_serializer.save()
-#             parent = parent_serializer.save(user=user)
-#             print(parent, type(parent), getattr(parent, "pk", None))
-
-#             id_data = {
-#                 'image': request.FILES.get('id'),
-#                 'image_type': 'id',
-#                 'parent': parent.id,
-#             }
-#             image_serializer = ImageSerializer(data=id_data)
-
-#             if image_serializer.is_valid():
-#                 image_serializer.save()
-#             else:
-#                 return Response(
-#                     image_serializer.errors, 
-#                     status=status.HTTP_400_BAD_REQUEST
-#                 )
-#             signature_data = {
-#                 'image': request.FILES.get('signature'),
-#                 'image_type': 'signature',
-#                 'parent': parent.id,
-#             }
-#             image_serializer = ImageSerializer(data=signature_data)
-
-#             if image_serializer.is_valid():
-#                 image_serializer.save()
-#             else:
-#                 return Response(
-#                     image_serializer.errors, 
-#                     status=status.HTTP_400_BAD_REQUEST
-#                 )
-
-#             return Response(
-#                 parent_serializer.data, 
-#                 status=status.HTTP_201_CREATED
-#             )
-#         else:
-#             return Response(
-#                 parent_serializer.errors,
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
-    
-# class LoginView(APIView):
-#     def post(self, request):
-#         data = request.data
-#         email = data['email']
-#         password = data['password']
-
-#         try:
-#             User.objects.get(email=email)
-            
-#             if check_password(password, )
-#         except User.DoesNotExist:
-#             return Response(email, status=status.HTTP_400_BAD_REQUEST)
 
 class RegistrationView(GenericAPIView):
     serializer_class = RegistrationSerializer
@@ -154,7 +63,9 @@ class ChangeInfoView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     
     def put(self, request, pk):
-        if self.request.user.pk != pk:
+        user = get_object_or_404(User, pk=pk)
+
+        if self.request.user.pk != user.pk:
             raise PermissionDenied('You are not this User.')
 
         data = request.data.copy()
@@ -173,7 +84,7 @@ class ChangeInfoView(GenericAPIView):
 
         data['images'] = images
 
-        parent = get_object_or_404(Parent, user_id=pk)
+        parent = get_object_or_404(Parent, user_id=self.request.user.pk)
         serializer = self.get_serializer(parent, data=data)
         serializer.is_valid(raise_exception=True)
 
@@ -202,7 +113,9 @@ class ParentInfoView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
-        if self.request.user.pk != pk:
+        user = get_object_or_404(User, pk=pk)
+
+        if self.request.user.pk != user.pk:
             raise PermissionDenied('You are not this User.')
         
         parent = get_object_or_404(Parent, user_id=self.request.user.pk)
@@ -234,7 +147,7 @@ class AdminListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['username']
+    search_fields = ['email']
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -317,16 +230,17 @@ class DeleteParentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, pk):
-        if self.request.user.pk != pk:
+        user = get_object_or_404(User, pk=pk)
+
+        if self.request.user.pk != user.pk:
             raise PermissionDenied('You are not this User.')
 
         serializer = DeleteParentSerializer(
             data=request.data,
-            context={'pk': pk}
+            context={'pk': self.request.user.pk}
         )
 
         if serializer.is_valid():
-            user = serializer.validated_data['user']
             user.delete()
         else:
             return Response(
@@ -342,7 +256,7 @@ class ChangeEmailView(APIView):
     def put(self, request, pk):
         user = get_object_or_404(User, pk=pk)
 
-        if self.request.user.pk != pk:
+        if self.request.user.pk != user.pk:
             raise PermissionDenied('You are not this User.')
             
         serializer = ChangeEmailSerializer(user, data=request.data)
@@ -457,47 +371,47 @@ class AdminChangeParentInfoView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class SuperadminChangeUsernameView(APIView):
-    permission_classes = [IsAuthenticated]
+# class SuperadminChangeUsernameView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def put(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
+#     def put(self, request, pk):
+#         user = get_object_or_404(User, pk=pk)
 
-        if not self.request.user.is_superuser:
-            raise PermissionDenied('Superuser only.')
+#         if not self.request.user.is_superuser:
+#             raise PermissionDenied('Superuser only.')
             
-        serializer = ChangeUsernameSerializer(user, data=request.data)
+#         serializer = ChangeUsernameSerializer(user, data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+#         if serializer.is_valid():
+#             serializer.save()
+#         else:
+#             return Response(
+#                 serializer.errors,
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class ChangeUsernameView(APIView):
-    permission_classes = [IsAuthenticated]
+# class ChangeUsernameView(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def put(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
+#     def put(self, request, pk):
+#         user = get_object_or_404(User, pk=pk)
 
-        if self.request.user.pk != pk:
-            raise PermissionDenied('You are not this User.')
+#         if self.request.user.pk != user.pk:
+#             raise PermissionDenied('You are not this User.')
             
-        serializer = ChangeUsernameSerializer(user, data=request.data)
+#         serializer = ChangeUsernameSerializer(user, data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+#         if serializer.is_valid():
+#             serializer.save()
+#         else:
+#             return Response(
+#                 serializer.errors,
+#                 status=status.HTTP_400_BAD_REQUEST
+#             )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
@@ -505,7 +419,7 @@ class ChangePasswordView(APIView):
     def put(self, request, pk):
         user = get_object_or_404(User, pk=pk)
 
-        if self.request.user.pk != pk:
+        if self.request.user.pk != user.pk:
             raise PermissionDenied('You are not this User.')
             
         serializer = ChangePasswordSerializer(user, data=request.data)
@@ -574,3 +488,134 @@ class PasswordResetConfirmView(APIView):
             )
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CreateChildView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if self.request.user.is_staff:
+            raise PermissionDenied('Parents only.')
+
+        parent = get_object_or_404(Parent, user_id=self.request.user.pk)
+        serializer = ChildSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(parent=parent)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class ChangeChildView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        child = get_object_or_404(Child, pk=pk)
+        parent = get_object_or_404(Parent, pk=child.parent_id)
+
+        if self.request.user.pk != parent.user_id:
+            raise PermissionDenied('You are not the Parent.')
+
+        if self.request.user.is_staff:
+            raise PermissionDenied('Parents only.')
+
+        serializer = ChildSerializer(child, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DeleteChildView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        child = get_object_or_404(Child, pk=pk)
+        parent = get_object_or_404(Parent, pk=child.parent_id)
+
+        if self.request.user.pk != parent.user_id:
+            raise PermissionDenied('You are not the Parent.')
+
+        if self.request.user.is_staff:
+            raise PermissionDenied('Parents only.')
+
+        child.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class AdminChangeChildView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        if not self.request.user.is_staff:
+            raise PermissionDenied('Admins only.')
+
+        child = get_object_or_404(Child, pk=pk)
+
+        serializer = ChildInfoSerializer(child, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AdminDeleteChildView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        if not self.request.user.is_staff:
+            raise PermissionDenied('Admins only.')
+
+        child = get_object_or_404(Child, pk=pk)
+
+        child.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ChildListView(ListAPIView):
+    queryset = Child.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChildInfoSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['last_name', 'first_name', 'middle_name']
+
+    def get_queryset(self):
+        parent = get_object_or_404(Parent, user_id=self.request.user.pk)
+
+        if not self.request.user.is_staff:
+            excluded_queryset = self.queryset.filter(
+                parent_id=parent.pk
+            ).order_by('id')
+            return excluded_queryset
+        else:
+            raise PermissionDenied('Parents only.')
+
+class AdminChildListView(ListAPIView):
+    queryset = Child.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChildInfoSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['last_name', 'first_name', 'middle_name']
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        parent = get_object_or_404(Parent, user_id=pk)
+
+        if self.request.user.is_staff:
+            excluded_queryset = self.queryset.filter(
+                parent_id=parent.pk
+            ).order_by('id')
+            return excluded_queryset
+        else:
+            raise PermissionDenied('Admins only.')
