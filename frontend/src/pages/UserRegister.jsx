@@ -180,7 +180,7 @@ export default function UserRegister() {
             <Input label="Barangay" name="barangay" />
 
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="block text-gray-700 font-medium">
                 Date of Birth
               </label>
               <input
@@ -188,20 +188,19 @@ export default function UserRegister() {
                 name="birthday"
                 value={form.birthday}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                // className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                className="mt-1 w-full border rounded px-3 py-2"
               />
               {age && <p className="text-xs text-gray-500">Age: {age}</p>}
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">
-                Gender
-              </label>
+              <label className="block text-gray-700 font-medium">Gender</label>
               <select
                 name="gender"
                 value={form.gender}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                className="mt-1 w-full border rounded px-3 py-2"
               >
                 <option value="">Select Gender</option>
                 <option>Male</option>
