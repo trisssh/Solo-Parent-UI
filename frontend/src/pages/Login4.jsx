@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
 
-
 export default function Login4() {
   //USESTATE
   const [email, setEmail] = useState("");
@@ -11,7 +10,7 @@ export default function Login4() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { loginUser } = useContext(AuthContext)
+  const { loginUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -28,18 +27,17 @@ export default function Login4() {
       return;
     }
 
-     setLoading(true);
+    setLoading(true);
 
-     const loginData = {
-       identifier: email,  //email or username
-       password: password,
-     };
+    const loginData = {
+      email: email, //email or username
+      password: password,
+    };
 
-     await loginUser(loginData);
+    await loginUser(loginData);
 
-     setLoading(false);
+    setLoading(false);
   };
-
 
   //handleLogin function (UI-only logic)
   // const handleLogin = (e) => {
@@ -138,7 +136,6 @@ export default function Login4() {
       {/* Right Section (Login Form) */}
       <div className="flex flex-col justify-center items-center gap-6 mx-3">
         <div className="relative p-1 rounded-2xl overflow-hidden">
-
           {/* Content */}
           <div className="bg-white drop-shadow-[0_0_0.5rem_#FF2424]  shadow-lg rounded-xl w-full max-w-md p-6">
             <div className="flex items-center justify-center mb-6">

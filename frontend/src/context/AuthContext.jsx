@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          identifier: loginData.identifier,
+          email: loginData.email,
           password: loginData.password,
         }),
       });
@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const logoutUser = async () => {
     setAuthTokens(null);
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
     navigate("/login");
   };
 
-      // console.log(authTokens);
+  // console.log(authTokens);
 
   const updateToken = async () => {
     try {
@@ -86,18 +86,18 @@ export function AuthProvider({ children }) {
     authTokens: authTokens,
     loginUser: loginUser,
     logoutUser: logoutUser,
-  }
+  };
 
   const isTokenExpired = (token) => {
     if (!token) return true;
     const decoded = jwtDecode(token);
     return decoded.exp * 1000 < Date.now();
-  }
+  };
 
   useEffect(() => {
     if (authTokens && isTokenExpired(authTokens.access)) {
       updateToken();
-    } 
+    }
 
     const interval = setInterval(() => {
       if (isTokenExpired(authTokens.access)) {
@@ -117,7 +117,7 @@ export function AuthProvider({ children }) {
       } else {
         loginUser();
       }
-    }
+    };
 
     window.addEventListener("storage", syncAuth);
     return () => window.removeEventListener("storage", syncAuth);
@@ -126,4 +126,4 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );
-};
+}

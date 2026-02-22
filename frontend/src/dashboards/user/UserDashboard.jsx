@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../../context/AuthContext";
 // import axios from "axios";
 
 export default function UserDashboard() {
+  const { authTokens, user } = useContext(AuthContext);
+  const [userInfo, setUserInfo] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(false);
   const navigate = useNavigate();
-
 
   const handleLogout = () => {
     Swal.fire({
@@ -37,23 +39,26 @@ export default function UserDashboard() {
     };
   }, []);
 
-    // useEffect(() => {
-    //   const fetchUser = async () => {
-    //     try {
-    //       const token = localStorage.getItem("token"); // if your API requires auth
-    //       const response = await axios.get("http://your-backend.com/api/user", {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //       });
-    //       setUser(response.data);
-    //     } catch (err) {
-    //       console.error("Error fetching user:", err);
-    //     }
-    //   };
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000//api/parent/info/${user.pk}`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${authTokens.access}` },
+          },
+        );
+        const data = await response.json();
+        // setUserInfo(response.data);
+        console.log(data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    };
 
-    //   fetchUser();
-    // }, []);
-
-
+    fetchUser();
+  }, []);
 
   // Get user info from localStorage (dummy)
   const email = localStorage.getItem("email") || "user@test.com";
