@@ -344,11 +344,12 @@ export default function UserDashboard() {
                 </p>
 
                 <div className="flex justify-center">
-                  {/* <img
+                  <img
                     alt="Signature"
                     className="h-28 object-contain border rounded-lg bg-white p-2"
-                  /> */}
-                  {signatureImageUrl ? (
+                  />
+
+                  {/* {signatureImageUrl ? (
                     <img
                       src={signatureImageUrl}
                       alt="Signature"
@@ -356,7 +357,19 @@ export default function UserDashboard() {
                     />
                   ) : (
                     <p>Signature not available</p>
-                  )}
+                  )} */}
+
+                  {/* {!userInfo ? (
+                    <p>Loading signature...</p>
+                  ) : signatureImageUrl ? (
+                    <img
+                      src={signatureImageUrl}
+                      alt="Signature"
+                      className="h-28 object-contain border rounded-lg bg-white p-2"
+                    />
+                  ) : (
+                    <p>Signature not available</p>
+                  )} */}
                 </div>
               </div>
             </div>
