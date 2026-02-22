@@ -83,14 +83,14 @@ export default function UserRegister() {
   );
 
   const Input = ({ label, name, type = "text" }) => (
-    <div className="space-y-1">
+    <div className="space-y-0">
       <label className="block text-gray-700 font-medium">{label}</label>
       <input
         type={type}
         name={name}
         value={form[name]}
         onChange={handleChange}
-        className="mt-1 w-full border rounded px-3 py-2"
+        className="w-full border rounded px-3 py-2"
         // className="w-full border border-gray-300 rounded-lg px-3 py-2 text-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
       />
     </div>
@@ -116,7 +116,7 @@ export default function UserRegister() {
         </div>
       </header>
 
-      <div className="flex-1 px-4 py-6 max-w-md w-full mx-auto">
+      <div className="flex-1 px-4 py-6 md:max-w-5xl w-full mx-auto">
         <StepIndicator />
 
         {/* STEP 1 */}
@@ -161,7 +161,7 @@ export default function UserRegister() {
 
         {/* STEP 2 */}
         {step === 2 && (
-          <div className="space-y-4">
+          <div className="space-y-4 md:space-y-3">
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
                 Personal Information
@@ -170,43 +170,51 @@ export default function UserRegister() {
                 Please enter your information to create an account.
               </p>
             </article>
-            <Input label="First Name" name="firstName" />
-            <Input label="Middle Name" name="middleName" />
-            <Input label="Last Name" name="lastName" />
-            <Input label="Suffix" name="suffix" />
-            <Input label="House No." name="houseNo" />
-            <Input label="Street" name="street" />
-            <Input label="Subdivision" name="subdivision" />
-            <Input label="Barangay" name="barangay" />
 
-            <div className="space-y-1">
-              <label className="block text-gray-700 font-medium">
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                name="birthday"
-                value={form.birthday}
-                onChange={handleChange}
-                // className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500"
-                className="mt-1 w-full border rounded px-3 py-2"
-              />
-              {age && <p className="text-xs text-gray-500">Age: {age}</p>}
+            <div className="grid md:grid-cols-4 gap-2">
+              <Input label="First Name" name="firstName" />
+              <Input label="Middle Name" name="middleName" />
+              <Input label="Last Name" name="lastName" />
+              <Input label="Suffix" name="suffix" />
             </div>
 
-            <div className="space-y-1">
-              <label className="block text-gray-700 font-medium">Gender</label>
-              <select
-                name="gender"
-                value={form.gender}
-                onChange={handleChange}
-                className="mt-1 w-full border rounded px-3 py-2"
-              >
-                <option value="">Select Gender</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Prefer not to say</option>
-              </select>
+            <div className="grid md:grid-cols-2 gap-2">
+              <Input label="House No." name="houseNo" />
+              <Input label="Street" name="street" />
+              <Input label="Subdivision" name="subdivision" />
+              <Input label="Barangay" name="barangay" />
+
+              <div className="space-y-0">
+                <label className="block text-gray-700 font-medium">
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  name="birthday"
+                  value={form.birthday}
+                  onChange={handleChange}
+                  // className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                  className="w-full border rounded px-3 py-2"
+                />
+                {age && <p className="text-xs text-gray-500">Age: {age}</p>}
+              </div>
+
+              <div className="space-y-0">
+                <label className="block text-gray-700 font-medium">
+                  Gender
+                </label>
+                <select
+                  name="gender"
+                  value={form.gender}
+                  onChange={handleChange}
+                  className="w-full border rounded px-3 py-2"
+                >
+                  <option value="">Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Prefer not to say</option>
+                </select>
+              </div>
             </div>
 
             <div className="flex gap-3">
@@ -237,15 +245,19 @@ export default function UserRegister() {
                 Please enter your information to create an account.
               </p>
             </article>
-
-            <Input label="Contact Number" name="contactNumber" type="tel" />
-            <Input label="Emergency Contact First Name" name="emergencyFirst" />
-            <Input label="Emergency Contact Last Name" name="emergencyLast" />
-            <Input
-              label="Emergency Contact Number"
-              name="emergencyContact"
-              type="tel"
-            />
+            <div className="grid md:grid-cols-2 gap-4">
+              <Input label="Contact Number" name="contactNumber" type="tel" />
+              <Input
+                label="Emergency Contact First Name"
+                name="emergencyFirst"
+              />
+              <Input label="Emergency Contact Last Name" name="emergencyLast" />
+              <Input
+                label="Emergency Contact Number"
+                name="emergencyContact"
+                type="tel"
+              />
+            </div>
 
             <div className="flex gap-3">
               <button
