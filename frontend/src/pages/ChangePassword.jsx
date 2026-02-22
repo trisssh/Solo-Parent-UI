@@ -1,17 +1,37 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
+
+
 
 
 export default function ChangePassword() {
+  // const { authTokens } = useContext(AuthContext);
+  const { authTokens, userInfo } = useContext(AuthContext);
+  
+
      const [user, setUser] = useState(null);
      const [openDropdown, setOpenDropdown] = useState(false);
      const navigate = useNavigate();
+
       const [form, setForm] = useState({
-        old_password: "",
         password: "",
         confirm: "",
       });
+      // const [form, setForm] = useState({
+      //   old_password: "",
+      //   password: "",
+      //   confirm: "",
+      // });
+
+       useEffect(() => {
+         const storedUser = localStorage.getItem("user");
+         if (storedUser) {
+           setUser(JSON.parse(storedUser));
+         }
+       }, []);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,146 +63,142 @@ export default function ChangePassword() {
      };
 
      //SUBMIT
+      // const handleSubmit = async (e) => {
+      //   e.preventDefault();
+
+
+      //   if (!form.password && !form.confirm) {
+      //       showAlert({
+      //         title: "Reminder",
+      //         message: "Leave blank if you don’t want to change password",
+      //         icon: "info",
+      //       });
+      //     return;
+      //   }
+
+      //   if (form.password !== form.confirm) {
+      //    showAlert({
+      //      title: "Error",
+      //      message: "New password and confirm password do not match",
+      //      icon: "error",
+      //    });
+      //     return;
+      //   }
+
+      //   if (!response.ok) {
+      //     const data = await response.json();
+      //     console.log("Error:", data);
+      //     showAlert({
+      //       title: "Error",
+      //       message: data.password?.[0] || "Failed to change password",
+      //       icon: "error",
+      //     });
+      //     return;
+      //   }
+
+      //   if (!form.old_password) {
+
+      //       showAlert({
+      //         title: "Error",
+      //         message: "Please enter your old password",
+      //         icon: "error",
+      //       });
+      //     return;
+      //   }
+
+      //   ---- Fake API logic ----
+      //   if (form.old_password !== "12345") {
+      //     showAlert({
+      //       title: "Error",
+      //       message: "Old password is incorrect",
+      //       icon: "error",
+      //     });
+      //     return;
+      //   }
+
+      //   Simulate success
+      //   await new Promise((r) => setTimeout(r, 500)); // fake delay
+      //     showAlert({
+      //       title: "Success",
+      //       message: "Password changed successfully!",
+      //       icon: "success",
+      //     });
+
+      //   Clear form
+      //   setForm({  password: "", confirm: "" });
+      //   setForm({ old_password: "", password: "", confirm: "" });
+      // };
       const handleSubmit = async (e) => {
         e.preventDefault();
 
-
-        if (!form.password && !form.confirm) {
-            showAlert({
-              title: "Reminder",
-              message: "Leave blank if you don’t want to change password",
-              icon: "info",
-            });
+        // Check password fields
+        if (!form.password || !form.confirm) {
+          showAlert({
+            title: "Reminder",
+            message: "Leave blank if you don’t want to change password",
+            icon: "info",
+          });
           return;
         }
 
         if (form.password !== form.confirm) {
-         showAlert({
-           title: "Error",
-           message: "New password and confirm password do not match",
-           icon: "error",
-         });
-          return;
-        }
-
-        if (!form.old_password) {
-
-            showAlert({
-              title: "Error",
-              message: "Please enter your old password",
-              icon: "error",
-            });
-          return;
-        }
-
-        // ---- Fake API logic ----
-        // Pretend the old password is always "12345"
-        if (form.old_password !== "12345") {
           showAlert({
             title: "Error",
-            message: "Old password is incorrect",
+            message: "New password and confirm password do not match",
             icon: "error",
           });
           return;
         }
 
-        // Simulate success
-        await new Promise((r) => setTimeout(r, 500)); // fake delay
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/user/password/${user.pk}/`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authTokens.access}`,
+              },
+              body: JSON.stringify({
+                password: form.password,
+                password_confirmation: form.confirm,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            showAlert({
+              title: "Error",
+              message: data.password?.[0] || "Failed to change password",
+              icon: "error",
+            });
+            return;
+          }
+
+          // Success
           showAlert({
             title: "Success",
             message: "Password changed successfully!",
             icon: "success",
           });
 
-        // Clear form
-        setForm({ old_password: "", password: "", confirm: "" });
+          // Clear form
+          setForm({ password: "", confirm: "" });
+        } catch (error) {
+          console.error("Error:", error);
+          showAlert({
+            title: "Error",
+            message: "Server error. Please try again.",
+            icon: "error",
+          });
+        }
       };
-    // const handleSubmit = async (e) => {
-    //   e.preventDefault();
 
-    //   if (!user) {
-    //     showAlert({
-    //       title: "Error",
-    //       message: "User not found. Please login again.",
-    //       icon: "error",
-    //     });
-    //     return;
-    //   }
-
-    //   if (!form.password && !form.confirm) {
-    //     showAlert({
-    //       title: "Reminder",
-    //       message: "Leave blank if you don’t want to change password",
-    //       icon: "info",
-    //     });
-    //     return;
-    //   }
-
-    //   if (form.password !== form.confirm) {
-    //     showAlert({
-    //       title: "Error",
-    //       message: "New password and confirm password do not match",
-    //       icon: "error",
-    //     });
-    //     return;
-    //   }
-
-    //   if (!form.old_password) {
-    //     showAlert({
-    //       title: "Error",
-    //       message: "Please enter your old password",
-    //       icon: "error",
-    //     });
-    //     return;
-    //   }
-
-    //   try {
-    //     const response = await fetch(
-    //       `http://127.0.0.1:8000/user/password/${user.id}`,
-    //       {
-    //         method: "PUT",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //           // If may token kayo, idagdag ito:
-    //           // Authorization: `Bearer ${localStorage.getItem("access")}`,
-    //         },
-    //         body: JSON.stringify({
-    //           old_password: form.old_password,
-    //           password: form.password,
-    //         }),
-    //       },
-    //     );
-
-    //     const data = await response.json();
-
-    //     if (!response.ok) {
-    //       showAlert({
-    //         title: "Error",
-    //         message: data.message || "Failed to change password",
-    //         icon: "error",
-    //       });
-    //       return;
-    //     }
-
-    //     showAlert({
-    //       title: "Success",
-    //       message: "Password changed successfully!",
-    //       icon: "success",
-    //     });
-
-    //     setForm({
-    //       old_password: "",
-    //       password: "",
-    //       confirm: "",
-    //     });
-    //   } catch (error) {
-    //     showAlert({
-    //       title: "Error",
-    //       message: "Server error. Please try again.",
-    //       icon: "error",
-    //     });
-    //   }
-    // };
+      
+   console.log("USER INFO:", userInfo);
+      console.log("LOCAL USER:", user);
 
 
 
@@ -250,7 +266,7 @@ export default function ChangePassword() {
               {/* Email */}
               {/* <span className="hidden md:block font-semibold">{email}</span> */}
               <span className="hidden md:block font-semibold">
-                {user?.email || "Loading..."}
+                {user?.parent?.email ?? user?.email ?? "Loading..."}
               </span>
 
               {/* Dropdown icon */}
@@ -322,7 +338,7 @@ export default function ChangePassword() {
               </article>
 
               <div className="space-y-4 mb-6">
-                <div>
+                {/* <div>
                   <label
                     //   className="text-sm text-gray-600"
                     className="block text-gray-700 font-medium"
@@ -336,7 +352,7 @@ export default function ChangePassword() {
                     value={form.old_password}
                     onChange={handleChange}
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label className="block text-gray-700 font-medium">

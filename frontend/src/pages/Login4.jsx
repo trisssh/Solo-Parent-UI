@@ -30,7 +30,7 @@ export default function Login4() {
     setLoading(true);
 
     const loginData = {
-      email: email, //email or username
+      email: email,
       password: password,
     };
 
