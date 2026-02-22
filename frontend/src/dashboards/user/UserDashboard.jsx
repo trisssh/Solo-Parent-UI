@@ -6,7 +6,8 @@ import AuthContext from "../../context/AuthContext";
 
 export default function UserDashboard() {
   const { authTokens, user } = useContext(AuthContext);
-  const [userInfo, setUserInfo] = useState([]);
+  // const [userInfo, setUserInfo] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(false);
   const navigate = useNavigate();
 
@@ -39,11 +40,34 @@ export default function UserDashboard() {
     };
   }, []);
 
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `http://127.0.0.1:8000//api/parent/info/${user.pk}`,
+  //         {
+  //           method: "GET",
+  //           headers: { Authorization: `Bearer ${authTokens.access}` },
+  //         },
+  //       );
+  //       const data = await response.json();
+  //       // setUserInfo(response.data);
+  //       // console.log(data);
+  //       setUserInfo(data);
+  //     } catch (err) {
+  //       console.error("Error fetching user:", err);
+  //     }
+  //   };
+
+  //   fetchUser();
+  // }, []);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000//api/parent/info/${user.pk}`,
+          // `http://127.0.0.1:8000//api/parent/info/${user.pk}`,
+          `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
           {
             method: "GET",
             headers: { Authorization: `Bearer ${authTokens.access}` },
@@ -52,6 +76,7 @@ export default function UserDashboard() {
         const data = await response.json();
         // setUserInfo(response.data);
         console.log(data);
+        setUserInfo(data);
       } catch (err) {
         console.error("Error fetching user:", err);
       }
@@ -60,8 +85,57 @@ export default function UserDashboard() {
     fetchUser();
   }, []);
 
-  // Get user info from localStorage (dummy)
-  const email = localStorage.getItem("email") || "user@test.com";
+  //Guard the fetch on user and authTokens
+  useEffect(() => {
+    if (!user?.pk || !authTokens?.access) return;
+
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${authTokens.access}` },
+          },
+        );
+        const data = await response.json();
+        console.log(data);
+        setUserInfo(data);
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      }
+    };
+
+    fetchUser();
+  }, [user, authTokens]);
+
+  //Calculate Parent's Age
+  const calculateAge = (birthday) => {
+    if (!birthday) return null;
+    const birthDate = new Date(birthday);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const idImage = userInfo?.image?.find(
+    (img) => img.image_type === "id",
+  )?.image;
+  const signatureImage = userInfo?.image?.find(
+    (img) => img.image_type === "signature",
+  )?.image;
+
+  const BASE_URL = "http://127.0.0.1:8000";
+
+  const idImageUrl = idImage ? `${BASE_URL}${idImage}` : null;
+  const signatureImageUrl = signatureImage
+    ? `${BASE_URL}${signatureImage}`
+    : null;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -107,7 +181,10 @@ export default function UserDashboard() {
               </svg>
 
               {/* Email */}
-              <span className="hidden md:block font-semibold">{email}</span>
+              {/* <span className="hidden md:block font-semibold">{email}</span> */}
+              <span className="hidden md:block font-semibold">
+                {userInfo?.parent?.email ?? user?.email ?? "Loading..."}
+              </span>
 
               {/* Dropdown icon */}
               <svg
@@ -179,7 +256,7 @@ export default function UserDashboard() {
               alt="Profile"
               className="w-32 h-32 mx-auto rounded-full object-cover ring-4 ring-red-200 shadow"
             /> */}
-                <svg
+                {/* <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -190,10 +267,20 @@ export default function UserDashboard() {
                     d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
                     clipRule="evenodd"
                   />
-                </svg>
+                </svg> */}
+                {idImageUrl ? (
+                  <img
+                    src={idImageUrl}
+                    alt="ID Image"
+                    className="size-6 text-red-500 w-32 h-32 mx-auto rounded-full object-cover ring-4 ring-red-300 shadow"
+                  />
+                ) : (
+                  <p>ID image not available</p>
+                )}
 
-                <h2 className="mt-4 text-xl font-semibold text-gray-800">
-                  Complete Name
+                <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize">
+                  {`${userInfo?.parent?.first_name || ""} ${userInfo?.parent?.middle_name || ""} ${userInfo?.parent?.last_name || ""}`.trim() ||
+                    "Loading..."}
                 </h2>
 
                 <p className="text-sm text-gray-500 uppercase tracking-wide">
@@ -210,8 +297,12 @@ export default function UserDashboard() {
                   ✖ Unverified
                 </span>
               )} */}
-                  <span className="px-4 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">
+                  {/* <span className="px-4 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">
                     Unverified
+                  </span> */}
+
+                  <span className="px-4 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">
+                    {userInfo?.parent?.is_verified ? "Verified" : "Unverified"}
                   </span>
                 </div>
               </div>
@@ -238,8 +329,8 @@ export default function UserDashboard() {
                 </div>
 
                 <p className="text-sm text-gray-400">ID Number</p>
-                <p className="font-medium text-xl text-gray-800 mb-3">
-                  ID xx-xxxx-xxxx
+                <p className="font-medium text-lg text-gray-800 mb-3">
+                  {userInfo?.parent?.uuid || "Loading..."}
                 </p>
               </div>
 
@@ -253,24 +344,25 @@ export default function UserDashboard() {
                 </p>
 
                 <div className="flex justify-center">
-                  <img
-                    // src={`http://localhost:5000/${info.image_name}`}
+                  {/* <img
                     alt="Signature"
                     className="h-28 object-contain border rounded-lg bg-white p-2"
-                  />
+                  /> */}
+                  {signatureImageUrl ? (
+                    <img
+                      src={signatureImageUrl}
+                      alt="Signature"
+                      className="h-28 object-contain border rounded-lg bg-white p-2"
+                    />
+                  ) : (
+                    <p>Signature not available</p>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* RIGHT COLUMN */}
             <div className="lg:col-span-2 space-y-6">
-              {/* BIRTHDAY NOTICE */}
-              {/* {verificationStatus && birthdayNear && (
-            <div className="backdrop-blur-lg bg-red-100/70 border border-red-200 rounded-2xl p-4 text-red-800 shadow">
-              🎉 Your birthday is near! You may get your payout.
-            </div>
-          )} */}
-
               {/* PERSONAL INFORMATION */}
               <div className="backdrop-blur-lg bg-white border border-gray-200  rounded-2xl shadow-md p-6">
                 <h3 className="text-lg font-semibold text-gray-700 mb-4">
@@ -282,26 +374,32 @@ export default function UserDashboard() {
                   <div className="grid md:grid-cols-2">
                     <div>
                       <h4 className="text-sm text-gray-400">First Name</h4>
-                      <p className="font-medium text-lg text-gray-800 mb-3">
+                      {/* <p className="font-medium text-lg text-gray-800 mb-3">
                         Example
+                      </p> */}
+                      <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
+                        {userInfo?.parent?.first_name || "N/A"}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-sm text-gray-400">Middle Name</h4>
-                      <p className="font-medium text-lg text-gray-800 mb-3">
+                      {/* <p className="font-medium text-lg text-gray-800 mb-3">
                         Secret
+                      </p> */}
+                      <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
+                        {userInfo?.parent?.middle_name || "N/A"}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-sm text-gray-400">Last Name</h4>
-                      <p className="font-medium text-lg text-gray-800 mb-3">
-                        Secret
+                      <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
+                        {userInfo?.parent?.last_name || "N/A"}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-sm text-gray-400">Suffix</h4>
-                      <p className="font-medium text-xl text-gray-800 mb-3">
-                        Jr
+                      <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
+                        {userInfo?.parent?.suffix || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -310,29 +408,39 @@ export default function UserDashboard() {
                   <div className="grid md:grid-cols-2 ">
                     <div>
                       <h4 className="text-sm text-gray-400">Date of Birth</h4>
-                      <p className="font-medium text-lg text-gray-800 mb-3">
+                      {/* <p className="font-medium text-lg text-gray-800 mb-3">
                         01/02/01
+                      </p> */}
+                      <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
+                        {userInfo?.parent?.birthday || "N/A"}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-sm text-gray-400">Age</h4>
+
                       <p className="font-medium text-lg text-gray-800 mb-3">
-                        55
+                        {userInfo?.parent?.birthday
+                          ? calculateAge(userInfo.parent.birthday)
+                          : "N/A"}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-sm text-gray-400">Gender</h4>
-                      <p className="font-medium text-lg text-gray-800 mb-3">
-                        Secret
+                      <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
+                        {userInfo?.parent?.gender || "N/A"}
                       </p>
                     </div>
                   </div>
 
                   <div>
                     <h4 className="text-sm text-gray-400">Address</h4>
-                    <p className="font-medium text-lg text-gray-800 mb-3">
+                    {/* <p className="font-medium text-lg text-gray-800 mb-3">
                       031, Secret, Progreso, San Juan, Metro Manila
-                    </p>
+                    </p> */}
+                    <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize">
+                      {`${userInfo?.parent?.house || ""} ${userInfo?.parent?.street || ""} ${userInfo?.parent?.subdivision || ""} ${userInfo?.parent?.barangay || ""} ${userInfo?.parent?.city || ""} ${userInfo?.parent?.province || ""}`.trim() ||
+                        "N/A"}
+                    </h2>
                   </div>
                 </div>
               </div>
@@ -348,14 +456,17 @@ export default function UserDashboard() {
                   <div className="grid md:grid-cols-2">
                     <div>
                       <h4 className="text-sm text-gray-400">Email</h4>
-                      <p className="font-medium text-lg text-gray-800 mb-3">
+                      {/* <p className="font-medium text-lg text-gray-800 mb-3">
                         user@test.com
+                      </p> */}
+                      <p className="font-medium text-lg text-gray-800 mb-3">
+                        {userInfo?.parent?.email || user.email || "N/A"}
                       </p>
                     </div>
                     <div>
                       <h4 className="text-sm text-gray-400">Contact Number</h4>
                       <p className="font-medium text-lg text-gray-800 mb-3">
-                        09-xxxx-xxx-12
+                        {userInfo?.parent?.phone || "N/A"}
                       </p>
                     </div>
                   </div>
