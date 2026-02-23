@@ -26,7 +26,7 @@ urlpatterns = [
     # parent create child
     path('child/create', CreateChildView.as_view(), name='create_child'),
     # parent edit child
-    path('child/edit/<int:pk>', ChangeChildView.as_view(), name='edit_child'),
+    # path('child/edit/<int:pk>', ChangeChildView.as_view(), name='edit_child'),
     # parent delete child
     path(
         'child/delete/<int:pk>',
