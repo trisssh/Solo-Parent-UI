@@ -352,6 +352,7 @@ class AdminChangeParentInfoView(APIView):
 
     def put(self, request, pk):
         parent = get_object_or_404(Parent, pk=pk)
+        old_is_verified = parent.is_verified
 
         if not self.request.user.is_staff:
             raise PermissionDenied('Admins only.')
@@ -363,6 +364,14 @@ class AdminChangeParentInfoView(APIView):
 
         if serializer.is_valid():
             serializer.save()
+            parent = serializer.instance
+
+            if not old_is_verified == parent.is_verified:
+                emailer(
+                    parent.is_verified,
+                    parent,
+                    request.data.get('remarks'),
+                )
         else:
             return Response(
                 serializer.errors,
@@ -422,7 +431,11 @@ class ChangePasswordView(APIView):
         if self.request.user.pk != user.pk:
             raise PermissionDenied('You are not this User.')
             
-        serializer = ChangePasswordSerializer(user, data=request.data)
+        serializer = ChangePasswordSerializer(
+            user, 
+            data=request.data,
+            context={'pk': user.pk}
+        )
 
         if serializer.is_valid():
             serializer.save()

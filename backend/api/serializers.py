@@ -211,6 +211,10 @@ class ChangeEmailSerializer(serializers.ModelSerializer):
 #         return instance
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(
+        max_length=180, 
+        write_only=True
+    )
     password_confirmation = serializers.CharField(
         max_length=180, 
         write_only=True
@@ -218,10 +222,17 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['password', 'password_confirmation']
+        fields = ['old_password', 'password', 'password_confirmation']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
+        user = User.objects.get(pk=self.context.get('pk'))
+
+        if not user.check_password(data['old_password']):
+            raise serializers.ValidationError({
+                'old_password': 'Old passwords do not match.'
+            })
+
         if data['password'] != data['password_confirmation']:
             raise serializers.ValidationError({
                 'password_confirmation': 'Passwords do not match.'
