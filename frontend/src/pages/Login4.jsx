@@ -112,9 +112,9 @@ export default function Login4() {
   };
 
   return (
-    <div className="flex justify-center items-center gap-6 md:gap-12 min-h-screen">
+    <div className="flex justify-center items-center gap-6 md:gap-12 min-h-screen bg-gray-50">
       {/* Left Section */}
-      <div className="hidden md:block bg-white flex flex-col justify-center items-center text-center p-10 relative overflow-hidden rounded-2xl">
+      <div className="hidden md:block flex flex-col justify-center items-center text-center p-10 relative overflow-hidden rounded-2xl">
         <div className="relative z-10 flex flex-col items-center gap-5">
           {/* Logo Img Example */}
           <img

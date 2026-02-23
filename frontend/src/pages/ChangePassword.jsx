@@ -12,55 +12,53 @@ export default function ChangePassword() {
   const { authTokens, userInfo } = useContext(AuthContext);
   
 
-     const [user, setUser] = useState(null);
-     const [openDropdown, setOpenDropdown] = useState(false);
-     const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [openDropdown, setOpenDropdown] = useState(false);
+    const navigate = useNavigate();
+    const [form, setForm] = useState({
+      password: "",
+      confirm: "",
+    });
+    // const [form, setForm] = useState({
+    //   old_password: "",
+    //   password: "",
+    //   confirm: "",
+    // });
 
-      const [form, setForm] = useState({
-        password: "",
-        confirm: "",
-      });
-      // const [form, setForm] = useState({
-      //   old_password: "",
-      //   password: "",
-      //   confirm: "",
-      // });
-
-       useEffect(() => {
-         const storedUser = localStorage.getItem("user");
-         if (storedUser) {
-           setUser(JSON.parse(storedUser));
-         }
-       }, []);
+    useEffect(() => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }, []);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-
-     useEffect(() => {
-       const storedUser = localStorage.getItem("user");
-       if (storedUser) {
-         setUser(JSON.parse(storedUser));
-       }
-     }, []);
+    useEffect(() => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }, []);
 
     //  LOGOUT
-     const handleLogout = () => {
-       Swal.fire({
-         title: "Are you sure?",
-         text: "You will be logged out of your account",
-         icon: "warning",
-         confirmButtonColor: "#DC2626",
-         showCancelButton: true,
-         confirmButtonText: "Logout",
-       }).then((result) => {
-         if (result.isConfirmed) {
-           localStorage.clear();
-           navigate("/");
-         }
-       });
-     };
+    const handleLogout = () => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You will be logged out of your account",
+        icon: "warning",
+        confirmButtonColor: "#DC2626",
+        showCancelButton: true,
+        confirmButtonText: "Logout",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.clear();
+          navigate("/");
+        }
+      });
+    };
 
      //SUBMIT
       // const handleSubmit = async (e) => {
@@ -196,16 +194,11 @@ export default function ChangePassword() {
         }
       };
 
-      
-   console.log("USER INFO:", userInfo);
-      console.log("LOCAL USER:", user);
+  //  console.log("USER INFO:", userInfo);
+  //  console.log("LOCAL USER:", user);
 
 
-
-
-    // ---------------------------
     // SWEET ALERT
-    // ---------------------------
     const showAlert = ({ title, message, icon = "error" }) => {
         Swal.fire({
         title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
