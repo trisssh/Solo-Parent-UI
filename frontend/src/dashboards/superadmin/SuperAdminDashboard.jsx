@@ -33,7 +33,7 @@ export default function SuperAdminDashboard() {
 
           <div>
             <h2 className="text-2xl font-bold text-gray-800 hidden md:block">
-              Dashboard
+              Superadmin Dashboard
             </h2>
             <p className="text-gray-600 text-sm font-medium hidden md:block">
               Full access to all system features and settings
