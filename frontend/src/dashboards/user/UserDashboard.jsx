@@ -5,12 +5,12 @@ import AuthContext from "../../context/AuthContext";
 // import axios from "axios";
 
 export default function UserDashboard() {
-  const { authTokens, user } = useContext(AuthContext);
-  // const [userInfo, setUserInfo] = useState([]);
+  const { user, authTokens, logoutUser } = useContext(AuthContext);
   const [userInfo, setUserInfo] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(false);
   const navigate = useNavigate();
 
+  //LOGOUT
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -21,69 +21,16 @@ export default function UserDashboard() {
       confirmButtonText: "Logout",
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.clear();
-        navigate("/");
+        logoutUser();
       }
     });
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest("#userDropdown")) {
-        setOpenDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
+  //Confirm If user Exists
   // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://127.0.0.1:8000//api/parent/info/${user.pk}`,
-  //         {
-  //           method: "GET",
-  //           headers: { Authorization: `Bearer ${authTokens.access}` },
-  //         },
-  //       );
-  //       const data = await response.json();
-  //       // setUserInfo(response.data);
-  //       // console.log(data);
-  //       setUserInfo(data);
-  //     } catch (err) {
-  //       console.error("Error fetching user:", err);
-  //     }
-  //   };
-
-  //   fetchUser();
-  // }, []);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(
-          // `http://127.0.0.1:8000//api/parent/info/${user.pk}`,
-          `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
-          {
-            method: "GET",
-            headers: { Authorization: `Bearer ${authTokens.access}` },
-          },
-        );
-        const data = await response.json();
-        // setUserInfo(response.data);
-        console.log(data);
-        setUserInfo(data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      }
-    };
-
-    fetchUser();
-  }, []);
+  //   console.log("USER:", user);
+  //   console.log("TOKENS:", authTokens);
+  // }, [user, authTokens]);
 
   //Guard the fetch on user and authTokens
   useEffect(() => {
@@ -94,12 +41,15 @@ export default function UserDashboard() {
         const response = await fetch(
           `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
           {
-            method: "GET",
-            headers: { Authorization: `Bearer ${authTokens.access}` },
+            headers: {
+              Authorization: `Bearer ${authTokens.access}`,
+            },
           },
         );
+
+        if (!response.ok) throw new Error("Failed to fetch user");
+
         const data = await response.json();
-        console.log(data);
         setUserInfo(data);
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -107,7 +57,7 @@ export default function UserDashboard() {
     };
 
     fetchUser();
-  }, [user, authTokens]);
+  }, [user?.pk, authTokens?.access]);
 
   //Calculate Parent's Age
   const calculateAge = (birthday) => {
@@ -132,10 +82,10 @@ export default function UserDashboard() {
 
   const BASE_URL = "http://127.0.0.1:8000";
 
-  const idImageUrl = idImage ? `${BASE_URL}${idImage}` : null;
-  const signatureImageUrl = signatureImage
-    ? `${BASE_URL}${signatureImage}`
-    : null;
+  // const idImageUrl = idImage ? `${BASE_URL}/api/${idImage}` : null;
+  // const signatureImageUrl = signatureImage
+  //   ? `${BASE_URL}${signatureImage}`
+  //   : null;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -243,10 +193,10 @@ export default function UserDashboard() {
           <h3 className="text-2xl text- font-bold text-gray-900 mb-0">
             Profile
           </h3>
-          {/* <h3 className="text-xs font-semibold text-gray-600 mb-3"></h3> */}
           <p className="text-gray-600 text-sm font-medium mb-3">
             View all your details here
           </p>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* LEFT COLUMN */}
             <div className="lg:col-span-1 space-y-4.5">
@@ -256,7 +206,7 @@ export default function UserDashboard() {
               alt="Profile"
               className="w-32 h-32 mx-auto rounded-full object-cover ring-4 ring-red-200 shadow"
             /> */}
-                {/* <svg
+                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -267,8 +217,8 @@ export default function UserDashboard() {
                     d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
                     clipRule="evenodd"
                   />
-                </svg> */}
-                {idImageUrl ? (
+                </svg>
+                {/* {idImageUrl ? (
                   <img
                     src={idImageUrl}
                     alt="ID Image"
@@ -276,7 +226,7 @@ export default function UserDashboard() {
                   />
                 ) : (
                   <p>ID image not available</p>
-                )}
+                )} */}
 
                 <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize">
                   {`${userInfo?.parent?.first_name || ""} ${userInfo?.parent?.middle_name || ""} ${userInfo?.parent?.last_name || ""}`.trim() ||

@@ -37,7 +37,9 @@ export default function Login4() {
     await loginUser(loginData);
 
     setLoading(false);
+      // console.log(user);
   };
+
 
   //handleLogin function (UI-only logic)
   // const handleLogin = (e) => {
@@ -90,9 +92,8 @@ export default function Login4() {
   //   });
   // };
 
-  // ---------------------------
+
   // SWEET ALERT
-  // ---------------------------
   const showAlert = ({ title, message, icon = "error" }) => {
     Swal.fire({
       title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,

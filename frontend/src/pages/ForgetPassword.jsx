@@ -20,8 +20,8 @@ const showError = (title, message) => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white mx-3">
-      <div className="relative p-1 rounded-2xl overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="relative p-1 rounded-2xl overflow-hidden mx-3">
         <div className="bg-white drop-shadow-[0_0_0.5rem_#FF2424]  shadow-lg rounded-xl w-full max-w-md p-6">
           <div className="flex items-center justify-center mb-6">
             {/* Logo Img Example */}
