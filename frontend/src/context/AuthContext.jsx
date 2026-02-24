@@ -136,7 +136,7 @@ export function AuthProvider({ children }) {
   };
 
   const contextData = {
-    user: user,
+    user: user,  //to know which role
     authTokens: authTokens,
     loginUser: loginUser,
     logoutUser: logoutUser,

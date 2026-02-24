@@ -1,26 +1,32 @@
-// import { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-
-
-// export default function Sidebar() { 
-//     return <div>Sidebar</div>;
-// }
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
-  const [role, setRole] = useState(null);
+  const { user, logoutUser } = useContext(AuthContext);
+  // const [role, setRole] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    if (storedRole) {
-      setRole(storedRole);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedRole = localStorage.getItem("role");
+  //   if (storedRole) {
+  //     setRole(storedRole);
+  //   }
+  // }, []);
+
+  if (!user) return null; // wait until user loads
+
+  let role = null;
+
+  if (user.is_superuser) {
+    role = "superadmin";
+  } else if (user.is_staff) {
+    role = "admin";
+  } else {
+    role = "user";
+  }
 
   const handleLogout = () => {
     Swal.fire({
@@ -39,21 +45,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   };
 
   const navItems = {
-    user: [
-      { name: "Profile", link: "/user-dashboard" },
-      { name: "Edit Account", link: "/user-edit" },
-      { name: "Logout", action: handleLogout },
-    ],
-
     admin: [
-      { name: "Dashboard", link: "/admin-dashboard" },
+      { name: "Dashboard", link: "/dashboard" },
       { name: "List of Parents", link: "/users-list" },
       { name: "Edit Account", link: "/admins-edit" },
       { name: "Logout", action: handleLogout },
     ],
 
     superadmin: [
-      { name: "Dashboard", link: "/superadmin-dashboard" },
+      { name: "Dashboard", link: "/dashboard" },
       { name: "List of Parents", link: "/users-list" },
       { name: "List of Admins", link: "/admins-list" },
       { name: "Edit Account", link: "/admins-edit" },
