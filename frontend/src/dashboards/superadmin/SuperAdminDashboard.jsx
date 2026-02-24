@@ -41,11 +41,11 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div className="flex items-center">
-            <div className="bg-white size-14 rounded-full border border-red-200 shadow flex justify-center items-center">
+            <div className="bg-white size-14 rounded-full shadow flex justify-center items-center">
               <img src="SP.png" className="size-12 object-contain" />
             </div>
 
-            <div className="leading-tight mx-2 md:mx-4">
+            <div className="leading-tight mx-2">
               <h2 className="font-bold uppercase text-gray-900 text-sm sm:text-base">
                 Solo Parent System
               </h2>
@@ -58,7 +58,7 @@ export default function SuperAdminDashboard() {
         {/* <h2 className="text-2xl font-bold">SuperAdmin Dashboard</h2>
         <p>Full access to all system features and settings.</p> */}
 
-        <UserList user={{ is_staff: true, is_superuser: true }} />
+        {/* <UserList user={{ is_staff: true, is_superuser: true }} /> */}
       </div>
     </div>
   );
