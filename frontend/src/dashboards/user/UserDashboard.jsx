@@ -188,7 +188,7 @@ export default function UserDashboard() {
           </nav>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-5 sm:p-6">
+        <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
           {/* MAIN GRID */}
           <h3 className="text-2xl text- font-bold text-gray-900 mb-0">
             Profile

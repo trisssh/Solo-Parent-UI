@@ -54,6 +54,24 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+
+          {/* <Route
+            path="/change-password"
+            element={
+              <ProtectedRoute>
+                {user?.role === "user" ? (
+                  <UserLayout>
+                    <ChangePassword />
+                  </UserLayout>
+                ) : (
+                  <AdminLayout>
+                    <ChangePassword />
+                  </AdminLayout>
+                )}
+              </ProtectedRoute>
+            }
+          /> */}
         </Routes>
       </AuthProvider>
     </BrowserRouter>
