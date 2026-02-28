@@ -15,11 +15,6 @@ export function AuthProvider({ children }) {
       : null;
   });
 
-  // const [user, setUser] = useState(() => {
-  //   return localStorage.getItem("authTokens")
-  //     ? jwtDecode(localStorage.getItem("authTokens"))
-  //     : null;
-  // });
   const [user, setUser] = useState(() => {
     const storedTokens = localStorage.getItem("authTokens");
 
@@ -31,31 +26,7 @@ export function AuthProvider({ children }) {
     return null;
   });
 
-  // const loginUser = async (loginData) => {
-  //   try {
-  //     const res = await fetch("http://127.0.0.1:8000/api/token", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(loginData),
-  //     });
-
-  //     const data = await res.json();
-  //     console.log("LOGIN RESPONSE:", data);
-
-  //     if (res.ok) {
-  //       setAuthTokens(data);
-  //       setUser(jwtDecode(data.access));
-  //       localStorage.setItem("authTokens", JSON.stringify(data));
-  //       navigate("/dashboard");
-  //     } else {
-  //       alert("Login Unsuccessful");
-  //     }
-  //   } catch (err) {
-  //     console.error("LOGIN ERROR:", err);
-  //   }
-  // };
+  //Login
   const loginUser = async (loginData) => {
     try {
       const res = await fetch("http://127.0.0.1:8000/api/token", {
@@ -102,6 +73,7 @@ export function AuthProvider({ children }) {
     }
   };
 
+  //Logout
   const logoutUser = async () => {
     setAuthTokens(null);
     setUser(null);
@@ -109,9 +81,133 @@ export function AuthProvider({ children }) {
     navigate("/login");
   };
 
+  //UserRegister
+  // const registerUser = async (registerData) => {
+  //   try {
+  //     const res = await fetch("http://127.0.0.1:8000/api/parent/create", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(registerData),
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (res.ok) {
+  //       showAlert({
+  //         icon: "success",
+  //         title: "Registration Successful",
+  //         message: "You can now login.",
+  //       });
+
+  //       navigate("/");
+  //     } else {
+  //       showAlert({
+  //         icon: "error",
+  //         title: "Registration Failed",
+  //         message: data.detail || "Something went wrong.",
+  //       });
+  //     }
+  //   } catch (err) {
+  //     showAlert({
+  //       icon: "error",
+  //       title: "Network Error",
+  //       message: "Cannot connect to server.",
+  //     });
+  //   }
+  // };
+  // const registerUser = async (registerData) => {
+  //   try {
+  //     // const formData = new FormData();
+
+  //     // for (let key in registerData) {
+  //     //   formData.append(key, registerData[key]);
+  //     // }
+
+  //     const res = await fetch("http://127.0.0.1:8000/api/parent/create", {
+  //       method: "POST", //create
+  //       body: registerData, 
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (res.ok) {
+  //       showAlert({
+  //         icon: "success",
+  //         title: "Registration Successful",
+  //         message: "You can now login.",
+  //       });
+
+  //       navigate("/");
+  //     } else {
+  //       showAlert({
+  //         icon: "error",
+  //         title: "Registration Failed",
+  //         message:
+  //           Object.values(data).flat().join(" ") || "Something went wrong.",
+  //       });
+  //     }
+  //   } catch (err) {
+  //     showAlert({
+  //       icon: "error",
+  //       title: "Network Error",
+  //       message: "Cannot connect to server.",
+  //     });
+  //   }
+  // };
+const registerUser = async (formData) => {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/parent/create", {
+      method: "POST",
+      body: formData, // no headers
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      showAlert({
+        icon: "success",
+        title: "Registration Successful",
+        message: "You can now login.",
+      });
+
+      navigate("/");
+    } else {
+      console.log("Backend validation errors:", data);
+
+      // Handle nested serializer errors properly
+      let errorMessage = "Registration failed.";
+
+      if (typeof data === "object") {
+        errorMessage = Object.entries(data)
+          .map(([key, value]) => {
+            if (typeof value === "object") {
+              return Object.values(value).flat().join(" ");
+            }
+            return value;
+          })
+          .join(" ");
+      }
+
+      showAlert({
+        icon: "error",
+        title: "Registration Failed",
+        message: errorMessage,
+      });
+    }
+  } catch (err) {
+    console.error("Register error:", err);
+
+    showAlert({
+      icon: "error",
+      title: "Network Error",
+      message: "Cannot connect to server.",
+    });
+  }
+};
+
+  //fetch API
   const updateToken = async () => {
     try {
-      // const res = await fetch("/api/token/refresh", {
       const res = await fetch("http://127.0.0.1:8000/api/token/refresh", {
         method: "POST",
         headers: {
@@ -135,11 +231,13 @@ export function AuthProvider({ children }) {
     }
   };
 
+  //context
   const contextData = {
-    user: user,  //to know which role
+    user: user, //to know which role
     authTokens: authTokens,
     loginUser: loginUser,
     logoutUser: logoutUser,
+    registerUser: registerUser,
   };
 
   const isTokenExpired = (token) => {
@@ -198,6 +296,7 @@ export function AuthProvider({ children }) {
       },
     });
   };
+
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );

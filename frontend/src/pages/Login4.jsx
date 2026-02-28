@@ -37,7 +37,7 @@ export default function Login4() {
     await loginUser(loginData);
 
     setLoading(false);
-      // console.log(user);
+    // console.log(user);
   };
 
 

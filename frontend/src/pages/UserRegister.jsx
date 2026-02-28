@@ -1,100 +1,76 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useState, useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
-function calcAge(birthDate) {
-  if (!birthDate) return null;
-  const today = new Date();
-  const birth = new Date(birthDate);
+const UserRegister = () => {
+  const { registerUser } = useContext(AuthContext);
 
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-
-  return age;
-}
-
-export default function UserRegister() {
-  const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
   const [form, setForm] = useState({
+    // Account
     email: "",
     password: "",
-    confirmPassword: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
+    password_confirmation: "",
+
+    // Parent
+    first_name: "",
+    middle_name: "",
+    last_name: "",
     suffix: "",
-    houseNo: "",
-    street: "",
-    subdivision: "",
-    barangay: "",
     birthday: "",
+    phone: "",
     gender: "",
-    contactNumber: "",
-    emergencyFirst: "",
-    emergencyLast: "",
-    emergencyContact: "",
+    house: "",
+    street: "",
+    barangay: "",
+    subdivision: "",
+    city: "",
+    province: "",
+    reason: "",
+
+    // Contact
+    contact_first_name: "",
+    contact_middle_name: "",
+    contact_last_name: "",
+    contact_suffix: "",
+    contact_phone: "",
+
+    // Files
+    id: null,
+    signature: null,
   });
 
-  const age = calcAge(form.birthday);
-
+  // Universal change handler
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
   };
 
-  const handleSubmit = () => {
-    Swal.fire({
-      icon: "success",
-      iconColor: "#DC2626",
-      title: "Registration Complete",
-      text: "Your account has been created successfully.",
-      confirmButtonColor: "#DC2626",
-      background: "#ffffff",
-      showConfirmButton: true,
-      confirmButtonText: "Okay",
-      buttonsStyling: false,
-      customClass: {
-        popup: "rounded-xl px-6 py-4",
-        confirmButton:
-          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
-      },
-    }).then(() => navigate("/"));
+  const nextStep = () => setStep((prev) => prev + 1);
+  const prevStep = () => setStep((prev) => prev - 1);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+
+    // Append everything to FormData
+    Object.keys(form).forEach((key) => {
+      if (form[key] !== null) {
+        data.append(key, form[key]);
+      }
+    });
+
+    try {
+      await registerUser(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
-
-  const StepIndicator = () => (
-    <div className="mb-6">
-      <p className="text-sm text-gray-500 text-center mb-2">Step {step} of 4</p>
-      <div className="flex items-center justify-between">
-        {[1, 2, 3, 4].map((s) => (
-          <div
-            key={s}
-            className={`flex-1 h-2 mx-1 rounded-full ${
-              step >= s ? "bg-red-600" : "bg-gray-200"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-
-  const Input = ({ label, name, type = "text" }) => (
-    <div className="space-y-0">
-      <label className="block text-gray-700 font-medium">{label}</label>
-      <input
-        type={type}
-        name={name}
-        value={form[name]}
-        onChange={handleChange}
-        className="w-full border rounded px-3 py-2"
-        // className="w-full border border-gray-300 rounded-lg px-3 py-2 text-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
-      />
-    </div>
-  );
 
   return (
     <main className="min-h-screen bg-white flex flex-col">
@@ -116,12 +92,14 @@ export default function UserRegister() {
         </div>
       </header>
 
-      <div className="flex-1 px-4 py-6 md:max-w-5xl w-full mx-auto">
-        <StepIndicator />
-
-        {/* STEP 1 */}
+      {/* MAIN CONTENT FORM */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex-1 px-4 py-6 md:max-w-5xl w-full mx-auto"
+      >
+        {/* STEP 1 - ACCOUNT */}
         {step === 1 && (
-          <div className="space-y-4">
+          <>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
                 Account Information
@@ -131,37 +109,49 @@ export default function UserRegister() {
               </p>
             </article>
 
-            <Input label="Email" name="email" type="email" />
-            <Input label="Password" name="password" type="password" />
-            <Input
-              label="Confirm Password"
-              name="confirmPassword"
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full mb-3 p-2 border rounded"
+              required
+            />
+
+            <input
               type="password"
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full mb-3 p-2 border rounded"
+              required
+            />
+
+            <input
+              type="password"
+              name="password_confirmation"
+              placeholder="Confirm Password"
+              value={form.password_confirmation}
+              onChange={handleChange}
+              className="w-full mb-3 p-2 border rounded"
+              required
             />
 
             <button
-              onClick={() => setStep(2)}
+              type="button"
+              onClick={nextStep}
               className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-2 rounded-lg"
             >
               Continue
             </button>
-
-            <p className="text-sm text-center text-gray-600">
-              Already have an account?{" "}
-              <Link
-                to="/"
-                // className="text-red-600 font-medium"
-                className="text-[var(--red-1)] font-semibold"
-              >
-                Login
-              </Link>
-            </p>
-          </div>
+          </>
         )}
 
-        {/* STEP 2 */}
+        {/* STEP 2 - PARENT */}
         {step === 2 && (
-          <div className="space-y-4 md:space-y-3">
+          <div>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
                 Personal Information
@@ -171,114 +161,280 @@ export default function UserRegister() {
               </p>
             </article>
 
-            <div className="grid md:grid-cols-4 gap-2">
-              <Input label="First Name" name="firstName" />
-              <Input label="Middle Name" name="middleName" />
-              <Input label="Last Name" name="lastName" />
-              <Input label="Suffix" name="suffix" />
-            </div>
+            {/* NAME FIELDS */}
+            <input
+              name="first_name"
+              placeholder="First Name"
+              value={form.first_name}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
 
-            <div className="grid md:grid-cols-2 gap-2">
-              <Input label="House No." name="houseNo" />
-              <Input label="Street" name="street" />
-              <Input label="Subdivision" name="subdivision" />
-              <Input label="Barangay" name="barangay" />
+            <input
+              name="middle_name"
+              placeholder="Middle Name"
+              value={form.middle_name}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
 
-              <div className="space-y-0">
-                <label className="block text-gray-700 font-medium">
-                  Date of Birth
-                </label>
-                <input
-                  type="date"
-                  name="birthday"
-                  value={form.birthday}
-                  onChange={handleChange}
-                  // className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500"
-                  className="w-full border rounded px-3 py-2"
-                />
-                {age && <p className="text-xs text-gray-500">Age: {age}</p>}
-              </div>
+            <input
+              name="last_name"
+              placeholder="Last Name"
+              value={form.last_name}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
 
-              <div className="space-y-0">
-                <label className="block text-gray-700 font-medium">
-                  Gender
-                </label>
-                <select
-                  name="gender"
-                  value={form.gender}
-                  onChange={handleChange}
-                  className="w-full border rounded px-3 py-2"
-                >
-                  <option value="">Select Gender</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                  <option>Prefer not to say</option>
-                </select>
-              </div>
-            </div>
+            <input
+              name="suffix"
+              placeholder="Suffix (Optional)"
+              value={form.suffix}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+            />
 
+            {/* BIRTHDAY */}
+            <input
+              type="date"
+              name="birthday"
+              value={form.birthday}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
+
+            {/* PHONE */}
+            <input
+              name="phone"
+              placeholder="Phone (+639XXXXXXXXXX)"
+              value={form.phone}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
+
+            {/* GENDER */}
+            <select
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            >
+              <option value="">Select Gender</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+            </select>
+
+            {/* ADDRESS */}
+            <input
+              name="house"
+              placeholder="House No."
+              value={form.house}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
+
+            <input
+              name="street"
+              placeholder="Street"
+              value={form.street}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
+
+            {/* BARANGAY */}
+            <select
+              name="barangay"
+              value={form.barangay}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            >
+              <option value="">Select Barangay</option>
+              <option value="greenhills">Greenhills</option>
+              <option value="maytunas">Maytunas</option>
+              <option value="kabayanan">Kabayanan</option>
+              <option value="salapan">Salapan</option>
+              <option value="west_crame">West Crame</option>
+              <option value="onse">Onse</option>
+            </select>
+
+            <input
+              name="subdivision"
+              placeholder="Subdivision (Optional)"
+              value={form.subdivision}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+            />
+
+            {/* CITY */}
+            <select
+              name="city"
+              value={form.city}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            >
+              <option value="">Select City</option>
+              <option value="san_juan">City of San Juan</option>
+              <option value="manila">City of Manila</option>
+              <option value="quezon">Quezon City</option>
+              <option value="makati">City of Makati</option>
+              <option value="pasig">City of Pasig</option>
+              <option value="taguig">City of Taguig</option>
+            </select>
+
+            {/* PROVINCE */}
+            <select
+              name="province"
+              value={form.province}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            >
+              <option value="">Select Province</option>
+              <option value="ncr">National Capital Region</option>
+              <option value="bulacan">Bulacan</option>
+              <option value="laguna">Laguna</option>
+              <option value="rizal">Rizal</option>
+              <option value="cavite">Cavite</option>
+            </select>
+
+            {/* REASON */}
+            <select
+              name="reason"
+              value={form.reason}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            >
+              <option value="">Select Reason</option>
+              <option value="crime_against_chastity">
+                Crime Against Chastity
+              </option>
+              <option value="death_of_spouse">Death of Spouse</option>
+              <option value="spouse_detained">Spouse is Detained</option>
+              <option value="physical_mental_incapacity">
+                Physical/Mental Incapacity of Spouse
+              </option>
+              <option value="separation">Legal/De Facto Separation</option>
+              <option value="annuled">Annulment of Marriage</option>
+              <option value="abandonment">Abandonment of Spouse</option>
+              <option value="preferred_to_keep">
+                Preferred To Keep Child/Children Instead of Giving Them To
+                Welfare
+              </option>
+              <option value="sole_provider">
+                Solely Provides Parental Care
+              </option>
+              <option value="assumed_responsibility">
+                Assumed Responsibility of Head of Family
+              </option>
+            </select>
+
+            {/* BUTTONS */}
             <div className="flex gap-3">
               <button
-                onClick={() => setStep(1)}
+                type="button"
+                onClick={prevStep}
                 className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
                 Back
               </button>
+
               <button
-                onClick={() => setStep(3)}
+                type="button"
+                onClick={nextStep}
                 className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
-                Continue
+                Next
               </button>
             </div>
           </div>
         )}
 
-        {/* STEP 3 */}
+        {/* STEP 3 - CONTACT */}
         {step === 3 && (
-          <div className="space-y-4">
+          <>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
-                Contact Information
+                Emergency Contact's Information
               </h2>
               <p className="font-semibold text-sm sm:text-base text-gray-600 text-justify">
                 Please enter your information to create an account.
               </p>
             </article>
-            <div className="grid md:grid-cols-2 gap-4">
-              <Input label="Contact Number" name="contactNumber" type="tel" />
-              <Input
-                label="Emergency Contact First Name"
-                name="emergencyFirst"
-              />
-              <Input label="Emergency Contact Last Name" name="emergencyLast" />
-              <Input
-                label="Emergency Contact Number"
-                name="emergencyContact"
-                type="tel"
-              />
-            </div>
 
+            <input
+              name="contact_first_name"
+              placeholder="First Name"
+              value={form.contact_first_name}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
+            <input
+              name="contact_middle_name"
+              placeholder="Middle Name"
+              value={form.contact_middle_name}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+            />
+            <input
+              name="contact_last_name"
+              placeholder="Last Name"
+              value={form.contact_last_name}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
+            <input
+              name="contact_suffix"
+              placeholder="Suffix"
+              value={form.contact_suffix}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+            />
+            <input
+              name="contact_phone"
+              placeholder="Phone"
+              value={form.contact_phone}
+              onChange={handleChange}
+              className="w-full mb-2 p-2 border rounded"
+              required
+            />
+
+            {/* BUTTONS */}
             <div className="flex gap-3">
               <button
-                onClick={() => setStep(2)}
+                type="button"
+                onClick={prevStep}
                 className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
                 Back
               </button>
+
               <button
-                onClick={() => setStep(4)}
+                type="button"
+                onClick={nextStep}
                 className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
-                Continue
+                Next
               </button>
             </div>
-          </div>
+          </>
         )}
 
-        {/* STEP 4 */}
+        {/* STEP 4 - FILE UPLOAD */}
         {step === 4 && (
-          <div className="space-y-4">
+          <>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
                 Upload Requirements
@@ -287,44 +443,50 @@ export default function UserRegister() {
                 Please enter your information to create an account.
               </p>
             </article>
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Profile Picture
-              </label>
-              <input
-                type="file"
-                className="w-full border border-dashed border-gray-400 rounded-lg p-3 text-sm"
-              />
-            </div>
 
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Signature
-              </label>
-              <input
-                type="file"
-                className="w-full border border-dashed border-gray-400 rounded-lg p-3 text-sm"
-              />
-            </div>
+            <label className="block text-gray-700 font-medium">
+              Upload Valid ID
+            </label>
+            <input
+              type="file"
+              name="id"
+              className="w-full mb-2 p-2 border rounded"
+              onChange={handleChange}
+              required
+            />
 
+            <label className="block text-gray-700 font-medium">
+              Upload Signature
+            </label>
+            <input
+              type="file"
+              name="signature"
+              className="w-full mb-2 p-2 border rounded"
+              onChange={handleChange}
+              required
+            />
+
+            {/* BUTTONS */}
             <div className="flex gap-3">
               <button
-                onClick={() => setStep(3)}
-                className="bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
-                // className="w-1/2 border border-gray-400  text-gray-500 font-semibold shadow shadow-gray-700 py-2 rounded-lg"
+                type="button"
+                onClick={prevStep}
+                className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
                 Back
               </button>
               <button
-                onClick={handleSubmit}
-                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-2 rounded-lg"
+                type="submit"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
-                Submit
+                Submit Registration
               </button>
             </div>
-          </div>
+          </>
         )}
-      </div>
+      </form>
     </main>
   );
-}
+};
+
+export default UserRegister;
