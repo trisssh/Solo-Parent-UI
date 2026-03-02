@@ -59,48 +59,7 @@ export default function UserDashboard() {
 
     fetchUser();
   }, [user?.pk, authTokens?.access]);
-  // useEffect(() => {
-  //   if (!user?.pk || !authTokens?.access) return;
-
-  //   const fetchData = async () => {
-  //     try {
-  //       // 1️ Fetch Parent
-  //       const parentResponse = await fetch(
-  //         `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${authTokens.access}`,
-  //           },
-  //         },
-  //       );
-
-  //       if (!parentResponse.ok) throw new Error("Parent fetch failed");
-
-  //       const parentData = await parentResponse.json();
-  //       setUserInfo(parentData);
-
-  //       // 2 Fetch Contact (separate endpoint)
-  //       const contactResponse = await fetch(
-  //         `http://127.0.0.1:8000/api/contact/${user.pk}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${authTokens.access}`,
-  //           },
-  //         },
-  //       );
-
-  //       if (contactResponse.ok) {
-  //         const contactData = await contactResponse.json();
-  //         setContactInfo(contactData);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [user?.pk, authTokens?.access]);
-  
+ 
 
   //Calculate Parent's Age
   const calculateAge = (birthday) => {
@@ -116,20 +75,21 @@ export default function UserDashboard() {
     return age;
   };
 
- 
 
-const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = "http://127.0.0.1:8000";
 
-const idImage = userInfo?.image?.find((img) => img.image_type === "id")?.image;
+  const idImage = userInfo?.image?.find((img) => img.image_type === "id")?.image;
 
-const signatureImage = userInfo?.image?.find(
+  const signatureImage = userInfo?.image?.find(
   (img) => img.image_type === "signature",
-)?.image;
+  )?.image;
 
-const idImageUrl = idImage ? `${BASE_URL}${idImage}` : null;
-const signatureImageUrl = signatureImage
+  const idImageUrl = idImage ? `${BASE_URL}${idImage}` : null;
+  const signatureImageUrl = signatureImage
   ? `${BASE_URL}${signatureImage}`
   : null;
+
+  // console.log(userInfo?.image);
 
    return (
      <div className="flex bg-white md:h-screen">
@@ -246,11 +206,7 @@ const signatureImageUrl = signatureImage
              <div className="lg:col-span-1 space-y-4.5">
                {/* PROFILE CARD */}
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6 text-center">
-                 {/* <img
-              alt="Profile"
-              className="w-32 h-32 mx-auto rounded-full object-cover ring-4 ring-red-200 shadow"
-            /> */}
-                 <svg
+                 {/* <svg
                    xmlns="http://www.w3.org/2000/svg"
                    viewBox="0 0 24 24"
                    fill="currentColor"
@@ -261,16 +217,18 @@ const signatureImageUrl = signatureImage
                      d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
                      clipRule="evenodd"
                    />
-                 </svg>
-                 {/* {idImageUrl ? (
-                  <img
-                    src={idImageUrl}
-                    alt="ID Image"
-                    className="size-6 text-red-500 w-32 h-32 mx-auto rounded-full object-cover ring-4 ring-red-300 shadow"
-                  />
-                ) : (
-                  <p>ID image not available</p>
-                )} */}
+                 </svg> */}
+
+                 {idImageUrl ? (
+                   <img
+                     src={idImageUrl}
+                     alt="Signature"
+                     className="size-6 text-red-500 w-32 h-32 mx-auto rounded-full object-cover ring-4 ring-red-300 shadow"
+                     //  className="h-28 object-contain border rounded-lg bg-white p-2"
+                   />
+                 ) : (
+                   <p className="text-sm text-gray-400">ID not available</p>
+                 )}
 
                  <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize">
                    {`${userInfo?.parent?.first_name || ""} ${userInfo?.parent?.middle_name || ""} ${userInfo?.parent?.last_name || ""}`.trim() ||
@@ -338,32 +296,17 @@ const signatureImageUrl = signatureImage
                  </p>
 
                  <div className="flex justify-center">
-                   <img
-                     alt="Signature"
-                     className="h-28 object-contain border rounded-lg bg-white p-2"
-                   />
-
-                   {/* {signatureImageUrl ? (
-                    <img
-                      src={signatureImageUrl}
-                      alt="Signature"
-                      className="h-28 object-contain border rounded-lg bg-white p-2"
-                    />
-                  ) : (
-                    <p>Signature not available</p>
-                  )} */}
-
-                   {/* {!userInfo ? (
-                    <p>Loading signature...</p>
-                  ) : signatureImageUrl ? (
-                    <img
-                      src={signatureImageUrl}
-                      alt="Signature"
-                      className="h-28 object-contain border rounded-lg bg-white p-2"
-                    />
-                  ) : (
-                    <p>Signature not available</p>
-                  )} */}
+                   {signatureImageUrl ? (
+                     <img
+                       src={signatureImageUrl}
+                       alt="Signature"
+                       className="h-28 object-contain rounded-lg bg-white p-2"
+                     />
+                   ) : (
+                     <p className="text-sm text-gray-400">
+                       E-Signature not available
+                     </p>
+                   )}
                  </div>
                </div>
              </div>
