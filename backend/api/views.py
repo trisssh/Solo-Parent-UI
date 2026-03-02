@@ -15,8 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
-from .models import User, Parent, Child, Image
-from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeVerificationSerializer, ChildInfoSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .models import Contact, User, Parent, Child, Image
+from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeVerificationSerializer, ChildInfoSerializer, ContactSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
 from .utils.emailer import emailer
 from .utils.send_password_reset_email import send_password_reset_email
 
@@ -121,11 +121,14 @@ class ParentInfoView(APIView):
         parent = get_object_or_404(Parent, user_id=self.request.user.pk)
         parent_serializer = ParentSerializer(parent, many=False)
         image = Image.objects.filter(parent_id=parent_serializer.data['id'])
-        image_serializer = ImageSerializer(image, many=True) 
+        image_serializer = ImageSerializer(image, many=True)
+        contact = get_object_or_404(Contact, parent_id=parent.id)
+        contact_serializer = ContactSerializer(contact, many=False) 
 
         data = {
             'parent': parent_serializer.data,
             'image': image_serializer.data,
+            'contact': contact_serializer.data,
         }
         return Response(data, status=status.HTTP_200_OK)
 

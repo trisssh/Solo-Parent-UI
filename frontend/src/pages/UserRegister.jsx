@@ -541,21 +541,20 @@ const UserRegister = () => {
                     className="w-full p-2 border rounded"
                   />
                 </div>
-
-                {/* Emergency Contact's Phone Number */}
-                <div>
-                  <label className="block text-gray-700 font-medium">
-                    Emergency Contact's Phone Number
-                  </label>
-                  <input
-                    name="contact_phone"
-                    placeholder="Phone (+639XXXXXXXXXX)"
-                    value={form.contact_phone}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
+              </div>
+              {/* Emergency Contact's Phone Number */}
+              <div className="mt-3">
+                <label className="block text-gray-700 font-medium">
+                  Emergency Contact's Phone Number
+                </label>
+                <input
+                  name="contact_phone"
+                  placeholder="Phone (+639XXXXXXXXXX)"
+                  value={form.contact_phone}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
+                  required
+                />
               </div>
 
               {/* BUTTONS */}
