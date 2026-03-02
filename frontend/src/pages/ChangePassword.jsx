@@ -314,7 +314,7 @@ export default function ChangePassword() {
           </nav>
         </header>
 
-        <div className="flex-1 flex justify-center items-center bg-gray-50">
+        <div className="flex-1 flex justify-center items-center bg-white">
           <form
             className="relative max-w-2xl w-full space-y-6"
             onSubmit={handleSubmit}
@@ -331,7 +331,7 @@ export default function ChangePassword() {
               </article>
 
               <div className="space-y-4 mb-6">
-                {/* <div>
+                <div>
                   <label
                     //   className="text-sm text-gray-600"
                     className="block text-gray-700 font-medium"
@@ -345,7 +345,7 @@ export default function ChangePassword() {
                     value={form.old_password}
                     onChange={handleChange}
                   />
-                </div> */}
+                </div>
 
                 <div>
                   <label className="block text-gray-700 font-medium">
