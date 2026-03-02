@@ -116,20 +116,20 @@ export default function UserDashboard() {
     return age;
   };
 
-  const idImage = userInfo?.image?.find(
-    (img) => img.image_type === "id",
-  )?.image;
-  const signatureImage = userInfo?.image?.find(
-    (img) => img.image_type === "signature",
-  )?.image;
+ 
 
-  const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "http://127.0.0.1:8000";
 
-  // const idImageUrl = idImage ? `${BASE_URL}/api/${idImage}` : null;
-  // const signatureImageUrl = signatureImage
-  //   ? `${BASE_URL}${signatureImage}`
-  //   : null;
+const idImage = userInfo?.image?.find((img) => img.image_type === "id")?.image;
 
+const signatureImage = userInfo?.image?.find(
+  (img) => img.image_type === "signature",
+)?.image;
+
+const idImageUrl = idImage ? `${BASE_URL}${idImage}` : null;
+const signatureImageUrl = signatureImage
+  ? `${BASE_URL}${signatureImage}`
+  : null;
 
    return (
      <div className="flex bg-white md:h-screen">
@@ -422,7 +422,7 @@ export default function UserDashboard() {
                          {userInfo?.parent?.birthday || "N/A"}
                        </p>
                      </div>
-                     <div>
+                     {/* <div>
                        <h4 className="text-sm text-gray-400">Age</h4>
 
                        <p className="font-medium text-lg text-gray-800 mb-3">
@@ -430,7 +430,7 @@ export default function UserDashboard() {
                            ? calculateAge(userInfo.parent.birthday)
                            : "N/A"}
                        </p>
-                     </div>
+                     </div> */}
                      <div>
                        <h4 className="text-sm text-gray-400">Gender</h4>
                        <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
@@ -444,10 +444,11 @@ export default function UserDashboard() {
                      {/* <p className="font-medium text-lg text-gray-800 mb-3">
                       031, Secret, Progreso, San Juan, Metro Manila
                     </p> */}
-                     <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize">
+                     {/* <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize"> */}
+                     <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
                        {`${userInfo?.parent?.house || ""} ${userInfo?.parent?.street || ""} ${userInfo?.parent?.subdivision || ""} ${userInfo?.parent?.barangay || ""} ${userInfo?.parent?.city || ""} ${userInfo?.parent?.province || ""}`.trim() ||
                          "N/A"}
-                     </h2>
+                     </p>
                    </div>
                  </div>
                </div>
@@ -458,26 +459,23 @@ export default function UserDashboard() {
                    Contact Information
                  </h3>
 
-                 <div className="container">
-                   {/* Email & Contact no */}
-                   <div className="grid md:grid-cols-2">
-                     <div>
-                       <h4 className="text-sm text-gray-400">Email</h4>
-                       {/* <p className="font-medium text-lg text-gray-800 mb-3">
-                        user@test.com
-                      </p> */}
-                       <p className="font-medium text-lg text-gray-800 mb-3">
-                         {userInfo?.parent?.email || user.email || "N/A"}
-                       </p>
-                     </div>
-                     <div>
-                       <h4 className="text-sm text-gray-400">Contact Number</h4>
-                       <p className="font-medium text-lg text-gray-800 mb-3">
-                         {userInfo?.parent?.phone || "N/A"}
-                       </p>
-                     </div>
+                 {/* Email & Contact no */}
+                 <div className="grid md:grid-cols-2">
+                   <div>
+                     <h4 className="text-sm text-gray-400">Email</h4>
+                     <p className="font-medium text-lg text-gray-800 mb-3">
+                       {userInfo?.parent?.email || user.email || "N/A"}
+                     </p>
                    </div>
+                   <div>
+                     <h4 className="text-sm text-gray-400">Contact Number</h4>
+                     <p className="font-medium text-lg text-gray-800 mb-3">
+                       {userInfo?.parent?.phone || "N/A"}
+                     </p>
+                   </div>
+                 </div>
 
+                 <div className="container">
                    {/* Emergency Contail Details */}
                    <div className="grid md:grid-cols-2 ">
                      <div>
@@ -502,6 +500,14 @@ export default function UserDashboard() {
                        </h4>
                        <p className="font-medium text-lg text-gray-800 mb-3">
                          {userInfo?.contact?.last_name || "N/A"}
+                       </p>
+                     </div>
+                     <div>
+                       <h4 className="text-sm text-gray-400">
+                         Emergency Contact's Suffix
+                       </h4>
+                       <p className="font-medium text-lg text-gray-800 mb-3">
+                         {userInfo?.contact?.suffix || "N/A"}
                        </p>
                      </div>
                      <div>
