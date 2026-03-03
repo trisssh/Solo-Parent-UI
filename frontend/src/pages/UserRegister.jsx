@@ -591,7 +591,7 @@ const UserRegister = () => {
               </article>
 
               <label className="block text-gray-700 font-medium">
-                Upload Valid ID
+                Upload 1x1 Picture
               </label>
               <input
                 type="file"
@@ -602,7 +602,7 @@ const UserRegister = () => {
               />
 
               <label className="block text-gray-700 font-medium">
-                Upload Signature
+                Upload E-Signature
               </label>
               <input
                 type="file"
