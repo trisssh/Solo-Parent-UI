@@ -55,10 +55,22 @@ export default function SuperAdminDashboard() {
             </div>
           </div>
         </header>
-        {/* <h2 className="text-2xl font-bold">SuperAdmin Dashboard</h2>
+
+        <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
+          <div className="md:hidden">
+            <h3 className="text-xl text- font-bold text-gray-900 mb-0">
+              Superadmin Dashboard
+            </h3>
+            <p className="text-gray-600 text-xs font-medium mb-3">
+              Full access to all system features and settings
+            </p>
+          </div>
+
+          {/* <h2 className="text-2xl font-bold">SuperAdmin Dashboard</h2>
         <p>Full access to all system features and settings.</p> */}
 
-        {/* <UserList user={{ is_staff: true, is_superuser: true }} /> */}
+          {/* <UserList user={{ is_staff: true, is_superuser: true }} /> */}
+        </main>
       </div>
     </div>
   );

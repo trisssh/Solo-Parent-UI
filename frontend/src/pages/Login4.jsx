@@ -144,7 +144,7 @@ export default function Login4() {
               <div className="bg-white size-14 rounded-full flex justify-center items-center">
                 <img src="SP.png" className="size-14" />
               </div>
-              <div className="ml-2 md:ml-6 text-center">
+              <div className="ml-2 text-center">
                 <h2 className="font-bold uppercase text-base sm:text-xl text-gray-800">
                   Solo Parent System
                 </h2>
