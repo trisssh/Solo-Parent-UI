@@ -15,6 +15,7 @@ import UserRegister from './pages/UserRegister';
 import UserList from './pages/ListofUsers';
 import EditAccount from "./pages/EditAccount";
 import SuperAdminDashboard from './dashboards/superadmin/SuperAdminDashboard';
+import SuperAdminList from './dashboards/superadmin/SuperAdminList'
 
 function App() {
   return (
