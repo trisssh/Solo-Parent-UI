@@ -69,6 +69,12 @@ export default function EditAccount() {
               To view and edit your Account's information
             </p>
           </div>
+
+          {/* Edit Account Section */}
+          <section>Edit Account</section>
+
+          {/* Change Password Account Section */}
+          <section>Change Password Account</section>
         </main>
       </div>
     </div>

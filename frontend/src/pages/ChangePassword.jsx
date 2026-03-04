@@ -10,15 +10,13 @@ import AuthContext from "../context/AuthContext";
 export default function ChangePassword() {
   // const { authTokens } = useContext(AuthContext);
   const { authTokens, userInfo } = useContext(AuthContext);
-  
-
-    const [user, setUser] = useState(null);
-    const [openDropdown, setOpenDropdown] = useState(false);
-    const navigate = useNavigate();
-    const [form, setForm] = useState({
-      password: "",
-      confirm: "",
-    });
+  const [user, setUser] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    password: "",
+    confirm: "",
+  });
     // const [form, setForm] = useState({
     //   old_password: "",
     //   password: "",
