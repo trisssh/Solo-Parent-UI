@@ -40,7 +40,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     admin: [
       { name: "Dashboard", link: "/dashboard" },
       { name: "List of Parents", link: "/list-of-users" },
-      { name: "Edit Account", link: "/admins-edit" },
+      { name: "Edit Account", link: "/edit-account" },
       { name: "Logout", action: handleLogout },
     ],
 
@@ -48,7 +48,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       { name: "Dashboard", link: "/dashboard" },
       { name: "List of Parents", link: "/list-of-users" },
       { name: "List of Admins", link: "/admins-list" },
-      { name: "Edit Account", link: "/admins-edit" },
+      { name: "Edit Account", link: "/edit-account" },
       { name: "Logout", action: handleLogout },
     ],
   };

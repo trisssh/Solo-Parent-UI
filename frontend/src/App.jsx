@@ -15,7 +15,6 @@ import UserRegister from './pages/UserRegister';
 import ListofUsers from "./pages/ListofUsers";
 import EditAccount from "./pages/EditAccount";
 import SuperAdminDashboard from './dashboards/superadmin/SuperAdminDashboard';
-import SuperAdminList from './dashboards/superadmin/SuperAdminList'
 
 function App() {
   return (
@@ -37,15 +36,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* <Route
-            path="/list-of-users"
-            element={
-              <ProtectedRoute>
-                <ListofUsers />
-              </ProtectedRoute>
-            }
-          /> */}
           <Route
             path="/list-of-users"
             element={
@@ -54,16 +44,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/edit-account"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
                 <EditAccount />
               </ProtectedRoute>
             }
           />
-
           {/* <Route
             path="/change-password"
             element={

@@ -5,10 +5,6 @@ export default function AdminDashboard() {
 const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    // <div className="p-6">
-    //   <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-    //   <p>Here you can manage users and view system stats.</p>
-    // </div>
     <div className="flex bg-white md:h-screen">
       {/* SIDEBAR */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -44,7 +40,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
           </div>
 
           <div className="flex items-center md:hidden">
-            <div className="bg-white  size-14 rounded-full  flex justify-center items-center">
+            <div className="bg-red-600 border border-gray-400 size-14 rounded-md shadow flex justify-center items-center">
               <img src="SP.png" className="size-12 object-contain" />
             </div>
 
@@ -58,7 +54,17 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
             </div>
           </div>
         </header>
-        MAIN CONTENT
+
+        <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
+          <div className="md:hidden">
+            <h3 className="text-xl text- font-bold text-gray-900 mb-0">
+              Admin Dashboard
+            </h3>
+            <p className="text-gray-600 text-xs font-medium mb-3">
+              Here you can manage users and view system stats
+            </p>
+          </div>
+        </main>
       </div>
     </div>
   );
