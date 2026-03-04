@@ -12,7 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import ForgetPassword from './pages/ForgetPassword';
 import ChangePassword from './pages/ChangePassword';
 import UserRegister from './pages/UserRegister';
-import UserList from './pages/ListofUsers';
+import ListofUsers from "./pages/ListofUsers";
 import EditAccount from "./pages/EditAccount";
 import SuperAdminDashboard from './dashboards/superadmin/SuperAdminDashboard';
 import SuperAdminList from './dashboards/superadmin/SuperAdminList'
@@ -46,6 +46,14 @@ function App() {
               </ProtectedRoute>
             }
           /> */}
+          <Route
+            path="/list-of-users"
+            element={
+              <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
+                <ListofUsers />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/edit-account"
@@ -55,7 +63,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
 
           {/* <Route
             path="/change-password"

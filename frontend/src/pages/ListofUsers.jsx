@@ -1,131 +1,98 @@
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
+import Sidebar from "../components/Sidebar";
 
-export default function UserList() {
+export default function ListofUsers() {
   const { authTokens, user } = useContext(AuthContext);
-  const tempUser = user || { is_staff: true, is_superuser: true };
-
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // ---------------------------
-  // SWEET ALERT
-  // ---------------------------
-  const showAlert = ({ title, message, icon = "error" }) => {
+
+  // ROLE PROTECTION 
+ if (!user || (!user.is_staff && !user.is_superuser)) {
+   return (
+     <p className="text-center mt-10 text-red-600 font-bold">Access Denied</p>
+   );
+ }
+
+  // SWEET ALERT HELPER
+  const showAlert = (title, message, icon = "error") => {
     Swal.fire({
-      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+      title,
+      text: message,
       icon,
-      iconColor: "#DC2626",
-      background: "#ffffff",
-      showConfirmButton: true,
-      confirmButtonText: "Okay",
-      buttonsStyling: false,
-      customClass: {
-        popup: "rounded-xl px-6 py-4",
-        confirmButton:
-          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
-      },
+      confirmButtonColor: "#DC2626",
     });
   };
 
-  // FETCH PARENTS
-  const fetchParents = async () => {
+  // FETCH USERS
+  const fetchUsers = async () => {
     if (!authTokens?.access) return;
 
     try {
       const res = await fetch("http://127.0.0.1:8000/api/parent/list", {
-        method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authTokens.access}`,
         },
       });
 
-      if (!res.ok) throw new Error("Failed to fetch parents");
+      if (!res.ok) throw new Error("Failed to fetch users");
 
       const data = await res.json();
-      setUsers(data.results);
+      setUsers(data.results || data);
     } catch (err) {
-      console.error(err);
-      showAlert({ title: "Error", message: err.message });
+      showAlert("Error", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchParents();
+    fetchUsers();
   }, [authTokens]);
 
-  // MODAL HANDLERS
-  const handleView = (u) => {
-    console.log(u);
-    setSelectedUser(u);
+
+  // HANDLERS
+  const handleView = (user) => {
+    setSelectedUser(user);
     setIsEdit(false);
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
+  const handleClose = () => {
     setSelectedUser(null);
-    setIsEdit(false);
     setShowModal(false);
+    setIsEdit(false);
   };
 
-  // const handleChange = (e) =>
-  //   setSelectedUser({ ...selectedUser, [e.target.name]: e.target.value });
-
-  // // ---------------------------
-  // // SAVE CHANGES
-  // // ---------------------------
-  // const handleSave = async () => {
-  //   if (!authTokens?.access) return;
-
-  //   try {
-  //     const res = await fetch(
-  //       `http://127.0.0.1:8000/api/parent/${selectedUser.id}/`,
-  //       {
-  //         method: "PATCH",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${authTokens.access}`,
-  //         },
-  //         body: JSON.stringify(selectedUser),
-  //       },
-  //     );
-
-  //     if (!res.ok) throw new Error("Failed to update parent");
-
-  //     const updatedData = await res.json();
-  //     setUsers(users.map((u) => (u.id === updatedData.id ? updatedData : u)));
-  //     showAlert({
-  //       title: "Saved",
-  //       message: "Solo Parent details updated successfully.",
-  //       icon: "success",
-  //     });
-  //     setIsEdit(false);
-  //     setShowModal(false);
-  //   } catch (err) {
-  //     console.error(err);
-  //     showAlert({ title: "Error", message: err.message });
-  //   }
-  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name === "is_verified") {
-      setSelectedUser({ ...selectedUser, [name]: value === "true" });
+      setSelectedUser({
+        ...selectedUser,
+        is_verified: value === "true",
+      });
     } else {
-      setSelectedUser({ ...selectedUser, [name]: value });
+      setSelectedUser({
+        ...selectedUser,
+        [name]: value,
+      });
     }
   };
 
-  const handleSave = async () => {
-    if (!authTokens?.access) return;
 
+  // UPDATE USER
+  const handleSave = async () => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/parent/${selectedUser.id}`,
+        `http://127.0.0.1:8000/api/parent/${selectedUser.id}/`,
         {
           method: "PUT",
           headers: {
@@ -136,35 +103,33 @@ export default function UserList() {
         },
       );
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(
-          errorData.detail || "Failed to update parent. Check console.",
-        );
-      }
+      if (!res.ok) throw new Error("Failed to update user");
 
-      const updatedData = await res.json();
-      setUsers(users.map((u) => (u.id === updatedData.id ? updatedData : u)));
+      const updated = await res.json();
 
-      showAlert({
-        title: "Saved",
-        message: "Solo Parent details updated successfully.",
-        icon: "success",
-      });
+      setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
 
-      setIsEdit(false);
-      setShowModal(false);
+      showAlert("Success", "User updated successfully", "success");
+      handleClose();
     } catch (err) {
-      console.error(err);
-      showAlert({ title: "Error", message: err.message });
+      showAlert("Error", err.message);
     }
   };
 
-  // DELETE
-  const handleDelete = async () => {
-    if (!authTokens?.access) return;
 
+  // DELETE USER
+  const handleDelete = async () => {
     try {
+      const confirm = await Swal.fire({
+        title: "Are you sure?",
+        text: "This action cannot be undone.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DC2626",
+      });
+
+      if (!confirm.isConfirmed) return;
+
       const res = await fetch(
         `http://127.0.0.1:8000/api/parent/${selectedUser.id}/`,
         {
@@ -175,180 +140,212 @@ export default function UserList() {
         },
       );
 
-      if (!res.ok) throw new Error("Failed to delete parent");
+      if (!res.ok) throw new Error("Failed to delete user");
 
-      setUsers(users.filter((u) => u.id !== selectedUser.id));
-      showAlert({
-        title: "Deleted",
-        message: "Parent deleted successfully.",
-        icon: "success",
-      });
-      handleCloseModal();
+      setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
+
+      showAlert("Deleted", "User deleted successfully", "success");
+      handleClose();
     } catch (err) {
-      console.error(err);
-      showAlert({ title: "Error", message: err.message });
+      showAlert("Error", err.message);
     }
   };
 
-  // RENDER
-  if (!tempUser.is_staff) {
-    return (
-      <p className="text-center mt-10 text-red-600 font-bold">Access Denied</p>
-    );
-  }
-
-  // helper to combine name parts
-  const getFullName = (u) => {
-    return [u.first_name, u.middle_name, u.last_name, u.suffix]
+  const getFullName = (u) =>
+    [u.first_name, u.middle_name, u.last_name, u.suffix]
       .filter(Boolean)
       .join(" ");
-  };
+
+
+  // RENDER
+  if (loading) {
+    return <p className="text-center mt-10">Loading...</p>;
+  }
 
   return (
-    <div className="p-6">
-      <h3 className="text-2xl font-bold text-gray-800 mb-2">
-        Solo Parent's Account List Table
-      </h3>
+    <div className="flex bg-white md:h-screen">
+      {/* SIDEBAR */}
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      <table className="w-full border border-gray-300 rounded-lg shadow-md">
-        <thead className="bg-[var(--red-3)]">
-          <tr>
-            <th className="p-3 border">ID</th>
-            <th className="p-3 border">Full Name</th>
-            <th className="p-3 border">Birthday</th>
-            <th className="p-3 border">Gender</th>
-            <th className="p-3 border">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u.id} className="hover:bg-gray-100">
-              <td className="p-3 border">{u.id}</td>
-              <td className="p-3 border">{getFullName(u)}</td>
-              <td className="p-3 border">{u.birthday}</td>
-              <td className="p-3 border">{u.gender}</td>
-              <td className="p-3 border text-center">
-                <button
-                  className="bg-[var(--red-1)] hover:bg-[var(--red-4)] text-white font-semibold shadow shadow-gray-700 px-4 py-1.5 rounded-lg"
-                  onClick={() => handleView(u)}
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* MAIN CONTENT */}
+      <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
+        <header className="bg-white border-b border-red-200 flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2.5 p-2 shadow-sm">
+          <button
+            className="md:hidden text-gray-800 mr-3"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="size-6"
+            >
+              <path
+                fillRule="evenodd"
+                d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
 
-      {showModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg shadow-lg w-96 p-6 relative">
-            <h3 className="text-2xl font-bold mb-4">Solo Parent Details</h3>
-
-            <p>
-              <strong>ID:</strong> {selectedUser.id}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 hidden md:block">
+              List of Parent's Account
+            </h2>
+            <p className="text-gray-600 text-sm font-medium hidden md:block">
+              To manage Solo Parent's Account Details
             </p>
-            <p>
-              <strong>Full Name:</strong>{" "}
-              {isEdit ? (
+          </div>
+
+          <div className="flex items-center md:hidden">
+            <div className="bg-red-600 border border-gray-400 size-14 rounded-md shadow flex justify-center items-center">
+              <img src="SP.png" className="size-12 object-contain" />
+            </div>
+
+            <div className="leading-tight mx-2">
+              <h2 className="font-bold uppercase text-gray-900 text-sm sm:text-base">
+                Solo Parent System
+              </h2>
+              <p className="text-gray-500 text-xs">
+                City of San Juan, Metro Manila
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
+          <div className="md:hidden">
+            <h3 className="text-xl text- font-bold text-gray-900 mb-0">
+              List of Parent's Account
+            </h3>
+            <p className="text-gray-600 text-xs font-medium mb-3">
+              To manage Solo Parent's Account Details
+            </p>
+          </div>
+
+          <table className="w-full shadow-md text-xs sm:text-sm md:text-base">
+            <thead className="bg-red-600 text-black">
+              <tr>
+                <th className="p-3 border text-gray-100">ID</th>
+                <th className="p-3 border text-gray-100">Full Name</th>
+                <th className="p-3 border text-gray-100">Birthday</th>
+                <th className="p-3 border text-gray-100">Gender</th>
+                <th className="p-3 border text-gray-100">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => (
+                <tr key={u.id} className="hover:bg-gray-100">
+                  <td className="p-3 border">{u.id}</td>
+                  <td className="p-3 border">{getFullName(u)}</td>
+                  <td className="p-3 border">{u.birthday}</td>
+                  <td className="p-3 border">{u.gender}</td>
+                  <td className="p-3 border text-center">
+                    <button
+                      className="bg-red-600 text-white px-4 py-1 rounded"
+                      onClick={() => handleView(u)}
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* MODAL */}
+          {showModal && selectedUser && (
+            <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
+              <div className="bg-white w-96 p-6 rounded shadow-lg relative">
+                <h3 className="text-xl font-bold mb-3">User Details</h3>
+
                 <input
                   name="first_name"
                   value={selectedUser.first_name || ""}
                   onChange={handleChange}
-                  className="border p-1 rounded w-full"
-                  placeholder="First Name"
+                  disabled={!isEdit}
+                  className="border p-2 w-full mb-2 rounded"
                 />
-              ) : (
-                getFullName(selectedUser)
-              )}
-            </p>
-            <p>
-              <strong>Birthday:</strong>{" "}
-              {isEdit ? (
+
                 <input
                   type="date"
                   name="birthday"
                   value={selectedUser.birthday || ""}
                   onChange={handleChange}
-                  className="border p-1 rounded w-full"
+                  disabled={!isEdit}
+                  className="border p-2 w-full mb-2 rounded"
                 />
-              ) : (
-                selectedUser.birthday
-              )}
-            </p>
-            <p>
-              <strong>Gender:</strong>{" "}
-              {isEdit ? (
+
                 <select
                   name="gender"
                   value={selectedUser.gender || ""}
                   onChange={handleChange}
-                  className="border p-1 rounded w-full"
+                  disabled={!isEdit}
+                  className="border p-2 w-full mb-2 rounded"
                 >
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
-              ) : (
-                selectedUser.gender
-              )}
-            </p>
 
-            <p>
-              <strong>Status:</strong>{" "}
-              {isEdit ? (
                 <select
                   name="is_verified"
-                  value={
-                    (selectedUser.is_verified && "Verified") || "Unverified"
-                  }
+                  value={selectedUser.is_verified ? "true" : "false"}
                   onChange={handleChange}
-                  className="border p-1 rounded w-full"
+                  disabled={!isEdit}
+                  className="border p-2 w-full mb-4 rounded"
                 >
-                  <option value="Verified">Verified</option>
-                  <option value="Unverified">Unverified</option>
+                  <option value="true">Verified</option>
+                  <option value="false">Unverified</option>
                 </select>
-              ) : (
-                (selectedUser.is_verified && "Verified") || "Unverified"
-              )}
-            </p>
 
-            <div className="grid grid-cols-1 gap-3 mt-4">
-              {isEdit ? (
-                <div className="flex gap-2">
-                  <button
-                    className="bg-[var(--gray-1)] hover:bg-gray-600 text-white font-semibold shadow shadow-gray-700 px-4 md:px-10 py-2 rounded-lg"
-                    onClick={() => setIsEdit(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 px-6 md:px-10 py-2 rounded-lg"
-                    onClick={handleSave}
-                  >
-                    Save Changes
-                  </button>
+                <div className="flex justify-between">
+                  {isEdit ? (
+                    <>
+                      <button
+                        className="bg-gray-500 text-white px-4 py-1 rounded"
+                        onClick={() => setIsEdit(false)}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className="bg-red-600 text-white px-4 py-1 rounded"
+                        onClick={handleSave}
+                      >
+                        Save
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="bg-blue-600 text-white px-4 py-1 rounded"
+                        onClick={() => setIsEdit(true)}
+                      >
+                        Edit
+                      </button>
+
+                      {user.role === "superadmin" && (
+                        <button
+                          className="bg-black text-white px-4 py-1 rounded"
+                          onClick={handleDelete}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
-              ) : (
-                <div className="flex justify-end gap-3 mt-4">
-                  <button
-                    className="bg-red-600 hover:bg-red-700 text-white flex gap-2 items-center shadow shadow-gray-700 px-10 py-1.5 rounded-lg font-semibold"
-                    onClick={() => setIsEdit(true)}
-                  >
-                    Edit
-                  </button>
-                </div>
-              )}
+
+                <button
+                  className="absolute top-2 right-3 text-gray-600"
+                  onClick={handleClose}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
-
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
+          )}
+        </main>
+      </div>
     </div>
   );
 }

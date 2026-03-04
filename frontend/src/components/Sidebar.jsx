@@ -5,18 +5,10 @@ import Swal from "sweetalert2";
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const { user, logoutUser } = useContext(AuthContext);
-  // const [role, setRole] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const storedRole = localStorage.getItem("role");
-  //   if (storedRole) {
-  //     setRole(storedRole);
-  //   }
-  // }, []);
-
-  if (!user) return null; // wait until user loads
+  if (!user) return null; 
 
   let role = null;
 
@@ -47,14 +39,14 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navItems = {
     admin: [
       { name: "Dashboard", link: "/dashboard" },
-      { name: "List of Parents", link: "/users-list" },
+      { name: "List of Parents", link: "/list-of-users" },
       { name: "Edit Account", link: "/admins-edit" },
       { name: "Logout", action: handleLogout },
     ],
 
     superadmin: [
       { name: "Dashboard", link: "/dashboard" },
-      { name: "List of Parents", link: "/users-list" },
+      { name: "List of Parents", link: "/list-of-users" },
       { name: "List of Admins", link: "/admins-list" },
       { name: "Edit Account", link: "/admins-edit" },
       { name: "Logout", action: handleLogout },
