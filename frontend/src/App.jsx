@@ -44,6 +44,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* ADMIN & SUPERADMIN CHANGEPASS */}
           <Route
             path="/edit-account"
             element={
@@ -52,22 +54,16 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+
+          {/* USER CHANGEPASS */}
+          <Route
             path="/change-password"
             element={
-              <ProtectedRoute>
-                {user?.role === "user" ? (
-                  <UserLayout>
-                    <ChangePassword />
-                  </UserLayout>
-                ) : (
-                  <AdminLayout>
-                    <ChangePassword />
-                  </AdminLayout>
-                )}
+              <ProtectedRoute allowedRoles={["user"]}>
+                <ChangePassword />
               </ProtectedRoute>
             }
-          /> */}
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
