@@ -22,16 +22,6 @@ export default function ListofUsers() {
     );
   }
 
-  // SWEET ALERT HELPER
-  const showAlert = (title, message, icon = "error") => {
-    Swal.fire({
-      title,
-      text: message,
-      icon,
-      confirmButtonColor: "#DC2626",
-    });
-  };
-
   // FETCH USERS
   // const fetchUsers = async () => {
   //   if (!authTokens?.access) return;
@@ -86,7 +76,6 @@ export default function ListofUsers() {
     }
   };
 
-
   useEffect(() => {
     fetchUsers();
   }, [authTokens]);
@@ -139,22 +128,25 @@ export default function ListofUsers() {
 
       setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
 
-      showAlert("Success", "User updated successfully", "success");
+       showAlert({
+         title: "Success",
+         message: "User updated successfully",
+         icon: "success",
+       });
       handleClose();
     } catch (err) {
-      showAlert("Error", err.message);
+      // showAlert("Error", err.message);
     }
   };
 
   // DELETE USER
   const handleDelete = async () => {
     try {
-      const confirm = await Swal.fire({
+      const confirm = await showAlert({
         title: "Are you sure?",
-        text: "This action cannot be undone.",
+        message: "This action cannot be undone.",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#DC2626",
       });
 
       if (!confirm.isConfirmed) return;
@@ -189,6 +181,33 @@ export default function ListofUsers() {
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
   }
+
+  // SWEET ALERT HELPER
+  // const showAlert = (title, message, icon = "error") => {
+  //   Swal.fire({
+  //     title,
+  //     text: message,
+  //     icon,
+  //     confirmButtonColor: "#DC2626",
+  //   });
+  // };
+    const showAlert = ({ title, message, icon = "error" }) => {
+      Swal.fire({
+        title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+        html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+        icon,
+        iconColor: "#DC2626",
+        background: "#ffffff",
+        showConfirmButton: true,
+        confirmButtonText: "Okay",
+        buttonsStyling: false,
+        customClass: {
+          popup: "rounded-xl px-6 py-4",
+          confirmButton:
+            "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+        },
+      });
+    };
 
   return (
     <div className="flex bg-white md:h-screen">
