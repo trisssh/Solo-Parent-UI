@@ -11,14 +11,16 @@ export default function ListofUsers() {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [prevPage, setPrevPage] = useState(null);
+  const [nextPage, setNextPage] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
-
-  // ROLE PROTECTION 
- if (!user || (!user.is_staff && !user.is_superuser)) {
-   return (
-     <p className="text-center mt-10 text-red-600 font-bold">Access Denied</p>
-   );
- }
+  // ROLE PROTECTION
+  if (!user || (!user.is_staff && !user.is_superuser)) {
+    return (
+      <p className="text-center mt-10 text-red-600 font-bold">Access Denied</p>
+    );
+  }
 
   // SWEET ALERT HELPER
   const showAlert = (title, message, icon = "error") => {
@@ -31,11 +33,33 @@ export default function ListofUsers() {
   };
 
   // FETCH USERS
-  const fetchUsers = async () => {
+  // const fetchUsers = async () => {
+  //   if (!authTokens?.access) return;
+
+  //   try {
+  //     const res = await fetch("http://127.0.0.1:8000/api/parent/list", {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${authTokens.access}`,
+  //       },
+  //     });
+
+  //     if (!res.ok) throw new Error("Failed to fetch users");
+
+  //     const data = await res.json();
+  //     console.log(data);
+  //     setUsers(data.results || data);
+  //   } catch (err) {
+  //     showAlert("Error", err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const fetchUsers = async (url = "http://127.0.0.1:8000/api/parent/list") => {
     if (!authTokens?.access) return;
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/parent/list", {
+      const res = await fetch(url, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authTokens.access}`,
@@ -45,7 +69,16 @@ export default function ListofUsers() {
       if (!res.ok) throw new Error("Failed to fetch users");
 
       const data = await res.json();
-      setUsers(data.results || data);
+
+      // Set the array of users
+      setUsers(data.results);
+
+      // Save pagination URLs
+      setNextPage(data.next);
+      setPrevPage(data.previous);
+
+      // Save total count
+      setTotalCount(data.count);
     } catch (err) {
       showAlert("Error", err.message);
     } finally {
@@ -53,10 +86,10 @@ export default function ListofUsers() {
     }
   };
 
+
   useEffect(() => {
     fetchUsers();
   }, [authTokens]);
-
 
   // HANDLERS
   const handleView = (user) => {
@@ -64,13 +97,11 @@ export default function ListofUsers() {
     setIsEdit(false);
     setShowModal(true);
   };
-
   const handleClose = () => {
     setSelectedUser(null);
     setShowModal(false);
     setIsEdit(false);
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -87,12 +118,11 @@ export default function ListofUsers() {
     }
   };
 
-
   // UPDATE USER
   const handleSave = async () => {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/parent/${selectedUser.id}/`,
+        `http://127.0.0.1:8000/api/admin/parent/info/${selectedUser.id}`,
         {
           method: "PUT",
           headers: {
@@ -116,7 +146,6 @@ export default function ListofUsers() {
     }
   };
 
-
   // DELETE USER
   const handleDelete = async () => {
     try {
@@ -131,7 +160,7 @@ export default function ListofUsers() {
       if (!confirm.isConfirmed) return;
 
       const res = await fetch(
-        `http://127.0.0.1:8000/api/parent/${selectedUser.id}/`,
+        `http://127.0.0.1:8000/user/delete/${selectedUser.id}/`,
         {
           method: "DELETE",
           headers: {
@@ -155,7 +184,6 @@ export default function ListofUsers() {
     [u.first_name, u.middle_name, u.last_name, u.suffix]
       .filter(Boolean)
       .join(" ");
-
 
   // RENDER
   if (loading) {
@@ -253,6 +281,37 @@ export default function ListofUsers() {
             </tbody>
           </table>
 
+          {/* PAGINATION  */}
+          <div className="flex justify-between mt-4 items-center">
+            <span className="text-sm">Total Users: {totalCount}</span>
+
+            <div className="flex gap-2">
+              <button
+                disabled={!prevPage}
+                onClick={() => fetchUsers(prevPage)}
+                className={`px-4 md:py-2 rounded text-white ${
+                  prevPage
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-[var(--gray-2)] cursor-not-allowed"
+                }`}
+              >
+                Prev
+              </button>
+
+              <button
+                disabled={!nextPage}
+                onClick={() => fetchUsers(nextPage)}
+                className={`px-4 md:py-2 rounded text-white ${
+                  nextPage
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-[var(--gray-2)] cursor-not-allowed"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
           {/* MODAL */}
           {showModal && selectedUser && (
             <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -317,13 +376,13 @@ export default function ListofUsers() {
                   ) : (
                     <>
                       <button
-                        className="bg-blue-600 text-white px-4 py-1 rounded"
+                        className="bg-red-600 text-white px-4 py-1 rounded"
                         onClick={() => setIsEdit(true)}
                       >
                         Edit
                       </button>
 
-                      {user.role === "superadmin" && (
+                      {user.is_superuser && (
                         <button
                           className="bg-black text-white px-4 py-1 rounded"
                           onClick={handleDelete}

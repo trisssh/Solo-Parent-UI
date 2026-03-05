@@ -82,79 +82,7 @@ export function AuthProvider({ children }) {
   };
 
   //UserRegister
-  // const registerUser = async (registerData) => {
-  //   try {
-  //     const res = await fetch("http://127.0.0.1:8000/api/parent/create", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(registerData),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (res.ok) {
-  //       showAlert({
-  //         icon: "success",
-  //         title: "Registration Successful",
-  //         message: "You can now login.",
-  //       });
-
-  //       navigate("/");
-  //     } else {
-  //       showAlert({
-  //         icon: "error",
-  //         title: "Registration Failed",
-  //         message: data.detail || "Something went wrong.",
-  //       });
-  //     }
-  //   } catch (err) {
-  //     showAlert({
-  //       icon: "error",
-  //       title: "Network Error",
-  //       message: "Cannot connect to server.",
-  //     });
-  //   }
-  // };
-  // const registerUser = async (registerData) => {
-  //   try {
-  //     // const formData = new FormData();
-
-  //     // for (let key in registerData) {
-  //     //   formData.append(key, registerData[key]);
-  //     // }
-
-  //     const res = await fetch("http://127.0.0.1:8000/api/parent/create", {
-  //       method: "POST", //create
-  //       body: registerData, 
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (res.ok) {
-  //       showAlert({
-  //         icon: "success",
-  //         title: "Registration Successful",
-  //         message: "You can now login.",
-  //       });
-
-  //       navigate("/");
-  //     } else {
-  //       showAlert({
-  //         icon: "error",
-  //         title: "Registration Failed",
-  //         message:
-  //           Object.values(data).flat().join(" ") || "Something went wrong.",
-  //       });
-  //     }
-  //   } catch (err) {
-  //     showAlert({
-  //       icon: "error",
-  //       title: "Network Error",
-  //       message: "Cannot connect to server.",
-  //     });
-  //   }
-  // };
-const registerUser = async (formData) => {
+  const registerUser = async (formData) => {
   try {
     const res = await fetch("http://127.0.0.1:8000/api/parent/create", {
       method: "POST",
@@ -203,7 +131,7 @@ const registerUser = async (formData) => {
       message: "Cannot connect to server.",
     });
   }
-};
+  };
 
   //fetch API
   const updateToken = async () => {
