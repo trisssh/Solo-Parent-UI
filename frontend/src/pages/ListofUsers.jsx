@@ -141,35 +141,16 @@ export default function ListofUsers() {
 
   // DELETE USER
   const handleDelete = async () => {
-    try {
-      const confirm = await showAlert({
-        title: "Are you sure?",
-        message: "This action cannot be undone.",
-        icon: "warning",
-        showCancelButton: true,
-      });
+    const confirm = await showAlert({
+      title: "Are you sure?",
+      message: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+    });
 
-      if (!confirm.isConfirmed) return;
+    if (!confirm.isConfirmed) return;
 
-      const res = await fetch(
-        `http://127.0.0.1:8000/user/delete/${selectedUser.id}/`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${authTokens.access}`,
-          },
-        },
-      );
-
-      if (!res.ok) throw new Error("Failed to delete user");
-
-      setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
-
-      showAlert("Deleted", "User deleted successfully", "success");
-      handleClose();
-    } catch (err) {
-      showAlert("Error", err.message);
-    }
+    console.log("User confirmed delete");
   };
 
   const getFullName = (u) =>
@@ -183,31 +164,29 @@ export default function ListofUsers() {
   }
 
   // SWEET ALERT HELPER
-  // const showAlert = (title, message, icon = "error") => {
-  //   Swal.fire({
-  //     title,
-  //     text: message,
-  //     icon,
-  //     confirmButtonColor: "#DC2626",
-  //   });
-  // };
-    const showAlert = ({ title, message, icon = "error" }) => {
-      Swal.fire({
-        title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-        html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
-        icon,
-        iconColor: "#DC2626",
-        background: "#ffffff",
-        showConfirmButton: true,
-        confirmButtonText: "Okay",
-        buttonsStyling: false,
-        customClass: {
-          popup: "rounded-xl px-6 py-4",
-          confirmButton:
-            "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
-        },
-      });
-    };
+  const showAlert = ({ title, message, icon = "error" }) => {
+    Swal.fire({
+      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+      icon,
+      iconColor: "#DC2626",
+      background: "#ffffff",
+      showConfirmButton: true,
+      confirmButtonText: "Okay",
+      buttonsStyling: false,
+      customClass: {
+        popup: "rounded-xl px-6 py-4",
+        confirmButton:
+          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+      },
+    });
+  };
+
+    // const currentPage = prevPage
+    //   ? parseInt(new URL(prevPage).searchParams.get("offset") / 10) + 2
+    //   : 1;
+
+    // <span>Page: {currentPage}</span>;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -302,13 +281,15 @@ export default function ListofUsers() {
 
           {/* PAGINATION  */}
           <div className="flex justify-between mt-4 items-center">
-            <span className="text-sm">Total Users: {totalCount}</span>
+            <span className="text-sm">
+              Total Parent's Account: {totalCount}
+            </span>
 
             <div className="flex gap-2">
               <button
                 disabled={!prevPage}
                 onClick={() => fetchUsers(prevPage)}
-                className={`px-4 md:py-2 rounded text-white ${
+                className={`text-sm md:text-base px-4 md:py-2 rounded text-white ${
                   prevPage
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-[var(--gray-2)] cursor-not-allowed"
@@ -320,7 +301,7 @@ export default function ListofUsers() {
               <button
                 disabled={!nextPage}
                 onClick={() => fetchUsers(nextPage)}
-                className={`px-4 md:py-2 rounded text-white ${
+                className={`text-sm md:text-base px-4 md:py-2 rounded text-white ${
                   nextPage
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-[var(--gray-2)] cursor-not-allowed"
@@ -335,7 +316,9 @@ export default function ListofUsers() {
           {showModal && selectedUser && (
             <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
               <div className="bg-white w-96 p-6 rounded shadow-lg relative">
-                <h3 className="text-xl font-bold mb-3">User Details</h3>
+                <h3 className="text-xl font-bold mb-3">
+                  Parent's Account Details
+                </h3>
 
                 <input
                   name="first_name"
@@ -376,39 +359,42 @@ export default function ListofUsers() {
                   <option value="false">Unverified</option>
                 </select>
 
-                <div className="flex justify-between">
+                <div className="">
                   {isEdit ? (
                     <>
-                      <button
-                        className="bg-gray-500 text-white px-4 py-1 rounded"
-                        onClick={() => setIsEdit(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        className="bg-red-600 text-white px-4 py-1 rounded"
-                        onClick={handleSave}
-                      >
-                        Save
-                      </button>
+                      <div>
+                        <div className="flex gap-2">
+                          <button
+                            className="w-1/2 bg-gray-500 text-white px-4 py-1 rounded"
+                            onClick={() => setIsEdit(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="w-1/2 bg-red-600 text-white px-4 py-1 rounded"
+                            onClick={handleSave}
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                        {user.is_superuser && (
+                          <button
+                            className="w-full mt-2 bg-white border border-red-600 text-red-600 px-4 py-1 rounded"
+                            onClick={handleDelete}
+                          >
+                            Delete an account
+                          </button>
+                        )}
+                      </div>
                     </>
                   ) : (
                     <>
                       <button
-                        className="bg-red-600 text-white px-4 py-1 rounded"
+                        className="w-full bg-red-600 text-white px-4 py-1 rounded"
                         onClick={() => setIsEdit(true)}
                       >
                         Edit
                       </button>
-
-                      {user.is_superuser && (
-                        <button
-                          className="bg-black text-white px-4 py-1 rounded"
-                          onClick={handleDelete}
-                        >
-                          Delete
-                        </button>
-                      )}
                     </>
                   )}
                 </div>
