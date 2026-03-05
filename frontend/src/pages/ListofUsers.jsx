@@ -249,6 +249,26 @@ export default function ListofUsers() {
             </p>
           </div>
 
+          <div className="grid md:grid-cols-2 gap-4 mb-3">
+            <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+              <input
+                type="text"
+                placeholder="Search name or email"
+                className="flex-1 px-3 py-2 outline-none"
+              />
+
+              <button className="bg-red-600 text-white px-6 hover:bg-red-700">
+                Search
+              </button>
+            </div>
+
+            <select className="border border-gray-200 rounded-lg px-3 py-2">
+              <option>All</option>
+              <option>Verified</option>
+              <option>Unverified</option>
+            </select>
+          </div>
+
           <table className="w-full shadow-md text-xs sm:text-sm md:text-base">
             <thead className="bg-red-600 text-black">
               <tr>
@@ -314,50 +334,176 @@ export default function ListofUsers() {
 
           {/* MODAL */}
           {showModal && selectedUser && (
-            <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
-              <div className="bg-white w-96 p-6 rounded shadow-lg relative">
+            <div className="fixed inset-0 bg-black/50 flex justify-center items-center ">
+              <div className="bg-white  p-6 rounded shadow-lg relative">
                 <h3 className="text-xl font-bold mb-3">
                   Parent's Account Details
                 </h3>
 
-                <input
-                  name="first_name"
-                  value={selectedUser.first_name || ""}
-                  onChange={handleChange}
-                  disabled={!isEdit}
-                  className="border p-2 w-full mb-2 rounded"
-                />
+                <div className="grid md:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      First Name
+                    </label>
+                    <input
+                      name="first_name"
+                      value={selectedUser.first_name || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
 
-                <input
-                  type="date"
-                  name="birthday"
-                  value={selectedUser.birthday || ""}
-                  onChange={handleChange}
-                  disabled={!isEdit}
-                  className="border p-2 w-full mb-2 rounded"
-                />
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Middle Name
+                    </label>
+                    <input
+                      name="middle_name"
+                      value={selectedUser.middle_name || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
 
-                <select
-                  name="gender"
-                  value={selectedUser.gender || ""}
-                  onChange={handleChange}
-                  disabled={!isEdit}
-                  className="border p-2 w-full mb-2 rounded"
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Last Name
+                    </label>
+                    <input
+                      name="last_name"
+                      value={selectedUser.last_name || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
 
-                <select
-                  name="is_verified"
-                  value={selectedUser.is_verified ? "true" : "false"}
-                  onChange={handleChange}
-                  disabled={!isEdit}
-                  className="border p-2 w-full mb-4 rounded"
-                >
-                  <option value="true">Verified</option>
-                  <option value="false">Unverified</option>
-                </select>
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Suffix
+                    </label>
+                    <input
+                      name="suffix"
+                      value={selectedUser.suffix || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="birthday"
+                      value={selectedUser.birthday || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Gender
+                    </label>
+                    <select
+                      name="gender"
+                      value={selectedUser.gender || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    >
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Phone Number
+                    </label>
+                    <input
+                      name="phone"
+                      value={selectedUser.phone || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      House Number
+                    </label>
+                    <input
+                      name="house"
+                      value={selectedUser.house || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Street
+                    </label>
+                    <input
+                      name="street"
+                      value={selectedUser.street || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Barangay
+                    </label>
+                    <input
+                      name="barangay"
+                      value={selectedUser.barangay || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Subdivision
+                    </label>
+                    <input
+                      name="subdivision"
+                      value={selectedUser.subdivision || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-2 rounded"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Status
+                    </label>
+                    <select
+                      name="is_verified"
+                      value={selectedUser.is_verified ? "true" : "false"}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border p-2 w-full mb-4 rounded"
+                    >
+                      <option value="true">Verified</option>
+                      <option value="false">Unverified</option>
+                    </select>
+                  </div>
+                </div>
 
                 <div className="">
                   {isEdit ? (
