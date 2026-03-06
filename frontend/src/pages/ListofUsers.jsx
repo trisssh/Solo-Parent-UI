@@ -195,7 +195,7 @@ export default function ListofUsers() {
 
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
-        <header className="bg-white border-b border-red-200 flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2.5 p-2 shadow-sm">
+        <header className="bg-white border-b border-gray-200 flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2.5 p-2 shadow-sm">
           <button
             className="md:hidden text-gray-800 mr-3"
             onClick={() => setSidebarOpen(true)}
@@ -240,16 +240,18 @@ export default function ListofUsers() {
         </header>
 
         <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
-          <div className="md:hidden">
+          {/* PAGE TITLE */}
+          {/* <article className="md:hidden">
             <h3 className="text-xl text- font-bold text-gray-900 mb-0">
               List of Parent's Account
             </h3>
             <p className="text-gray-600 text-xs font-medium mb-3">
               To manage Solo Parent's Account Details
             </p>
-          </div>
+          </article> */}
 
-          <div className="grid md:grid-cols-2 gap-4 mb-3">
+          {/* SEARCH & FILTER BY */}
+          <div className="grid md:grid-cols-2 gap-3 mb-3">
             <div>
               <label className="block text-gray-700 font-medium">
                 Search by
@@ -279,7 +281,8 @@ export default function ListofUsers() {
             </div>
           </div>
 
-          <table className="w-full shadow-md text-xs sm:text-sm md:text-base">
+          {/* CLIENT LIST TABLE */}
+          {/* <table className="w-full shadow-md text-xs sm:text-sm md:text-base">
             <thead className="bg-red-600 text-black">
               <tr>
                 <th className="p-3 border text-gray-100">ID</th>
@@ -307,7 +310,121 @@ export default function ListofUsers() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table> */}
+          {/* <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-red-50 text-gray-700 uppercase text-xs">
+                <tr>
+                  <th className="p-3 text-left">ID</th>
+                  <th className="p-3 text-left">Full Name</th>
+                  <th className="p-3 text-left">Birthday</th>
+                  <th className="p-3 text-left">Gender</th>
+                  <th className="p-3 text-left">Status</th>
+                  <th className="p-3 text-left">Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.id} className="border-t hover:bg-gray-50">
+                    <td className="p-3">{u.uuid}</td>
+
+                    <td className="p-3 font-medium text-gray-900">
+                      {getFullName(u)}
+                    </td>
+
+                    <td className="p-3">{u.birthday}</td>
+
+                    <td className="p-3 capitalize">{u.gender}</td>
+
+                    <td className="p-3">
+                      {u.is_verified ? (
+                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                          Verified
+                        </span>
+                      ) : (
+                        <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-600">
+                          Unverified
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="p-3">
+                      <button
+                        onClick={() => handleView(u)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div> */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <table className="w-full text-sm text-gray-600">
+              <thead className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold">ID</th>
+                  <th className="px-4 py-3 text-left font-semibold">
+                    Full Name
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold">
+                    Birthday
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold">Gender</th>
+                  <th className="px-4 py-3 text-left font-semibold">Status</th>
+                  <th className="px-4 py-3 text-left font-semibold">Action</th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-gray-100">
+                {users.map((u) => (
+                  <tr key={u.id} className="hover:bg-gray-50 transition-colors">
+                    {/* ID */}
+                    <td className="px-4 py-3 text-gray-400 font-mono text-xs">
+                      {u.uuid}
+                    </td>
+
+                    {/* Name */}
+                    <td className="px-4 py-3 font-medium text-gray-900">
+                      {getFullName(u)}
+                    </td>
+
+                    {/* Birthday */}
+                    <td className="px-4 py-3">{u.birthday}</td>
+
+                    {/* Gender */}
+                    <td className="px-4 py-3 capitalize">{u.gender}</td>
+
+                    {/* Status */}
+                    <td className="px-4 py-3">
+                      {u.is_verified ? (
+                        <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                          Verified
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600">
+                          Unverified
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Action */}
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handleView(u)}
+                        className="text-red-600 hover:text-red-700 font-medium text-sm"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* PAGINATION  */}
           <div className="flex justify-between mt-4 items-center">
@@ -343,227 +460,6 @@ export default function ListofUsers() {
           </div>
 
           {/* MODAL */}
-          {/* {showModal && selectedUser && (
-            <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
-              <div className="bg-white w-full max-w-4xl rounded-xl shadow-xl p-6 relative">
-                <h3 className="text-xl font-bold mb-3">
-                  Parent Details
-                </h3>
-
-                <div className="grid md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      First Name
-                    </label>
-                    <input
-                      name="first_name"
-                      value={selectedUser.first_name || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Middle Name
-                    </label>
-                    <input
-                      name="middle_name"
-                      value={selectedUser.middle_name || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Last Name
-                    </label>
-                    <input
-                      name="last_name"
-                      value={selectedUser.last_name || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Suffix
-                    </label>
-                    <input
-                      name="suffix"
-                      value={selectedUser.suffix || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Date of Birth
-                    </label>
-                    <input
-                      type="date"
-                      name="birthday"
-                      value={selectedUser.birthday || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Gender
-                    </label>
-                    <select
-                      name="gender"
-                      value={selectedUser.gender || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    >
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Phone Number
-                    </label>
-                    <input
-                      name="phone"
-                      value={selectedUser.phone || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      House Number
-                    </label>
-                    <input
-                      name="house"
-                      value={selectedUser.house || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Street
-                    </label>
-                    <input
-                      name="street"
-                      value={selectedUser.street || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Barangay
-                    </label>
-                    <input
-                      name="barangay"
-                      value={selectedUser.barangay || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Subdivision
-                    </label>
-                    <input
-                      name="subdivision"
-                      value={selectedUser.subdivision || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-2 rounded"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Status
-                    </label>
-                    <select
-                      name="is_verified"
-                      value={selectedUser.is_verified ? "true" : "false"}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border p-2 w-full mb-4 rounded"
-                    >
-                      <option value="true">Verified</option>
-                      <option value="false">Unverified</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="">
-                  {isEdit ? (
-                    <>
-                      <div>
-                        <div className="flex gap-2">
-                          <button
-                            className="w-1/2 bg-gray-500 text-white px-4 py-1 rounded"
-                            onClick={() => setIsEdit(false)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="w-1/2 bg-red-600 text-white px-4 py-1 rounded"
-                            onClick={handleSave}
-                          >
-                            Save Changes
-                          </button>
-                        </div>
-                        {user.is_superuser && (
-                          <button
-                            className="w-full mt-2 bg-white border border-red-600 text-red-600 px-4 py-1 rounded"
-                            onClick={handleDelete}
-                          >
-                            Delete an account
-                          </button>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="w-full bg-red-600 text-white px-4 py-1 rounded"
-                        onClick={() => setIsEdit(true)}
-                      >
-                        Edit
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                <button
-                  className="absolute top-2 right-3 text-gray-600"
-                  onClick={handleClose}
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-          )} */}
           {showModal && selectedUser && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
               <div className="bg-white w-full max-w-3xl rounded-xl shadow-xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
@@ -710,7 +606,7 @@ export default function ListofUsers() {
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium">
-                      Barangay
+                      Status
                     </label>
                     <select
                       name="is_verified"
