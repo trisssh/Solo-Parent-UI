@@ -566,10 +566,10 @@ export default function ListofUsers() {
           )} */}
           {showModal && selectedUser && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
-              <div className="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6 relative">
+              <div className="bg-white w-full max-w-3xl rounded-xl shadow-xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
                 <h3 className="text-lg font-semibold mb-4">Parent Details</h3>
 
-                <div className="grid md:grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-3 gap-3">
                   <div>
                     <label className="block text-gray-700 font-medium">
                       First Name
@@ -649,6 +649,119 @@ export default function ListofUsers() {
                     >
                       <option value="male">Male</option>
                       <option value="female">Female</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Phone Number
+                    </label>
+                    <input
+                      name="phone"
+                      value={selectedUser.phone || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Street
+                    </label>
+                    <input
+                      name="street"
+                      value={selectedUser.street || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Barangay
+                    </label>
+                    <select
+                      name="barangay"
+                      value={selectedUser.barangay || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
+                    >
+                      <option value="">Select Barangay</option>
+                      <option value="greenhills">Greenhills</option>
+                      <option value="maytunas">Maytunas</option>
+                      <option value="kabayanan">Kabayanan</option>
+                      <option value="salapan">Salapan</option>
+                      <option value="west_crame">West Crame</option>
+                      <option value="onse">Onse</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Subdivision
+                    </label>
+                    <input
+                      name="subdivision"
+                      value={selectedUser.subdivision || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Barangay
+                    </label>
+                    <select
+                      name="is_verified"
+                      value={selectedUser.is_verified || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
+                    >
+                      <option value="">Select Status</option>
+                      <option value="verify">Verify</option>
+                      <option value="unverified">Unverified</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Reason
+                    </label>
+                    <select
+                      name="reason"
+                      value={selectedUser.reason || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
+                    >
+                      <option value="">Select Reason</option>
+                      <option value="crime_against_chastity">
+                        Crime Against Chastity
+                      </option>
+                      <option value="death_of_spouse">Death of Spouse</option>
+                      <option value="spouse_detained">
+                        Spouse is Detained
+                      </option>
+                      <option value="physical_mental_incapacity">
+                        Physical/Mental Incapacity of Spouse
+                      </option>
+                      <option value="separation">
+                        Legal/De Facto Separation
+                      </option>
+                      <option value="annuled">Annulment of Marriage</option>
+                      <option value="abandonment">Abandonment of Spouse</option>
+                      <option value="preferred_to_keep">
+                        Preferred To Keep Child/Children Instead of Giving Them
+                        To Welfare
+                      </option>
+                      <option value="sole_provider">
+                        Solely Provides Parental Care
+                      </option>
+                      <option value="assumed_responsibility">
+                        Assumed Responsibility of Head of Family
+                      </option>
                     </select>
                   </div>
                 </div>
