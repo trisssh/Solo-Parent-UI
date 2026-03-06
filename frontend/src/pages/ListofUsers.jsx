@@ -250,23 +250,33 @@ export default function ListofUsers() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-4 mb-3">
-            <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-              <input
-                type="text"
-                placeholder="Search name or email"
-                className="flex-1 px-3 py-2 outline-none"
-              />
+            <div>
+              <label className="block text-gray-700 font-medium">
+                Search by
+              </label>
+              <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+                <input
+                  type="text"
+                  placeholder=""
+                  className="flex-1 px-3 py-2 outline-none"
+                />
 
-              <button className="bg-red-600 text-white px-6 hover:bg-red-700">
-                Search
-              </button>
+                <button className="bg-red-600 text-white px-6 hover:bg-red-700">
+                  Search
+                </button>
+              </div>
             </div>
 
-            <select className="border border-gray-200 rounded-lg px-3 py-2">
-              <option>All</option>
-              <option>Verified</option>
-              <option>Unverified</option>
-            </select>
+            <div>
+              <label className="block text-gray-700 font-medium">
+                Filter by
+              </label>
+              <select className="border border-gray-200 rounded-lg w-full py-2 px-3">
+                <option>All</option>
+                <option>Verified</option>
+                <option>Unverified</option>
+              </select>
+            </div>
           </div>
 
           <table className="w-full shadow-md text-xs sm:text-sm md:text-base">
@@ -333,14 +343,14 @@ export default function ListofUsers() {
           </div>
 
           {/* MODAL */}
-          {showModal && selectedUser && (
-            <div className="fixed inset-0 bg-black/50 flex justify-center items-center ">
-              <div className="bg-white  p-6 rounded shadow-lg relative">
+          {/* {showModal && selectedUser && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-4xl rounded-xl shadow-xl p-6 relative">
                 <h3 className="text-xl font-bold mb-3">
-                  Parent's Account Details
+                  Parent Details
                 </h3>
 
-                <div className="grid md:grid-cols-2 gap-2">
+                <div className="grid md:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-gray-700 font-medium">
                       First Name
@@ -547,6 +557,131 @@ export default function ListofUsers() {
 
                 <button
                   className="absolute top-2 right-3 text-gray-600"
+                  onClick={handleClose}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )} */}
+          {showModal && selectedUser && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
+              <div className="bg-white w-full max-w-2xl rounded-xl shadow-xl p-6 relative">
+                <h3 className="text-lg font-semibold mb-4">Parent Details</h3>
+
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      First Name
+                    </label>
+                    <input
+                      name="first_name"
+                      value={selectedUser.first_name || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Middle Name
+                    </label>
+                    <input
+                      name="middle_name"
+                      value={selectedUser.middle_name || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Last Name
+                    </label>
+                    <input
+                      name="last_name"
+                      value={selectedUser.last_name || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Suffix
+                    </label>
+                    <input
+                      name="suffix"
+                      value={selectedUser.suffix || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="birthday"
+                      value={selectedUser.birthday || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Gender
+                    </label>
+                    <select
+                      name="gender"
+                      value={selectedUser.gender || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                    >
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex gap-2">
+                  {isEdit ? (
+                    <>
+                      <button
+                        className="flex-1 bg-gray-400 text-white py-2 rounded-lg"
+                        onClick={() => setIsEdit(false)}
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                        onClick={handleSave}
+                      >
+                        Save
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                      onClick={() => setIsEdit(true)}
+                    >
+                      Edit
+                    </button>
+                  )}
+                </div>
+
+                <button
+                  className="absolute top-3 right-4 text-gray-500"
                   onClick={handleClose}
                 >
                   ✕

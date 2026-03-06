@@ -46,8 +46,8 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
     superadmin: [
       { name: "Dashboard", link: "/dashboard" },
-      { name: "List of Parents", link: "/list-of-users" },
-      { name: "List of Admins", link: "/admins-list" },
+      { name: "Client", link: "/list-of-users" },
+      { name: "User Managament", link: "/admins-list" },
       { name: "Edit Account", link: "/edit-account" },
       { name: "Logout", action: handleLogout },
     ],
