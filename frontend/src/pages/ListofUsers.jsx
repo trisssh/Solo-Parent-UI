@@ -14,6 +14,9 @@ export default function ListofUsers() {
   const [prevPage, setPrevPage] = useState(null);
   const [nextPage, setNextPage] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
+  // const [saving, setSaving] = useState(false);
 
   // ROLE PROTECTION
   if (!user || (!user.is_staff && !user.is_superuser)) {
@@ -23,28 +26,6 @@ export default function ListofUsers() {
   }
 
   // FETCH USERS
-  // const fetchUsers = async () => {
-  //   if (!authTokens?.access) return;
-
-  //   try {
-  //     const res = await fetch("http://127.0.0.1:8000/api/parent/list", {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${authTokens.access}`,
-  //       },
-  //     });
-
-  //     if (!res.ok) throw new Error("Failed to fetch users");
-
-  //     const data = await res.json();
-  //     console.log(data);
-  //     setUsers(data.results || data);
-  //   } catch (err) {
-  //     showAlert("Error", err.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const fetchUsers = async (url = "http://127.0.0.1:8000/api/parent/list") => {
     if (!authTokens?.access) return;
 
@@ -108,6 +89,42 @@ export default function ListofUsers() {
   };
 
   // UPDATE USER
+//   const handleSave = async () => {
+//     try {
+//       const res = await fetch(
+//         `http://127.0.0.1:8000/api/admin/parent/info/${selectedUser.id}`,
+//         {
+//           method: "PUT",
+//           headers: {
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${authTokens.access}`,
+//           },
+//           body: JSON.stringify(selectedUser),
+//         },
+//       );
+
+//       if (!res.ok) throw new Error("Failed to update user");
+
+//       const updated = await res.json();
+
+//       setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
+
+//       fetchUsers(); // refresh list automatically
+
+// //         setSaving(true);
+// // await fetch(...);
+// // setSaving(false);
+
+//       showAlert({
+//         title: "Success",
+//         message: "User updated successfully",
+//         icon: "success",
+//       });
+//       handleClose();
+//     } catch (err) {
+//       // showAlert("Error", err.message);
+//     }
+//   };
   const handleSave = async () => {
     try {
       const res = await fetch(
@@ -126,18 +143,20 @@ export default function ListofUsers() {
 
       const updated = await res.json();
 
-      setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
+      fetchUsers(); // reload updated data
 
-       showAlert({
-         title: "Success",
-         message: "User updated successfully",
-         icon: "success",
-       });
+      showAlert({
+        title: "Success",
+        message: "User updated successfully",
+        icon: "success",
+      });
+
       handleClose();
     } catch (err) {
-      // showAlert("Error", err.message);
+      console.error(err);
     }
   };
+
 
   // DELETE USER
   const handleDelete = async () => {
@@ -187,6 +206,19 @@ export default function ListofUsers() {
     //   : 1;
 
     // <span>Page: {currentPage}</span>;
+
+    const filteredUsers = users.filter((u) => {
+      const name = getFullName(u).toLowerCase();
+
+      const matchesSearch = name.includes(search.toLowerCase());
+
+      const matchesFilter =
+        filter === "all" ||
+        (filter === "verified" && u.is_verified) ||
+        (filter === "unverified" && !u.is_verified);
+
+      return matchesSearch && matchesFilter;
+    });
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -241,25 +273,27 @@ export default function ListofUsers() {
 
         <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
           {/* PAGE TITLE */}
-          {/* <article className="md:hidden">
+          <article className="md:hidden">
             <h3 className="text-xl text- font-bold text-gray-900 mb-0">
               List of Parent's Account
             </h3>
             <p className="text-gray-600 text-xs font-medium mb-3">
               To manage Solo Parent's Account Details
             </p>
-          </article> */}
+          </article>
 
           {/* SEARCH & FILTER BY */}
-          <div className="grid md:grid-cols-2 gap-3 mb-3">
+          <div className="grid md:grid-cols-2 gap-3 mb-4">
             <div>
-              <label className="block text-gray-700 font-medium">
+              <label className="block text-sm md:text-base text-gray-700 font-medium">
                 Search by
               </label>
               <div className="flex border border-gray-200 rounded-lg overflow-hidden">
                 <input
                   type="text"
                   placeholder=""
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="flex-1 px-3 py-2 outline-none"
                 />
 
@@ -270,13 +304,17 @@ export default function ListofUsers() {
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium">
+              <label className="block text-sm md:text-base text-gray-700 font-medium">
                 Filter by
               </label>
-              <select className="border border-gray-200 rounded-lg w-full py-2 px-3">
-                <option>All</option>
-                <option>Verified</option>
-                <option>Unverified</option>
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="border border-gray-200 rounded-lg w-full py-2 px-3"
+              >
+                <option value="all">All</option>
+                <option value="verified">Verified</option>
+                <option value="unverified">Unverified</option>
               </select>
             </div>
           </div>
@@ -294,141 +332,12 @@ export default function ListofUsers() {
             </button>
           </div> */}
 
-          {/* CLIENT LIST TABLE */}
-          {/* <table className="w-full shadow-md text-xs sm:text-sm md:text-base">
-            <thead className="bg-red-600 text-black">
-              <tr>
-                <th className="p-3 border text-gray-100">ID</th>
-                <th className="p-3 border text-gray-100">Full Name</th>
-                <th className="p-3 border text-gray-100">Birthday</th>
-                <th className="p-3 border text-gray-100">Gender</th>
-                <th className="p-3 border text-gray-100">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.id} className="hover:bg-gray-100">
-                  <td className="p-3 border">{u.id}</td>
-                  <td className="p-3 border">{getFullName(u)}</td>
-                  <td className="p-3 border">{u.birthday}</td>
-                  <td className="p-3 border">{u.gender}</td>
-                  <td className="p-3 border text-center">
-                    <button
-                      className="bg-red-600 text-white px-4 py-1 rounded"
-                      onClick={() => handleView(u)}
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table> */}
-
-          {/* <div className="w-full overflow-x-auto bg-white rounded-xl shadow-sm border">
-            <table className="w-full text-xs sm:text-sm">
-              <thead className="bg-red-500 text-white">
-                <tr>
-                  <th className="px-4 py-3 text-left font-semibold">ID</th>
-                  <th className="px-4 py-3 text-left font-semibold">
-                    Full Name
-                  </th>
-                  <th className="px-4 py-3 text-left font-semibold">
-                    Birthday
-                  </th>
-                  <th className="px-4 py-3 text-left font-semibold">Gender</th>
-                  <th className="px-4 py-3 text-center font-semibold">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y">
-                {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3">{u.id}</td>
-
-                    <td className="px-4 py-3 font-medium text-gray-700">
-                      {getFullName(u)}
-                    </td>
-
-                    <td className="px-4 py-3 text-gray-600">{u.birthday}</td>
-
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 text-xs rounded-full bg-gray-100">
-                        {u.gender}
-                      </span>
-                    </td>
-
-                    <td className="px-4 py-3 text-center">
-                      <button
-                        onClick={() => handleView(u)}
-                        className="px-3 py-1.5 text-xs font-medium text-white bg-red-500 rounded-lg shadow-sm hover:bg-red-600 hover:shadow transition active:scale-95"
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div> */}
-          {/* <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-red-50 text-gray-700 uppercase text-xs">
-                <tr>
-                  <th className="p-3 text-left">ID</th>
-                  <th className="p-3 text-left">Full Name</th>
-                  <th className="p-3 text-left">Birthday</th>
-                  <th className="p-3 text-left">Gender</th>
-                  <th className="p-3 text-left">Status</th>
-                  <th className="p-3 text-left">Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {users.map((u) => (
-                  <tr key={u.id} className="border-t hover:bg-gray-50">
-                    <td className="p-3">{u.uuid}</td>
-
-                    <td className="p-3 font-medium text-gray-900">
-                      {getFullName(u)}
-                    </td>
-
-                    <td className="p-3">{u.birthday}</td>
-
-                    <td className="p-3 capitalize">{u.gender}</td>
-
-                    <td className="p-3">
-                      {u.is_verified ? (
-                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
-                          Verified
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-600">
-                          Unverified
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="p-3">
-                      <button
-                        onClick={() => handleView(u)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm"
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div> */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          {/* CLIENT LIST TABLE -- DEKSTOP VIEW  */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 w-full hidden md:block">
             {/* TABLE */}
             <div className="overflow-x-auto rounded">
-              <table className="w-full text-sm text-gray-950">
-                <thead className="bg-gray-200 text-gray-900 text-xs uppercase tracking-wider">
+              <table className="w-full text-lg text-gray-950">
+                <thead className="bg-gray-200 text-gray-900 text-lg uppercase tracking-wider">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold">ID</th>
                     <th className="px-4 py-3 text-left font-semibold">
@@ -450,15 +359,22 @@ export default function ListofUsers() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100">
-                  {users.map((u) => (
-                    <tr key={u.id} className="hover:bg-gray-50 transition">
+                  {filteredUsers.map((u) => (
+                    // <tr key={u.id} className="hover:bg-gray-50 transition">
+
+                    <tr
+                      key={u.id}
+                      // className="hover:bg-gray-50 even:bg-gray-50 transition"
+
+                      className="hover:bg-gray-50 transition"
+                    >
                       {/* ID */}
-                      <td className="px-4 py-3 text-xs text-gray-400 font-mono">
+                      <td className="px-4 py-3 text-sm text-gray-400 font-mono">
                         {u.uuid}
                       </td>
 
                       {/* NAME + AVATAR */}
-                      <td className="px-4 py-3 flex items-center gap-3">
+                      <td className="px-6 py-4 flex items-center gap-3">
                         {/* <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-semibold text-red-600">
                           {u.first_name?.[0]}
                         </div> */}
@@ -477,11 +393,11 @@ export default function ListofUsers() {
                       {/* STATUS */}
                       <td className="px-4 py-3">
                         {u.is_verified ? (
-                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                          <span className="px-3 py-1 text-sm font-medium rounded-full bg-green-100 text-green-700">
                             Verified
                           </span>
                         ) : (
-                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600">
+                          <span className="px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-600">
                             Unverified
                           </span>
                         )}
@@ -506,9 +422,12 @@ export default function ListofUsers() {
             <div className="flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
               <span>
                 Showing <span className="font-medium">1</span> to{" "}
-                <span className="font-medium">10</span> of{" "}
+                <span className="font-medium">{users.length}</span> of{" "}
                 <span className="font-medium">{users.length}</span> results
               </span>
+              {/* <span className="text-sm">
+                Total Parent's Account: {totalCount}
+              </span> */}
 
               <div className="flex items-center gap-2">
                 <button
@@ -547,6 +466,51 @@ export default function ListofUsers() {
               </div>
             </div>
           </div>
+
+          {/* CLIENT LIST TABLE -- MOBILE VIEW  */}
+          <div className="md:hidden space-y-4">
+            {filteredUsers.map((u) => (
+              <div
+                key={u.id}
+                className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
+              >
+                {/* <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-semibold text-red-600">
+                          {u.first_name?.[0]}
+                        </div> */}
+                <div className="font-semibold text-lg text-gray-900">
+                  {getFullName(u)}
+                </div>
+
+                <div className="text-sm text-gray-600 mt-1">ID: {u.uuid}</div>
+
+                <div className="text-sm text-gray-600">
+                  Birthday: {u.birthday}
+                </div>
+
+                <div className="text-sm text-gray-600">Gender: {u.gender}</div>
+
+                <div className="mt-2">
+                  {u.is_verified ? (
+                    <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700">
+                      Verified
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-600">
+                      Unverified
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => handleView(u)}
+                  className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+                >
+                  View
+                </button>
+              </div>
+            ))}
+          </div>
+
           {/* PAGINATION  */}
           {/* <div className="flex justify-between mt-4 items-center">
             <span className="text-sm">
@@ -799,6 +763,10 @@ export default function ListofUsers() {
                       >
                         Save
                       </button>
+                      {/* <button disabled={saving}
+                      className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
+                        {saving ? "Saving..." : "Save"}
+                      </button> */}
                     </>
                   ) : (
                     <button
