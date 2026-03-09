@@ -216,10 +216,10 @@ export default function ListofUsers() {
 
           <div>
             <h2 className="text-2xl font-bold text-gray-800 hidden md:block">
-              List of Parent's Account
+              User Management
             </h2>
             <p className="text-gray-600 text-sm font-medium hidden md:block">
-              To manage Solo Parent's Account Details
+              To manage registered parent accounts
             </p>
           </div>
 
@@ -281,6 +281,19 @@ export default function ListofUsers() {
             </div>
           </div>
 
+          {/* SEARCH */}
+          {/* <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+
+            <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm">
+              Search
+            </button>
+          </div> */}
+
           {/* CLIENT LIST TABLE */}
           {/* <table className="w-full shadow-md text-xs sm:text-sm md:text-base">
             <thead className="bg-red-600 text-black">
@@ -311,6 +324,55 @@ export default function ListofUsers() {
               ))}
             </tbody>
           </table> */}
+
+          {/* <div className="w-full overflow-x-auto bg-white rounded-xl shadow-sm border">
+            <table className="w-full text-xs sm:text-sm">
+              <thead className="bg-red-500 text-white">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold">ID</th>
+                  <th className="px-4 py-3 text-left font-semibold">
+                    Full Name
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold">
+                    Birthday
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold">Gender</th>
+                  <th className="px-4 py-3 text-center font-semibold">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y">
+                {users.map((u) => (
+                  <tr key={u.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3">{u.id}</td>
+
+                    <td className="px-4 py-3 font-medium text-gray-700">
+                      {getFullName(u)}
+                    </td>
+
+                    <td className="px-4 py-3 text-gray-600">{u.birthday}</td>
+
+                    <td className="px-4 py-3">
+                      <span className="px-2 py-1 text-xs rounded-full bg-gray-100">
+                        {u.gender}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={() => handleView(u)}
+                        className="px-3 py-1.5 text-xs font-medium text-white bg-red-500 rounded-lg shadow-sm hover:bg-red-600 hover:shadow transition active:scale-95"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div> */}
           {/* <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <table className="w-full text-sm">
               <thead className="bg-red-50 text-gray-700 uppercase text-xs">
@@ -362,72 +424,131 @@ export default function ListofUsers() {
               </tbody>
             </table>
           </div> */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <table className="w-full text-sm text-gray-600">
-              <thead className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
-                <tr>
-                  <th className="px-4 py-3 text-left font-semibold">ID</th>
-                  <th className="px-4 py-3 text-left font-semibold">
-                    Full Name
-                  </th>
-                  <th className="px-4 py-3 text-left font-semibold">
-                    Birthday
-                  </th>
-                  <th className="px-4 py-3 text-left font-semibold">Gender</th>
-                  <th className="px-4 py-3 text-left font-semibold">Status</th>
-                  <th className="px-4 py-3 text-left font-semibold">Action</th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-100">
-                {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-gray-50 transition-colors">
-                    {/* ID */}
-                    <td className="px-4 py-3 text-gray-400 font-mono text-xs">
-                      {u.uuid}
-                    </td>
-
-                    {/* Name */}
-                    <td className="px-4 py-3 font-medium text-gray-900">
-                      {getFullName(u)}
-                    </td>
-
-                    {/* Birthday */}
-                    <td className="px-4 py-3">{u.birthday}</td>
-
-                    {/* Gender */}
-                    <td className="px-4 py-3 capitalize">{u.gender}</td>
-
-                    {/* Status */}
-                    <td className="px-4 py-3">
-                      {u.is_verified ? (
-                        <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
-                          Verified
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600">
-                          Unverified
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Action */}
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => handleView(u)}
-                        className="text-red-600 hover:text-red-700 font-medium text-sm"
-                      >
-                        View
-                      </button>
-                    </td>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+            {/* TABLE */}
+            <div className="overflow-x-auto rounded">
+              <table className="w-full text-sm text-gray-950">
+                <thead className="bg-gray-200 text-gray-900 text-xs uppercase tracking-wider">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-semibold">ID</th>
+                    <th className="px-4 py-3 text-left font-semibold">
+                      Full Name
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold">
+                      Birthday
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold">
+                      Gender
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold">
+                      Action
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
 
+                <tbody className="divide-y divide-gray-100">
+                  {users.map((u) => (
+                    <tr key={u.id} className="hover:bg-gray-50 transition">
+                      {/* ID */}
+                      <td className="px-4 py-3 text-xs text-gray-400 font-mono">
+                        {u.uuid}
+                      </td>
+
+                      {/* NAME + AVATAR */}
+                      <td className="px-4 py-3 flex items-center gap-3">
+                        {/* <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-semibold text-red-600">
+                          {u.first_name?.[0]}
+                        </div> */}
+
+                        <span className="font-medium text-gray-900">
+                          {getFullName(u)}
+                        </span>
+                      </td>
+
+                      {/* BIRTHDAY */}
+                      <td className="px-4 py-3">{u.birthday}</td>
+
+                      {/* GENDER */}
+                      <td className="px-4 py-3 capitalize">{u.gender}</td>
+
+                      {/* STATUS */}
+                      <td className="px-4 py-3">
+                        {u.is_verified ? (
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-700">
+                            Verified
+                          </span>
+                        ) : (
+                          <span className="px-3 py-1 text-xs font-medium rounded-full bg-red-100 text-red-600">
+                            Unverified
+                          </span>
+                        )}
+                      </td>
+
+                      {/* ACTION */}
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => handleView(u)}
+                          className="text-red-600 hover:text-red-700 font-medium"
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* PAGINATION */}
+            <div className="flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
+              <span>
+                Showing <span className="font-medium">1</span> to{" "}
+                <span className="font-medium">10</span> of{" "}
+                <span className="font-medium">{users.length}</span> results
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={!prevPage}
+                  onClick={() => fetchUsers(prevPage)}
+                  className={`px-3 py-1 border rounded-md text-white ${
+                    prevPage
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-[var(--gray-2)] text-white cursor-not-allowed"
+                  }`}
+                  // className="px-3 py-1 border rounded-md hover:bg-gray-50"
+                >
+                  Prev
+                </button>
+
+                {/* <button className="px-3 py-1 bg-red-600 text-white rounded-md">
+                  1
+                </button>
+
+                <button className="px-3 py-1 border rounded-md hover:bg-gray-50">
+                  2
+                </button> */}
+
+                <button
+                  disabled={!nextPage}
+                  onClick={() => fetchUsers(nextPage)}
+                  className={`px-3 py-1 border rounded-md text-white ${
+                    nextPage
+                      ? "bg-red-600 hover:bg-red-700 "
+                      : "bg-[var(--gray-2)] cursor-not-allowed"
+                  }`}
+                  // className="px-3 py-1 border rounded-md hover:bg-gray-50"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
           {/* PAGINATION  */}
-          <div className="flex justify-between mt-4 items-center">
+          {/* <div className="flex justify-between mt-4 items-center">
             <span className="text-sm">
               Total Parent's Account: {totalCount}
             </span>
@@ -457,7 +578,7 @@ export default function ListofUsers() {
                 Next
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* MODAL */}
           {showModal && selectedUser && (
@@ -610,14 +731,14 @@ export default function ListofUsers() {
                     </label>
                     <select
                       name="is_verified"
-                      value={selectedUser.is_verified || ""}
+                      value={String(selectedUser.is_verified)}
                       onChange={handleChange}
                       disabled={!isEdit}
                       className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
                     >
                       <option value="">Select Status</option>
-                      <option value="verify">Verify</option>
-                      <option value="unverified">Unverified</option>
+                      <option value="true">Verified</option>
+                      <option value="false">Unverified</option>
                     </select>
                   </div>
 

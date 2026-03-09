@@ -148,7 +148,7 @@ export default function Login4() {
                 <h2 className="font-bold uppercase text-base sm:text-xl text-gray-800">
                   Solo Parent System
                 </h2>
-                <p className="capitalize font-semibold text-xs md:text-right tracking-wide text-gray-600">
+                <p className="capitalize font-semibold text-xs md:text-right md:tracking-wide text-gray-600">
                   City of San Juan, Metro Manila
                 </p>
               </div>
@@ -156,10 +156,10 @@ export default function Login4() {
 
             <div>
               <article className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-1">
+                <h2 className="text-lg md:text-2xl font-bold text-gray-800 md:mb-1">
                   Log in to your Account
                 </h2>
-                <p className="font-semibold text-base text-gray-600 text-justify ">
+                <p className="font-semibold text-xs md:text-base text-gray-600 text-justify tracking-tight ">
                   Please make sure you have a registered account before logging
                   in.
                 </p>
@@ -285,5 +285,241 @@ export default function Login4() {
         </div>
       </div>
     </div>
+    // <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    //   <div className="w-full max-w-5xl grid md:grid-cols-2 bg-white rounded-2xl shadow-lg overflow-hidden">
+    //     {/* LEFT PANEL */}
+    //     <div className="hidden md:flex flex-col items-center justify-center bg-red-50 p-10 text-center">
+    //       <img src="SP.png" className="w-40 mb-6 drop-shadow-md" />
+
+    //       <h2 className="text-3xl font-bold text-gray-800 uppercase">
+    //         Solo Parent System
+    //       </h2>
+
+    //       <p className="text-gray-600 mt-2">City of San Juan, Metro Manila</p>
+    //     </div>
+
+    //     {/* LOGIN FORM */}
+    //     <div className="p-6 sm:p-10">
+    //       {/* Header */}
+    //       <div className="text-center md:text-left mb-8">
+    //         <div className="flex justify-center md:justify-start items-center gap-3 mb-3">
+    //           <img src="SP.png" className="w-10 h-10" />
+
+    //           <span className="font-bold text-gray-800 uppercase">
+    //             Solo Parent System
+    //           </span>
+    //         </div>
+
+    //         <h2 className="text-2xl font-bold text-gray-800">
+    //           Login to your account
+    //         </h2>
+
+    //         <p className="text-gray-500 text-sm mt-1">
+    //           Enter your email and password to continue
+    //         </p>
+    //       </div>
+
+    //       {/* FORM */}
+    //       <form onSubmit={handleLogin} className="space-y-5">
+    //         {/* EMAIL */}
+    //         <div>
+    //           <label className="text-sm font-medium text-gray-700">Email</label>
+
+    //           <input
+    //             type="email"
+    //             value={email}
+    //             onChange={(e) => setEmail(e.target.value)}
+    //             className="mt-1 w-full px-4 py-3 rounded-lg border border-gray-300
+    //         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+    //         transition"
+    //             placeholder="Enter your email"
+    //           />
+    //         </div>
+
+    //         {/* PASSWORD */}
+    //         <div>
+    //           <label className="text-sm font-medium text-gray-700">
+    //             Password
+    //           </label>
+
+    //           <div className="relative mt-1">
+    //             <input
+    //               type={showPassword ? "text" : "password"}
+    //               value={password}
+    //               onChange={(e) => setPassword(e.target.value)}
+    //               className="w-full px-4 py-3 rounded-lg border border-gray-300
+    //           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+    //           pr-12 transition"
+    //               placeholder="Enter your password"
+    //             />
+
+    //             <button
+    //               type="button"
+    //               onClick={() => setShowPassword(!showPassword)}
+    //               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+    //             >
+    //               👁
+    //             </button>
+    //           </div>
+    //         </div>
+
+    //         {/* FORGOT PASSWORD */}
+    //         <div className="flex justify-end text-sm">
+    //           <Link
+    //             to="/forgot-password"
+    //             className="text-red-500 hover:text-red-600 font-medium"
+    //           >
+    //             Forgot password?
+    //           </Link>
+    //         </div>
+
+    //         {/* LOGIN BUTTON */}
+    //         <button
+    //           type="submit"
+    //           disabled={loading}
+    //           className="w-full py-3 rounded-lg bg-red-500 text-white font-semibold
+    //       hover:bg-red-600 active:scale-95 transition shadow-sm"
+    //         >
+    //           {loading ? "Logging in..." : "Login"}
+    //         </button>
+    //       </form>
+
+    //       {/* REGISTER */}
+    //       <p className="text-center text-sm text-gray-600 mt-6">
+    //         Don’t have an account?
+    //         <Link
+    //           to="/user-register"
+    //           className="text-red-500 font-semibold ml-1 hover:underline"
+    //         >
+    //           Create one
+    //         </Link>
+    //       </p>
+    //     </div>
+    //   </div>
+    // </div>
+    // <div className="min-h-screen bg-gradient-to-br from-white to-red-50 flex items-center justify-center px-4">
+    //   {/* Card */}
+    //   <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+    //     {/* Header */}
+    //     <div className="bg-red-600 text-white flex flex-col items-center py-6 px-6">
+    //       <img src="SP.png" className="w-14 h-14 mb-2" />
+
+    //       <h2 className="text-lg font-bold uppercase tracking-wide text-center">
+    //         Solo Parent System
+    //       </h2>
+
+    //       <p className="text-xs opacity-90 text-center">
+    //         City of San Juan, Metro Manila
+    //       </p>
+    //     </div>
+
+    //     {/* Form Container */}
+    //     <div className="p-6 sm:p-8">
+    //       {/* Title */}
+    //       <div className="mb-6">
+    //         <h3 className="text-xl font-bold text-gray-800">
+    //           Login to your account
+    //         </h3>
+
+    //         <p className="text-sm text-gray-500 mt-1">
+    //           Enter your email and password to continue
+    //         </p>
+    //       </div>
+
+    //       {/* FORM */}
+    //       <form onSubmit={handleLogin} className="space-y-5">
+    //         {/* Email */}
+    //         <div className="relative">
+    //           <input
+    //             type="email"
+    //             id="email"
+    //             value={email}
+    //             onChange={(e) => setEmail(e.target.value)}
+    //             placeholder=" "
+    //             className="peer w-full px-4 pt-5 pb-2 text-sm border border-gray-300 rounded-lg
+    //           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+    //           />
+
+    //           <label
+    //             htmlFor="email"
+    //             className="absolute left-3 top-2 text-gray-500 text-xs transition-all
+    //           peer-placeholder-shown:top-3.5
+    //           peer-placeholder-shown:text-sm
+    //           peer-focus:top-2
+    //           peer-focus:text-xs
+    //           bg-white px-1"
+    //           >
+    //             Email Address
+    //           </label>
+    //         </div>
+
+    //         {/* Password */}
+    //         <div className="relative">
+    //           <input
+    //             type={showPassword ? "text" : "password"}
+    //             id="password"
+    //             value={password}
+    //             onChange={(e) => setPassword(e.target.value)}
+    //             placeholder=" "
+    //             className="peer w-full px-4 pt-5 pb-2 pr-12 text-sm border border-gray-300 rounded-lg
+    //           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+    //           />
+
+    //           <label
+    //             htmlFor="password"
+    //             className="absolute left-3 top-2 text-gray-500 text-xs transition-all
+    //           peer-placeholder-shown:top-3.5
+    //           peer-placeholder-shown:text-sm
+    //           peer-focus:top-2
+    //           peer-focus:text-xs
+    //           bg-white px-1"
+    //           >
+    //             Password
+    //           </label>
+
+    //           {/* Toggle password */}
+    //           <button
+    //             type="button"
+    //             onClick={() => setShowPassword(!showPassword)}
+    //             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+    //           >
+    //             {showPassword ? "🙈" : "👁"}
+    //           </button>
+    //         </div>
+
+    //         {/* Forgot password */}
+    //         <div className="flex justify-end">
+    //           <Link
+    //             to="/forgot-password"
+    //             className="text-sm text-red-500 hover:text-red-600 font-medium"
+    //           >
+    //             Forgot Password?
+    //           </Link>
+    //         </div>
+
+    //         {/* Login Button */}
+    //         <button
+    //           type="submit"
+    //           disabled={loading}
+    //           className="w-full py-3 bg-red-600 text-white font-semibold rounded-lg
+    //         hover:bg-red-700 active:scale-[0.98] transition shadow-sm"
+    //         >
+    //           {loading ? "Logging in..." : "Login"}
+    //         </button>
+    //       </form>
+
+    //       {/* Register */}
+    //       <p className="text-center text-sm text-gray-600 mt-6">
+    //         Don’t have an account?
+    //         <Link
+    //           to="/user-register"
+    //           className="text-red-600 font-semibold ml-1 hover:underline"
+    //         >
+    //           Create an account
+    //         </Link>
+    //       </p>
+    //     </div>
+    //   </div>
+    // </div>
   );
 }

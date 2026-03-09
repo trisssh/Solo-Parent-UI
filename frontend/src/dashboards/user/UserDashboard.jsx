@@ -8,7 +8,17 @@ export default function UserDashboard() {
   const { user, authTokens, logoutUser } = useContext(AuthContext);
   const [userInfo, setUserInfo] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [showModal, setShowModal] =useState(false);
   const navigate = useNavigate();
+
+  //View ID
+    // useEffect(() => {
+    //   setShowModal(true);
+    // }, []);
+    const toggleModal = () => {
+      setShowModal(true)
+    }
+
 
   //LOGOUT
   const handleLogout = () => {
@@ -194,16 +204,18 @@ export default function UserDashboard() {
 
          <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
            {/* MAIN GRID */}
-           <h3 className="text-2xl text- font-bold text-gray-900 mb-0">
-             Profile
-           </h3>
-           <p className="text-gray-600 text-sm font-medium mb-3">
-             View all your details here
-           </p>
+           <div>
+             <h3 className="text-2xl text- font-bold text-gray-900 mb-0">
+               Profile
+             </h3>
+             <p className="text-gray-600 text-sm font-medium mb-3">
+               View all your details here
+             </p>
+           </div>
 
            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
              {/* LEFT COLUMN */}
-             <div className="lg:col-span-1 space-y-4.5">
+             <div className="lg:col-span-1 space-y-4">
                {/* PROFILE CARD */}
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6 text-center">
                  {/* <svg
@@ -240,7 +252,7 @@ export default function UserDashboard() {
                  </p>
 
                  <div className="mt-4 flex justify-center">
-                   {/* {verificationStatus ? (
+                   {/* {userInfo?.parent?.is_verified ? (
                 <span className="px-4 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">
                   ✔ Verified
                 </span>
@@ -250,7 +262,7 @@ export default function UserDashboard() {
                 </span>
               )} */}
                    {/* <span className="px-4 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">
-                    Unverified
+                    Verified
                   </span> */}
 
                    <span className="px-4 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">
@@ -263,21 +275,52 @@ export default function UserDashboard() {
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
                  <div className="flex items-center justify-between mb-3">
                    <h3 className="font-semibold text-gray-700">ID Details</h3>
-                   <span className="text-xs text-gray-400 flex items-center gap-1">
+                   {/* <button 
+                   onClick={toggleModal}
+                   className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-1 px-3 rounded text-xs flex items-center gap-1">
                      <svg
                        xmlns="http://www.w3.org/2000/svg"
                        viewBox="0 0 24 24"
                        fill="currentColor"
                        className="size-4"
                      >
+                       <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                        <path
                          fillRule="evenodd"
-                         d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z"
+                         d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
                          clipRule="evenodd"
                        />
                      </svg>
-                     <p>Read-only</p>
-                   </span>
+
+                     <p>View ID</p>
+                   </button> */}
+                   <button
+                     onClick={toggleModal}
+                     //                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white
+                     // bg-red-500 rounded shadow-md hover:bg-red-600
+                     // hover:shadow-lg active:scale-95
+                     // transition-all duration-200"
+                     className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-white
+                    bg-red-500 backdrop-blur rounded-xl
+                    shadow-sm hover:bg-red-700 hover:shadow-md
+                    active:scale-95 transition"
+                   >
+                     <svg
+                       xmlns="http://www.w3.org/2000/svg"
+                       viewBox="0 0 24 24"
+                       fill="currentColor"
+                       className="w-4 h-4"
+                     >
+                       <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                       <path
+                         fillRule="evenodd"
+                         d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
+                         clipRule="evenodd"
+                       />
+                     </svg>
+
+                     <span>View ID</span>
+                   </button>
                  </div>
 
                  <p className="text-sm text-gray-400">ID Number</p>
@@ -312,7 +355,7 @@ export default function UserDashboard() {
              </div>
 
              {/* RIGHT COLUMN */}
-             <div className="lg:col-span-2 space-y-6">
+             <div className="lg:col-span-2 space-y-4 md:space-y-7">
                {/* PERSONAL INFORMATION */}
                <div className="backdrop-blur-lg bg-white border border-gray-200  rounded-2xl shadow-md p-6">
                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
@@ -466,6 +509,26 @@ export default function UserDashboard() {
                </div>
              </div>
            </div>
+           {/* MODAL */}
+           {showModal && (
+             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+               <div className="bg-white rounded-2xl shadow-lg p-6 max-w-sm text-center">
+                 <h2 className="text-xl font-semibold mb-3 text-gray-800">
+                   Solo Parent ID
+                 </h2>
+                 <p className="text-gray-600 mb-6 text-justify">
+                   Solo Parent ID coming soon<br></br>Thank you for your
+                   patience.
+                 </p>
+                 <button
+                   onClick={() => setShowModal(false)}
+                   className="bg-red-500 hover:bg-red-600 text-white w-full py-2 rounded-md"
+                 >
+                   Okay
+                 </button>
+               </div>
+             </div>
+           )}
          </main>
        </div>
      </div>

@@ -39,7 +39,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navItems = {
     admin: [
       { name: "Dashboard", link: "/dashboard" },
-      { name: "Client", link: "/list-of-users" },
+      { name: "User Management", link: "/list-of-users" },
       { name: "Edit Account", link: "/edit-account" },
       { name: "Logout", action: handleLogout },
     ],
