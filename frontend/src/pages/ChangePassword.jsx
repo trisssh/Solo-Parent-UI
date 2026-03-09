@@ -8,20 +8,16 @@ import AuthContext from "../context/AuthContext";
 
 
 export default function ChangePassword() {
-  // const { authTokens } = useContext(AuthContext);
   const { authTokens, userInfo } = useContext(AuthContext);
   const [user, setUser] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    password: "",
-    confirm: "",
-  });
-    // const [form, setForm] = useState({
-    //   old_password: "",
-    //   password: "",
-    //   confirm: "",
-    // });
+    const [form, setForm] = useState({
+      old_password: "",
+      password: "",
+      confirm: "",
+    });
 
     useEffect(() => {
       const storedUser = localStorage.getItem("user");
@@ -33,13 +29,6 @@ export default function ChangePassword() {
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
-
-    useEffect(() => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    }, []);
 
     //  LOGOUT
     const handleLogout = () => {
@@ -59,71 +48,6 @@ export default function ChangePassword() {
     };
 
      //SUBMIT
-      // const handleSubmit = async (e) => {
-      //   e.preventDefault();
-
-
-      //   if (!form.password && !form.confirm) {
-      //       showAlert({
-      //         title: "Reminder",
-      //         message: "Leave blank if you don’t want to change password",
-      //         icon: "info",
-      //       });
-      //     return;
-      //   }
-
-      //   if (form.password !== form.confirm) {
-      //    showAlert({
-      //      title: "Error",
-      //      message: "New password and confirm password do not match",
-      //      icon: "error",
-      //    });
-      //     return;
-      //   }
-
-      //   if (!response.ok) {
-      //     const data = await response.json();
-      //     console.log("Error:", data);
-      //     showAlert({
-      //       title: "Error",
-      //       message: data.password?.[0] || "Failed to change password",
-      //       icon: "error",
-      //     });
-      //     return;
-      //   }
-
-      //   if (!form.old_password) {
-
-      //       showAlert({
-      //         title: "Error",
-      //         message: "Please enter your old password",
-      //         icon: "error",
-      //       });
-      //     return;
-      //   }
-
-      //   ---- Fake API logic ----
-      //   if (form.old_password !== "12345") {
-      //     showAlert({
-      //       title: "Error",
-      //       message: "Old password is incorrect",
-      //       icon: "error",
-      //     });
-      //     return;
-      //   }
-
-      //   Simulate success
-      //   await new Promise((r) => setTimeout(r, 500)); // fake delay
-      //     showAlert({
-      //       title: "Success",
-      //       message: "Password changed successfully!",
-      //       icon: "success",
-      //     });
-
-      //   Clear form
-      //   setForm({  password: "", confirm: "" });
-      //   setForm({ old_password: "", password: "", confirm: "" });
-      // };
       const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -181,7 +105,7 @@ export default function ChangePassword() {
           });
 
           // Clear form
-          setForm({ password: "", confirm: "" });
+          setForm({ old_password: "", password: "", confirm: "" });
         } catch (error) {
           console.error("Error:", error);
           showAlert({
@@ -320,13 +244,21 @@ export default function ChangePassword() {
             {/* <div className="bg-white rounded-xl border-4 border-red-300 p-5 mx-3"> */}
             <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6 mx-3">
               <article className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-1">
+                <h2 className="text-2xl font-bold text-gray-800 md:mb-1">
                   Change Password
                 </h2>
-                <p className="font-semibold text-sm text-gray-600 text-justify">
+                <p className="text-xs font-semibold md:text-sm text-gray-600 text-justify">
                   Leave blank if you don’t want to change password
                 </p>
               </article>
+              {/* <article className="md:hidden">
+                <h3 className="text-xl text- font-bold text-gray-900 mb-0">
+                  Change Password
+                </h3>
+                <p className="text-gray-600 text-xs font-medium mb-3">
+                  Leave blank if you don’t want to change password
+                </p>
+              </article> */}
 
               <div className="space-y-4 mb-6">
                 <div>
@@ -336,8 +268,11 @@ export default function ChangePassword() {
                   >
                     Old Password
                   </label>
-                  <input className="mt-1 w-full border rounded px-3 py-2"
-                   
+                  <input
+                    // className="mt-1 w-full border rounded px-3 py-2"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300
+              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+              pr-12 transition"
                     type="password"
                     name="old_password"
                     value={form.old_password}
@@ -349,8 +284,14 @@ export default function ChangePassword() {
                   <label className="block text-gray-700 font-medium">
                     New Password
                   </label>
+                  {/* <label className="text-sm font-medium text-gray-700">
+                    Password
+                  </label> */}
                   <input
-                    className="mt-1 w-full border rounded px-3 py-2"
+                    // className="mt-1 w-full border rounded px-3 py-2"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300
+              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+              pr-12 transition"
                     type="password"
                     name="password"
                     value={form.password}
@@ -363,7 +304,10 @@ export default function ChangePassword() {
                     Confirm Password
                   </label>
                   <input
-                    className="mt-1 w-full border rounded px-3 py-2"
+                    // className="mt-1 w-full border rounded px-3 py-2"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300
+              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+              pr-12 transition"
                     type="password"
                     name="confirm"
                     value={form.confirm}
@@ -371,6 +315,33 @@ export default function ChangePassword() {
                   />
                 </div>
               </div>
+
+              {/* PASSWORD */}
+              {/* <div>
+                <label className="text-sm font-medium text-gray-700">
+                  Password
+                </label>
+
+                <div className="relative mt-1">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300
+              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+              pr-12 transition"
+                    placeholder="Enter your password"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    👁
+                  </button>
+                </div>
+              </div> */}
 
               <div className="flex gap-3">
                 <Link
