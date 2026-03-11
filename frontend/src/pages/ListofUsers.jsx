@@ -17,6 +17,9 @@ export default function ListofUsers() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   // const [saving, setSaving] = useState(false);
+  // const [page, setPage] = useState(2);
+  // const [totalPages, setTotalPages] = useState(1);
+  //  const [pages, setPages] = useState([]);
 
   // ROLE PROTECTION
   if (!user || (!user.is_staff && !user.is_superuser)) {
@@ -89,42 +92,6 @@ export default function ListofUsers() {
   };
 
   // UPDATE USER
-//   const handleSave = async () => {
-//     try {
-//       const res = await fetch(
-//         `http://127.0.0.1:8000/api/admin/parent/info/${selectedUser.id}`,
-//         {
-//           method: "PUT",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${authTokens.access}`,
-//           },
-//           body: JSON.stringify(selectedUser),
-//         },
-//       );
-
-//       if (!res.ok) throw new Error("Failed to update user");
-
-//       const updated = await res.json();
-
-//       setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
-
-//       fetchUsers(); // refresh list automatically
-
-// //         setSaving(true);
-// // await fetch(...);
-// // setSaving(false);
-
-//       showAlert({
-//         title: "Success",
-//         message: "User updated successfully",
-//         icon: "success",
-//       });
-//       handleClose();
-//     } catch (err) {
-//       // showAlert("Error", err.message);
-//     }
-//   };
   const handleSave = async () => {
     try {
       const res = await fetch(
@@ -201,24 +168,44 @@ export default function ListofUsers() {
     });
   };
 
-    // const currentPage = prevPage
-    //   ? parseInt(new URL(prevPage).searchParams.get("offset") / 10) + 2
-    //   : 1;
+//Filter
+  const filteredUsers = users.filter((u) => {
 
-    // <span>Page: {currentPage}</span>;
+    const name = getFullName(u).toLowerCase();
 
-    const filteredUsers = users.filter((u) => {
-      const name = getFullName(u).toLowerCase();
+    const matchesSearch = name.includes(search.toLowerCase());
 
-      const matchesSearch = name.includes(search.toLowerCase());
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "verified" && u.is_verified) ||
+      (filter === "unverified" && !u.is_verified);
 
-      const matchesFilter =
-        filter === "all" ||
-        (filter === "verified" && u.is_verified) ||
-        (filter === "unverified" && !u.is_verified);
+    return matchesSearch && matchesFilter;
+  });
 
-      return matchesSearch && matchesFilter;
-    });
+
+  //Span filter
+  // let totalLabel = "Total of Registered Accounts";
+
+  // if (filter === "verified") {
+  //   totalLabel = "Total of Verified Accounts";
+  // } else if (filter === "unverified") {
+  //   totalLabel = "Total of Unverified Accounts";
+  // }
+
+const getOffsetFromUrl = (url) => {
+  if (!url) return 0;
+  const params = new URL(url).searchParams;
+  return parseInt(params.get("offset")) || 0;
+};
+
+const limit = users.length || 5;
+
+const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
+
+const totalPages = Math.ceil(totalCount / limit);
+
+const currentPage = Math.floor(offset / limit) + 1;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -283,7 +270,7 @@ export default function ListofUsers() {
           </article>
 
           {/* SEARCH & FILTER BY */}
-          <div className="grid md:grid-cols-2 gap-3 mb-4">
+          <div className="grid md:grid-cols-2 gap-3 mb-3">
             <div>
               <label className="block text-sm md:text-base text-gray-700 font-medium">
                 Search by
@@ -420,111 +407,141 @@ export default function ListofUsers() {
 
             {/* PAGINATION */}
             <div className="flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
-              <span>
-                Showing <span className="font-medium">1</span> to{" "}
-                <span className="font-medium">{users.length}</span> of{" "}
-                <span className="font-medium">{users.length}</span> results
+              {/* LEFT */}
+              <span className="font-medium">
+                Total Registered Parents: {totalCount}
               </span>
-              {/* <span className="text-sm">
-                Total Parent's Account: {totalCount}
-              </span> */}
 
-              <div className="flex items-center gap-2">
-                <button
-                  disabled={!prevPage}
-                  onClick={() => fetchUsers(prevPage)}
-                  className={`px-3 py-1 border rounded-md text-white ${
-                    prevPage
-                      ? "bg-red-600 hover:bg-red-700"
-                      : "bg-[var(--gray-2)] text-white cursor-not-allowed"
-                  }`}
-                  // className="px-3 py-1 border rounded-md hover:bg-gray-50"
-                >
-                  Prev
-                </button>
+              {/* RIGHT */}
+              <div className="flex items-center gap-4">
+                <span className="text-xs">
+                  Page <span className="font-medium">{currentPage}</span> of{" "}
+                  <span className="font-medium">{totalPages}</span>
+                </span>
 
-                {/* <button className="px-3 py-1 bg-red-600 text-white rounded-md">
-                  1
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    disabled={!prevPage}
+                    onClick={() => fetchUsers(prevPage)}
+                    className={`px-3 py-1 rounded-md text-white ${
+                      prevPage
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    Prev
+                  </button>
 
-                <button className="px-3 py-1 border rounded-md hover:bg-gray-50">
-                  2
-                </button> */}
-
-                <button
-                  disabled={!nextPage}
-                  onClick={() => fetchUsers(nextPage)}
-                  className={`px-3 py-1 border rounded-md text-white ${
-                    nextPage
-                      ? "bg-red-600 hover:bg-red-700 "
-                      : "bg-[var(--gray-2)] cursor-not-allowed"
-                  }`}
-                  // className="px-3 py-1 border rounded-md hover:bg-gray-50"
-                >
-                  Next
-                </button>
+                  <button
+                    disabled={!nextPage}
+                    onClick={() => fetchUsers(nextPage)}
+                    className={`px-3 py-1 rounded-md text-white ${
+                      nextPage
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* CLIENT LIST TABLE -- MOBILE VIEW  */}
           <div className="md:hidden space-y-4">
-            {filteredUsers.map((u) => (
-              <div
-                key={u.id}
-                className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
-              >
-                {/* <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-semibold text-red-600">
-                          {u.first_name?.[0]}
-                        </div> */}
-                <div className="font-semibold text-lg text-gray-900">
-                  {getFullName(u)}
-                </div>
+            {filteredUsers.map((u) => {
+              const idImage = u.image?.find(
+                (img) => img.image_type === "id",
+              )?.image;
 
-                <div className="text-sm text-gray-600 mt-1">ID: {u.uuid}</div>
+              const idImageUrl = idImage
+                ? `http://127.0.0.1:8000${idImage}`
+                : null;
 
-                <div className="text-sm text-gray-600">
-                  Birthday: {u.birthday}
-                </div>
-
-                <div className="text-sm text-gray-600">Gender: {u.gender}</div>
-
-                <div className="mt-2">
-                  {u.is_verified ? (
-                    <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700">
-                      Verified
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-600">
-                      Unverified
-                    </span>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => handleView(u)}
-                  className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+              return (
+                <div
+                  key={u.id}
+                  className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
                 >
-                  View
-                </button>
-              </div>
-            ))}
+                  <div className="grid grid-cols-[80px_1fr] gap-4 items-center">
+                    <div className="w-20 h-20 rounded-full overflow-hidden bg-red-100 flex items-center justify-center">
+                      {idImageUrl ? (
+                        <img
+                          src={idImageUrl}
+                          alt="ID"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-2xl font-semibold text-red-600">
+                          {u.first_name?.[0]}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <div className="font-semibold text-lg text-gray-900">
+                        {getFullName(u)}
+                      </div>
+
+                      <div className="text-sm text-gray-600 mt-1">
+                        ID: {u.uuid}
+                      </div>
+
+                      <div className="text-sm text-gray-600">
+                        Birthday: {u.birthday}
+                      </div>
+
+                      <div className="text-sm text-gray-600">
+                        Gender: {u.gender}
+                      </div>
+
+                      <div className="mt-2">
+                        {u.is_verified ? (
+                          <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700">
+                            Verified
+                          </span>
+                        ) : (
+                          <span className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-600">
+                            Unverified
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleView(u)}
+                    className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+                  >
+                    View
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
-          {/* PAGINATION  */}
-          {/* <div className="flex justify-between mt-4 items-center">
-            <span className="text-sm">
-              Total Parent's Account: {totalCount}
+          {/* PAGINATION */}
+          <div className="md:hidden flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
+            {/* <span className="text-sm font-medium">
+              Total of Registered Parents: {totalCount}
+            </span> */}
+            <span className="text-xs">
+              Page <span className="font-medium">{currentPage}</span> of{" "}
+              <span className="font-medium">{totalPages}</span>
             </span>
+            {/* <span className="text-sm font-medium">
+              {totalLabel}: {filteredUsers.length}
+            </span> */}
 
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <button
                 disabled={!prevPage}
                 onClick={() => fetchUsers(prevPage)}
-                className={`text-sm md:text-base px-4 md:py-2 rounded text-white ${
+                className={`px-3 py-1 border rounded-md text-white ${
                   prevPage
                     ? "bg-red-600 hover:bg-red-700"
-                    : "bg-[var(--gray-2)] cursor-not-allowed"
+                    : "bg-[var(--gray-2)] text-white cursor-not-allowed"
                 }`}
               >
                 Prev
@@ -533,16 +550,16 @@ export default function ListofUsers() {
               <button
                 disabled={!nextPage}
                 onClick={() => fetchUsers(nextPage)}
-                className={`text-sm md:text-base px-4 md:py-2 rounded text-white ${
+                className={`px-3 py-1 border rounded-md text-white ${
                   nextPage
-                    ? "bg-red-600 hover:bg-red-700"
+                    ? "bg-red-600 hover:bg-red-700 "
                     : "bg-[var(--gray-2)] cursor-not-allowed"
                 }`}
               >
                 Next
               </button>
             </div>
-          </div> */}
+          </div>
 
           {/* MODAL */}
           {showModal && selectedUser && (

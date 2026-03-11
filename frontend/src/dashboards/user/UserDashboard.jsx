@@ -36,39 +36,38 @@ export default function UserDashboard() {
     });
   };
 
-  //Confirm If user Exists
-  // useEffect(() => {
-  //   console.log("USER:", user);
-  //   console.log("TOKENS:", authTokens);
-  // }, [user, authTokens]);
-
   //Guard the fetch on user and authTokens
-  useEffect(() => {
-    if (!user?.pk || !authTokens?.access) return;
+const fetchUser = async () => {
+  try {
+    console.time("API");
 
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authTokens.access}`,
-            },
-          },
-        );
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      },
+    );
 
-        if (!response.ok) throw new Error("Failed to fetch user");
+    console.timeEnd("API");
 
-        const data = await response.json();
-        console.log("API RESPONSE:", data); // to check API RESPONSE
-        setUserInfo(data);
-      } catch (err) {
-        console.error("Error fetching user:", err);
-      }
-    };
+    if (!response.ok) throw new Error("Failed to fetch user");
 
-    fetchUser();
-  }, [user?.pk, authTokens?.access]);
+    const data = await response.json();
+    console.log("API RESPONSE:", data);
+
+    setUserInfo(data);
+  } catch (err) {
+    console.error("Error fetching user:", err);
+  }
+};
+
+useEffect(() => {
+  if (!user?.pk || !authTokens?.access) return;
+
+  fetchUser();
+}, [user?.pk, authTokens?.access]);
  
 
   //Calculate Parent's Age
@@ -100,6 +99,11 @@ export default function UserDashboard() {
   : null;
 
   // console.log(userInfo?.image);
+
+  //console test
+  useEffect(() => {
+    console.log("User info loaded:", userInfo);
+  }, [userInfo]);
 
    return (
      <div className="flex bg-white md:h-screen">
@@ -275,31 +279,8 @@ export default function UserDashboard() {
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
                  <div className="flex items-center justify-between mb-3">
                    <h3 className="font-semibold text-gray-700">ID Details</h3>
-                   {/* <button 
-                   onClick={toggleModal}
-                   className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-1 px-3 rounded text-xs flex items-center gap-1">
-                     <svg
-                       xmlns="http://www.w3.org/2000/svg"
-                       viewBox="0 0 24 24"
-                       fill="currentColor"
-                       className="size-4"
-                     >
-                       <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                       <path
-                         fillRule="evenodd"
-                         d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
-                         clipRule="evenodd"
-                       />
-                     </svg>
-
-                     <p>View ID</p>
-                   </button> */}
                    <button
                      onClick={toggleModal}
-                     //                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white
-                     // bg-red-500 rounded shadow-md hover:bg-red-600
-                     // hover:shadow-lg active:scale-95
-                     // transition-all duration-200"
                      className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-white
                     bg-red-500 backdrop-blur rounded-xl
                     shadow-sm hover:bg-red-700 hover:shadow-md
@@ -338,7 +319,7 @@ export default function UserDashboard() {
                    Signature on white background
                  </p>
 
-                 <div className="flex justify-center">
+                 {/* <div className="flex justify-center">
                    {signatureImageUrl ? (
                      <img
                        src={signatureImageUrl}
@@ -349,6 +330,18 @@ export default function UserDashboard() {
                      <p className="text-sm text-gray-400">
                        E-Signature not available
                      </p>
+                   )}
+                 </div> */}
+                 <div className="flex justify-center">
+                   {!signatureImageUrl ? (
+                     <div className="h-28 w-48 bg-gray-200 animate-pulse rounded-lg"></div>
+                   ) : (
+                     <img
+                       src={signatureImageUrl}
+                   
+                       alt="Signature"
+                       className="h-28 object-contain rounded-lg bg-white p-2"
+                     />
                    )}
                  </div>
                </div>
@@ -367,18 +360,12 @@ export default function UserDashboard() {
                    <div className="grid md:grid-cols-2">
                      <div>
                        <h4 className="text-sm text-gray-400">First Name</h4>
-                       {/* <p className="font-medium text-lg text-gray-800 mb-3">
-                        Example
-                      </p> */}
                        <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
                          {userInfo?.parent?.first_name || "N/A"}
                        </p>
                      </div>
                      <div>
                        <h4 className="text-sm text-gray-400">Middle Name</h4>
-                       {/* <p className="font-medium text-lg text-gray-800 mb-3">
-                        Secret
-                      </p> */}
                        <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
                          {userInfo?.parent?.middle_name || "N/A"}
                        </p>
@@ -401,22 +388,10 @@ export default function UserDashboard() {
                    <div className="grid md:grid-cols-2 ">
                      <div>
                        <h4 className="text-sm text-gray-400">Date of Birth</h4>
-                       {/* <p className="font-medium text-lg text-gray-800 mb-3">
-                        01/02/01
-                      </p> */}
                        <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
                          {userInfo?.parent?.birthday || "N/A"}
                        </p>
                      </div>
-                     {/* <div>
-                       <h4 className="text-sm text-gray-400">Age</h4>
-
-                       <p className="font-medium text-lg text-gray-800 mb-3">
-                         {userInfo?.parent?.birthday
-                           ? calculateAge(userInfo.parent.birthday)
-                           : "N/A"}
-                       </p>
-                     </div> */}
                      <div>
                        <h4 className="text-sm text-gray-400">Gender</h4>
                        <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
@@ -427,10 +402,6 @@ export default function UserDashboard() {
 
                    <div>
                      <h4 className="text-sm text-gray-400">Address</h4>
-                     {/* <p className="font-medium text-lg text-gray-800 mb-3">
-                      031, Secret, Progreso, San Juan, Metro Manila
-                    </p> */}
-                     {/* <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize"> */}
                      <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
                        {`${userInfo?.parent?.house || ""} ${userInfo?.parent?.street || ""} ${userInfo?.parent?.subdivision || ""} ${userInfo?.parent?.barangay || ""} ${userInfo?.parent?.city || ""} ${userInfo?.parent?.province || ""}`.trim() ||
                          "N/A"}

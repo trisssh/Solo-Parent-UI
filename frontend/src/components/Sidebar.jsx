@@ -120,7 +120,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
-                    className={`size-5 transition-transform duration-200 ${
+                    className={`size-4 transition-transform duration-200 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   >
@@ -141,10 +141,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                         <Link
                           key={child.name}
                           to={child.link}
-                          className={`block px-4 py-2 rounded-md text-sm transition
+                          className={`block px-4 py-2 rounded-md text-sm transition font-semibold
                     ${
                       isActive
-                        ? "bg-white text-red-700"
+                        ? "bg-white text-red-700 "
                         : "hover:bg-white hover:text-red-700"
                     }`}
                         >
