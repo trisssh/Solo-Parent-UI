@@ -207,6 +207,20 @@ const totalPages = Math.ceil(totalCount / limit);
 
 const currentPage = Math.floor(offset / limit) + 1;
 
+
+//date reformat
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
   return (
     <div className="flex bg-white md:h-screen">
       {/* SIDEBAR */}
@@ -281,7 +295,7 @@ const currentPage = Math.floor(offset / limit) + 1;
                   placeholder=""
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 px-3 py-2 outline-none"
+                  className="flex-1 px-3 py-1.5 outline-none"
                 />
 
                 <button className="bg-red-600 text-white px-6 hover:bg-red-700">
@@ -297,7 +311,7 @@ const currentPage = Math.floor(offset / limit) + 1;
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="border border-gray-200 rounded-lg w-full py-2 px-3"
+                className="border border-gray-200 rounded-lg w-full py-1.5 px-3"
               >
                 <option value="all">All</option>
                 <option value="verified">Verified</option>
@@ -330,8 +344,9 @@ const currentPage = Math.floor(offset / limit) + 1;
                     <th className="px-4 py-3 text-left font-semibold">
                       Full Name
                     </th>
-                    <th className="px-4 py-3 text-left font-semibold">
+                    <th className="px-4 py-3">
                       Birthday
+                      <div className="text-xs font-normal">MM/DD/YYYY</div>
                     </th>
                     <th className="px-4 py-3 text-left font-semibold">
                       Gender
@@ -362,9 +377,9 @@ const currentPage = Math.floor(offset / limit) + 1;
 
                       {/* NAME + AVATAR */}
                       <td className="px-6 py-4 flex items-center gap-3">
-                        {/* <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-semibold text-red-600">
+                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-semibold text-red-600">
                           {u.first_name?.[0]}
-                        </div> */}
+                        </div>
 
                         <span className="font-medium text-gray-900">
                           {getFullName(u)}
@@ -372,7 +387,9 @@ const currentPage = Math.floor(offset / limit) + 1;
                       </td>
 
                       {/* BIRTHDAY */}
-                      <td className="px-4 py-3">{u.birthday}</td>
+                      <td className="px-4 py-3 text-center">
+                        {formatDate(u.birthday)}
+                      </td>
 
                       {/* GENDER */}
                       <td className="px-4 py-3 capitalize">{u.gender}</td>
@@ -392,9 +409,15 @@ const currentPage = Math.floor(offset / limit) + 1;
 
                       {/* ACTION */}
                       <td className="px-4 py-3">
-                        <button
+                        {/* <button
                           onClick={() => handleView(u)}
                           className="text-red-600 hover:text-red-700 font-medium"
+                        >
+                          View
+                        </button> */}
+                        <button
+                          onClick={() => handleView(u)}
+                          className="cursor-pointer px-3 py-1 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition"
                         >
                           View
                         </button>
@@ -787,10 +810,24 @@ const currentPage = Math.floor(offset / limit) + 1;
                     </>
                   ) : (
                     <button
-                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                      className="w-full flex gap-1 justify-center items-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
                       onClick={() => setIsEdit(true)}
                     >
-                      Edit
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                        />
+                      </svg>
+                      <span>Edit</span>
                     </button>
                   )}
                 </div>
