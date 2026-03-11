@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
+import ChangePasswordForm from "../components/ChangePasswordForm";
 
 
 
@@ -13,11 +14,7 @@ export default function ChangePassword() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-    const [form, setForm] = useState({
-      old_password: "",
-      password: "",
-      confirm: "",
-    });
+   
 
     useEffect(() => {
       const storedUser = localStorage.getItem("user");
@@ -26,9 +23,6 @@ export default function ChangePassword() {
       }
     }, []);
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
 
     //  LOGOUT
     const handleLogout = () => {
@@ -47,97 +41,6 @@ export default function ChangePassword() {
       });
     };
 
-     //SUBMIT
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        // Check password fields
-        if (!form.password || !form.confirm) {
-          showAlert({
-            title: "Reminder",
-            message: "Leave blank if you don’t want to change password",
-            icon: "info",
-          });
-          return;
-        }
-
-        if (form.password !== form.confirm) {
-          showAlert({
-            title: "Error",
-            message: "New password and confirm password do not match",
-            icon: "error",
-          });
-          return;
-        }
-
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/api/user/password/${user.pk}/`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${authTokens.access}`,
-              },
-              body: JSON.stringify({
-                password: form.password,
-                password_confirmation: form.confirm,
-              }),
-            },
-          );
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            showAlert({
-              title: "Error",
-              message: data.password?.[0] || "Failed to change password",
-              icon: "error",
-            });
-            return;
-          }
-
-          // Success
-          showAlert({
-            title: "Success",
-            message: "Password changed successfully!",
-            icon: "success",
-          });
-
-          // Clear form
-          setForm({ old_password: "", password: "", confirm: "" });
-        } catch (error) {
-          console.error("Error:", error);
-          showAlert({
-            title: "Error",
-            message: "Server error. Please try again.",
-            icon: "error",
-          });
-        }
-      };
-
-  //  console.log("USER INFO:", userInfo);
-  //  console.log("LOCAL USER:", user);
-
-
-    // SWEET ALERT
-    const showAlert = ({ title, message, icon = "error" }) => {
-        Swal.fire({
-        title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-        html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
-        icon,
-        iconColor: "#DC2626",
-        background: "#ffffff",
-        showConfirmButton: true,
-        confirmButtonText: "Okay",
-        buttonsStyling: false,
-        customClass: {
-            popup: "rounded-xl px-6 py-4",
-            confirmButton:
-            "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
-        },
-        });
-    };
 
   return (
     <>
@@ -236,131 +139,7 @@ export default function ChangePassword() {
           </nav>
         </header>
 
-        <div className="flex-1 flex justify-center items-center bg-white">
-          <form
-            className="relative max-w-2xl w-full space-y-6"
-            onSubmit={handleSubmit}
-          >
-            {/* <div className="bg-white rounded-xl border-4 border-red-300 p-5 mx-3"> */}
-            <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6 mx-3">
-              <article className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 md:mb-1">
-                  Change Password
-                </h2>
-                <p className="text-xs font-semibold md:text-sm text-gray-600 text-justify">
-                  Leave blank if you don’t want to change password
-                </p>
-              </article>
-              {/* <article className="md:hidden">
-                <h3 className="text-xl text- font-bold text-gray-900 mb-0">
-                  Change Password
-                </h3>
-                <p className="text-gray-600 text-xs font-medium mb-3">
-                  Leave blank if you don’t want to change password
-                </p>
-              </article> */}
-
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label
-                    //   className="text-sm text-gray-600"
-                    className="block text-gray-700 font-medium"
-                  >
-                    Old Password
-                  </label>
-                  <input
-                    // className="mt-1 w-full border rounded px-3 py-2"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300
-              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
-              pr-12 transition"
-                    type="password"
-                    name="old_password"
-                    value={form.old_password}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium">
-                    New Password
-                  </label>
-                  {/* <label className="text-sm font-medium text-gray-700">
-                    Password
-                  </label> */}
-                  <input
-                    // className="mt-1 w-full border rounded px-3 py-2"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300
-              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
-              pr-12 transition"
-                    type="password"
-                    name="password"
-                    value={form.password}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium">
-                    Confirm Password
-                  </label>
-                  <input
-                    // className="mt-1 w-full border rounded px-3 py-2"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300
-              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
-              pr-12 transition"
-                    type="password"
-                    name="confirm"
-                    value={form.confirm}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              {/* PASSWORD */}
-              {/* <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Password
-                </label>
-
-                <div className="relative mt-1">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300
-              focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
-              pr-12 transition"
-                    placeholder="Enter your password"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    👁
-                  </button>
-                </div>
-              </div> */}
-
-              <div className="flex gap-3">
-                <Link
-                  to="/dashboard"
-                  className="text-center bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
-                >
-                  Cancel
-                </Link>
-
-                <button
-                  type="submit"
-                  className="bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+         <ChangePasswordForm />
       </div>
     </>
   );

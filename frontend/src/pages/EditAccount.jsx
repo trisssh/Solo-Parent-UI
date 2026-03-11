@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import Swal from "sweetalert2";
 import Sidebar from "../components/Sidebar";
+import ChangePasswordForm from "../components/ChangePasswordForm";
 
 export default function EditAccount() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -37,10 +38,10 @@ export default function EditAccount() {
 
           <div>
             <h2 className="text-2xl font-bold text-gray-800 hidden md:block">
-              Edit Account
+              Change Password
             </h2>
             <p className="text-gray-600 text-sm font-medium hidden md:block">
-              To view and edit your Account's information
+              Leave blank if you don’t want to change password
             </p>
           </div>
 
@@ -61,20 +62,7 @@ export default function EditAccount() {
         </header>
 
         <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
-          <div className="md:hidden">
-            <h3 className="text-xl text- font-bold text-gray-900 mb-0">
-              Edit Account
-            </h3>
-            <p className="text-gray-600 text-xs font-medium mb-3">
-              To view and edit your Account's information
-            </p>
-          </div>
-
-          {/* Edit Account Section */}
-          <section>Edit Account</section>
-
-          {/* Change Password Account Section */}
-          <section>Change Password Account</section>
+          <ChangePasswordForm />
         </main>
       </div>
     </div>
