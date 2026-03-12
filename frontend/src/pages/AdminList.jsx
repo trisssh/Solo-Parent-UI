@@ -175,8 +175,8 @@ export default function AdminList() {
             </button>
           </div>
 
-          {/* ADMIN LIST TABLE -- MOBILE VIEW  */}
-          <div className="bg-white rounded-xl shadow border border-gray-200 overflow-x-auto">
+          {/* ADMIN LIST TABLE -- DEKSTOP VIEW  */}
+          <div className="bg-white rounded-xl shadow border border-gray-200 overflow-x-auto hidden md:block">
             <table className="w-full text-lg">
               <thead className="bg-gray-100">
                 <tr>
@@ -186,8 +186,6 @@ export default function AdminList() {
                   <th className="px-4 py-3 text-left">Action</th>
                 </tr>
               </thead>
-
-            
 
               <tbody className="divide-y divide-gray-100">
                 {admins.map((admin) => (
@@ -219,6 +217,37 @@ export default function AdminList() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* ADMIN LIST TABLE -- MOBILE VIEW  */}
+          <div className="md:hidden space-y-4">
+            {admins.map((admin) => (
+              <div
+                key={admin.id}
+                className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
+              >
+                <div className="font-semibold text-lg text-gray-900">
+                  Email: {admin.email}
+                </div>
+                <div className="mt-2">
+                  {admin.is_superuser ? (
+                    <span className="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
+                      Superadmin
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                      Admin
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+                >
+                  View
+                </button>
+              </div>
+            ))}
           </div>
         </main>
       </div>
