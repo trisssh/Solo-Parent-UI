@@ -48,18 +48,18 @@ export default function AdminList() {
     }, []);
 
   //Filter
-  //   const filteredUsers = users.filter((u) => {
-  //     const name = getFullName(u).toLowerCase();
+    // const filteredAdmins = admins.filter((u) => {
+    
 
-  //     const matchesSearch = name.includes(search.toLowerCase());
+    //   const matchesSearch = name.includes(search.toLowerCase());
 
-  //     const matchesFilter =
-  //       filter === "all" ||
-  //       (filter === "verified" && u.is_verified) ||
-  //       (filter === "unverified" && !u.is_verified);
+    //   const matchesFilter =
+    //     filter === "all" ||
+    //     (filter === "verified" && u.is_verified) ||
+    //     (filter === "unverified" && !u.is_verified);
 
-  //     return matchesSearch && matchesFilter;
-  //   });
+    //   return matchesSearch && matchesFilter;
+    // });
 
   // RENDER
 //   if (loading) {

@@ -11,7 +11,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
 
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
-        <header className="bg-white border-b border-red-200 flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2.5 p-2 shadow-sm">
+        <header className="bg-white border-b border-gray-200 flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2.5 p-2 shadow-sm">
           <button
             className="md:hidden text-gray-800 mr-3"
             onClick={() => setSidebarOpen(true)}

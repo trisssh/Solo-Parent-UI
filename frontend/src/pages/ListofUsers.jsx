@@ -354,19 +354,13 @@ const formatDate = (dateString) => {
                     <th className="px-3 py-2 text-left font-semibold">
                       Status
                     </th>
-                    <th className="px-3 py-2 text-left font-semibold">
-                     {""}
-                    </th>
+                    <th className="px-3 py-2 text-left font-semibold">{""}</th>
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-gray-100">
                   {filteredUsers.map((u) => (
-
-                    <tr
-                      key={u.id}
-                      className="hover:bg-gray-50 transition"
-                    >
+                    <tr key={u.id} className="hover:bg-gray-50 transition">
                       {/* ID */}
                       <td className="px-4 py-3 text-sm text-gray-400 font-mono">
                         {u.uuid}
@@ -474,116 +468,119 @@ const formatDate = (dateString) => {
             </div>
           </div>
 
-          {/* CLIENT LIST TABLE -- MOBILE VIEW  */}
-          <div className="md:hidden space-y-4">
-            {filteredUsers.map((u) => {
-              const idImage = u.image?.find(
-                (img) => img.image_type === "id",
-              )?.image;
+          {/* CLIENT LIST CARD -- MOBILE VIEW  */}
+          <div>
+            {/* CARD */}
+            <div className="md:hidden space-y-4">
+              {filteredUsers.map((u) => {
+                const idImage = u.image?.find(
+                  (img) => img.image_type === "id",
+                )?.image;
 
-              const idImageUrl = idImage
-                ? `http://127.0.0.1:8000${idImage}`
-                : null;
+                const idImageUrl = idImage
+                  ? `http://127.0.0.1:8000${idImage}`
+                  : null;
 
-              return (
-                <div
-                  key={u.id}
-                  className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
-                >
-                  <div className="grid grid-cols-[80px_1fr] gap-4 items-center">
-                    <div className="w-20 h-20 rounded-full overflow-hidden bg-red-100 flex items-center justify-center">
-                      {idImageUrl ? (
-                        <img
-                          src={idImageUrl}
-                          alt="ID"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span className="text-2xl font-semibold text-red-600">
-                          {u.first_name?.[0]}
-                        </span>
-                      )}
-                    </div>
-
-                    <div>
-                      <div className="font-semibold text-lg text-gray-900">
-                        {getFullName(u)}
-                      </div>
-
-                      <div className="text-sm text-gray-600 mt-1">
-                        ID: {u.uuid}
-                      </div>
-
-                      <div className="text-sm text-gray-600">
-                        Birthday: {u.birthday}
-                      </div>
-
-                      <div className="text-sm text-gray-600">
-                        Gender: {u.gender}
-                      </div>
-
-                      <div className="mt-2">
-                        {u.is_verified ? (
-                          <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700">
-                            Verified
-                          </span>
+                return (
+                  <div
+                    key={u.id}
+                    className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
+                  >
+                    <div className="grid grid-cols-[80px_1fr] gap-4 items-center">
+                      <div className="w-20 h-20 rounded-full overflow-hidden bg-red-100 flex items-center justify-center">
+                        {idImageUrl ? (
+                          <img
+                            src={idImageUrl}
+                            alt="ID"
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
-                          <span className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-600">
-                            Unverified
+                          <span className="text-2xl font-semibold text-red-600">
+                            {u.first_name?.[0]}
                           </span>
                         )}
                       </div>
+
+                      <div>
+                        <div className="font-semibold text-lg text-gray-900">
+                          {getFullName(u)}
+                        </div>
+
+                        <div className="text-sm text-gray-600 mt-1">
+                          ID: {u.uuid}
+                        </div>
+
+                        <div className="text-sm text-gray-600">
+                          Birthday: {u.birthday}
+                        </div>
+
+                        <div className="text-sm text-gray-600">
+                          Gender: {u.gender}
+                        </div>
+
+                        <div className="mt-2">
+                          {u.is_verified ? (
+                            <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700">
+                              Verified
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-600">
+                              Unverified
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
+
+                    <button
+                      onClick={() => handleView(u)}
+                      className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+                    >
+                      View
+                    </button>
                   </div>
+                );
+              })}
+            </div>
 
-                  <button
-                    onClick={() => handleView(u)}
-                    className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
-                  >
-                    View
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* PAGINATION */}
-          <div className="md:hidden flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
-            {/* <span className="text-sm font-medium">
+            {/* PAGINATION */}
+            <div className="md:hidden flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
+              {/* <span className="text-sm font-medium">
               Total of Registered Parents: {totalCount}
             </span> */}
-            <span className="text-xs">
-              Page <span className="font-medium">{currentPage}</span> of{" "}
-              <span className="font-medium">{totalPages}</span>
-            </span>
-            {/* <span className="text-sm font-medium">
+              <span className="text-xs">
+                Page <span className="font-medium">{currentPage}</span> of{" "}
+                <span className="font-medium">{totalPages}</span>
+              </span>
+              {/* <span className="text-sm font-medium">
               {totalLabel}: {filteredUsers.length}
             </span> */}
 
-            <div className="flex items-center gap-2">
-              <button
-                disabled={!prevPage}
-                onClick={() => fetchUsers(prevPage)}
-                className={`px-3 py-1 border rounded-md text-white ${
-                  prevPage
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-[var(--gray-2)] text-white cursor-not-allowed"
-                }`}
-              >
-                Prev
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={!prevPage}
+                  onClick={() => fetchUsers(prevPage)}
+                  className={`px-3 py-1 border rounded-md text-white ${
+                    prevPage
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-[var(--gray-2)] text-white cursor-not-allowed"
+                  }`}
+                >
+                  Prev
+                </button>
 
-              <button
-                disabled={!nextPage}
-                onClick={() => fetchUsers(nextPage)}
-                className={`px-3 py-1 border rounded-md text-white ${
-                  nextPage
-                    ? "bg-red-600 hover:bg-red-700 "
-                    : "bg-[var(--gray-2)] cursor-not-allowed"
-                }`}
-              >
-                Next
-              </button>
+                <button
+                  disabled={!nextPage}
+                  onClick={() => fetchUsers(nextPage)}
+                  className={`px-3 py-1 border rounded-md text-white ${
+                    nextPage
+                      ? "bg-red-600 hover:bg-red-700 "
+                      : "bg-[var(--gray-2)] cursor-not-allowed"
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
 
