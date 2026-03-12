@@ -254,7 +254,7 @@ export default function Login4() {
                 <div className="text-right">
                   <Link
                     to="/forgot-password"
-                    className="text-xs underline hover:text-red-600 text-red-500 cursor-pointer"
+                    className="text-xs sm:text-sm hover:underline hover:text-red-600 text-red-500 cursor-pointer"
                   >
                     Forgot Password?
                   </Link>
@@ -271,7 +271,7 @@ export default function Login4() {
               </form>
 
               {/* Link */}
-              <span className="flex justify-center mt-2 text-center text-sm text-gray-600">
+              <span className="flex justify-center text-xs sm:text-sm mt-2 text-center text-gray-600">
                 Don’t have an account?
                 <Link
                   to="/user-register"
