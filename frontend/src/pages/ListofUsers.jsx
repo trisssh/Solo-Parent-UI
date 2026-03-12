@@ -168,7 +168,7 @@ export default function ListofUsers() {
     });
   };
 
-//Filter
+  //Filter
   const filteredUsers = users.filter((u) => {
 
     const name = getFullName(u).toLowerCase();

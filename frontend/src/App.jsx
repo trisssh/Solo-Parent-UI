@@ -13,6 +13,7 @@ import ForgetPassword from './pages/ForgetPassword';
 import ChangePassword from './pages/ChangePassword';
 import UserRegister from './pages/UserRegister';
 import ListofUsers from "./pages/ListofUsers";
+import AdminList from "./pages/AdminList"
 import EditAccount from "./pages/EditAccount";
 import SuperAdminDashboard from './dashboards/superadmin/SuperAdminDashboard';
 
@@ -51,6 +52,15 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
                 <EditAccount />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admins-list"
+            element={
+              <ProtectedRoute allowedRoles={["superadmin"]}>
+                <AdminList />
               </ProtectedRoute>
             }
           />
