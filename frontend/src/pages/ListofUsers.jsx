@@ -336,38 +336,35 @@ const formatDate = (dateString) => {
           {/* CLIENT LIST TABLE -- DEKSTOP VIEW  */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 w-full hidden md:block">
             {/* TABLE */}
-            <div className="overflow-x-auto rounded">
-              <table className="w-full text-lg text-gray-950">
-                <thead className="bg-gray-50 text-gray-900 text-lg uppercase tracking-wider">
+            <div className="overflow-x-auto rounded-t-xl">
+              <table className="w-full text-lg">
+                <thead className="bg-gray-100 text-gray-900 text-lg uppercase">
                   <tr>
-                    <th className="px-4 py-3 text-left font-semibold">ID</th>
-                    <th className="px-4 py-3 text-left font-semibold">
+                    <th className="px-3 py-2 text-left font-semibold">ID</th>
+                    <th className="px-3 py-2 text-left font-semibold">
                       Full Name
                     </th>
-                    <th className="px-4 py-3">
+                    <th className="px-3 py-1.5">
                       Birthday
                       <div className="text-xs font-normal">MM/DD/YYYY</div>
                     </th>
-                    <th className="px-4 py-3 text-left font-semibold">
+                    <th className="px-3 py-2 text-left font-semibold">
                       Gender
                     </th>
-                    <th className="px-4 py-3 text-left font-semibold">
+                    <th className="px-3 py-2 text-left font-semibold">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-left font-semibold">
-                     { ""}
+                    <th className="px-3 py-2 text-left font-semibold">
+                     {""}
                     </th>
                   </tr>
                 </thead>
 
                 <tbody className="divide-y divide-gray-100">
                   {filteredUsers.map((u) => (
-                    // <tr key={u.id} className="hover:bg-gray-50 transition">
 
                     <tr
                       key={u.id}
-                      // className="hover:bg-gray-50 even:bg-gray-50 transition"
-
                       className="hover:bg-gray-50 transition"
                     >
                       {/* ID */}
@@ -376,7 +373,7 @@ const formatDate = (dateString) => {
                       </td>
 
                       {/* NAME + AVATAR */}
-                      <td className="px-6 py-4 flex items-center gap-3">
+                      <td className="px-4 py-3 flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-xs font-semibold text-red-600">
                           {u.first_name?.[0]}
                         </div>

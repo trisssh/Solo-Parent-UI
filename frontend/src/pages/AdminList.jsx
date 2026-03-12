@@ -4,37 +4,48 @@ import Swal from "sweetalert2";
 import Sidebar from "../components/Sidebar";
 
 export default function AdminList() {
-  const { authTokens, user } = useContext(AuthContext);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
+    const { authTokens, user } = useContext(AuthContext);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [prevPage, setPrevPage] = useState(null);
+    const [nextPage, setNextPage] = useState(null);
+    const [totalCount, setTotalCount] = useState(0);
+    const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState("all");
+    const [admins, setAdmins] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  const [admins, setAdmins] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchAdmins = async () => {
+    const fetchAdmins = async () => {
     try {
-      const token = authTokens?.access;
+        const token = authTokens?.access;
 
-      const response = await fetch("http://127.0.0.1:8000/api/admin/list", {
+        const response = await fetch("http://127.0.0.1:8000/api/admin/list", {
         headers: {
-          Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
-      });
+        });
 
-      const data = await response.json();
-    //   setAdmins(data);
-      setAdmins(data.results);
+        const data = await response.json();
+        //   setAdmins(data);
+        setAdmins(data.results);
+
+        // Save pagination URLs
+        setNextPage(data.next);
+        setPrevPage(data.previous);
+
+        // Save total count
+        setTotalCount(data.count);
     } catch (error) {
-      console.error("Error fetching admins:", error);
+        console.error("Error fetching admins:", error);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+    };
 
-  useEffect(() => {
+    useEffect(() => {
     fetchAdmins();
-  }, []);
+    }, []);
 
   //Filter
   //   const filteredUsers = users.filter((u) => {
@@ -54,6 +65,20 @@ export default function AdminList() {
 //   if (loading) {
 //     return <p className="text-center mt-10">Loading admins...</p>;
 //   }
+
+    const getOffsetFromUrl = (url) => {
+    if (!url) return 0;
+    const params = new URL(url).searchParams;
+    return parseInt(params.get("offset")) || 0;
+    };
+
+    const limit = admins.length || 5;
+
+    const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const currentPage = Math.floor(offset / limit) + 1;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -176,47 +201,92 @@ export default function AdminList() {
           </div>
 
           {/* ADMIN LIST TABLE -- DEKSTOP VIEW  */}
-          <div className="bg-white rounded-xl shadow border border-gray-200 overflow-x-auto hidden md:block">
-            <table className="w-full text-lg">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-4 py-3 text-left">ID</th>
-                  <th className="px-4 py-3 text-left">Email</th>
-                  <th className="px-4 py-3 text-left">Role</th>
-                  <th className="px-4 py-3 text-left">Action</th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-100">
-                {admins.map((admin) => (
-                  <tr key={admin.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-400 font-mono">
-                      {admin.id}
-                    </td>
-
-                    <td className="px-4 py-3">{admin.email}</td>
-
-                    <td className="px-4 py-3">
-                      {admin.is_superuser ? (
-                        <span className="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
-                          Superadmin
-                        </span>
-                      ) : (
-                        <span className="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
-                          Admin
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="px-4 py-3">
-                      <button className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer">
-                        View
-                      </button>
-                    </td>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 w-full hidden md:block">
+            {/* TABLE */}
+            <div className="overflow-x-auto rounded-t-xl">
+              <table className="w-full text-lg">
+                <thead className="bg-gray-100 text-gray-900 text-lg uppercase">
+                  <tr>
+                    <th className="px-4 py-3 text-left">ID</th>
+                    <th className="px-4 py-3 text-left">Email</th>
+                    <th className="px-4 py-3 text-left">Role</th>
+                    <th className="px-4 py-3 text-left">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody className="divide-y divide-gray-100">
+                  {admins.map((admin) => (
+                    <tr key={admin.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-gray-400 font-mono">
+                        {admin.id}
+                      </td>
+
+                      <td className="px-4 py-3">{admin.email}</td>
+
+                      <td className="px-4 py-3">
+                        {admin.is_superuser ? (
+                          <span className="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
+                            Superadmin
+                          </span>
+                        ) : (
+                          <span className="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                            Admin
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3">
+                        <button className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* PAGINATION */}
+            <div className="flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
+              {/* LEFT */}
+              <span className="font-medium">
+                Total Admins & Superadmins: {totalCount}
+              </span>
+
+              {/* RIGHT */}
+              <div className="flex items-center gap-4">
+                <span className="text-xs">
+                  Page <span className="font-medium">{currentPage}</span> of{" "}
+                  <span className="font-medium">{totalPages}</span>
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    disabled={!prevPage}
+                    onClick={() => fetchUsers(prevPage)}
+                    className={`px-3 py-1 rounded-md text-white ${
+                      prevPage
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    Prev
+                  </button>
+
+                  <button
+                    disabled={!nextPage}
+                    onClick={() => fetchUsers(nextPage)}
+                    className={`px-3 py-1 rounded-md text-white ${
+                      nextPage
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* ADMIN LIST TABLE -- MOBILE VIEW  */}
@@ -241,13 +311,48 @@ export default function AdminList() {
                   )}
                 </div>
 
-                <button
-                  className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
-                >
+                <button className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg">
                   View
                 </button>
               </div>
             ))}
+          </div>
+
+          {/* PAGINATION FOR MOBILE VIEW CARD*/}
+          <div className="md:hidden flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
+            <span className="text-xs">
+              Page <span className="font-medium">{currentPage}</span> of{" "}
+              <span className="font-medium">{totalPages}</span>
+            </span>
+            {/* <span className="text-sm font-medium">
+              {totalLabel}: {filteredUsers.length}
+            </span> */}
+
+            <div className="flex items-center gap-2">
+              <button
+                disabled={!prevPage}
+                onClick={() => fetchUsers(prevPage)}
+                className={`px-3 py-1 border rounded-md text-white ${
+                  prevPage
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-[var(--gray-2)] text-white cursor-not-allowed"
+                }`}
+              >
+                Prev
+              </button>
+
+              <button
+                disabled={!nextPage}
+                onClick={() => fetchUsers(nextPage)}
+                className={`px-3 py-1 border rounded-md text-white ${
+                  nextPage
+                    ? "bg-red-600 hover:bg-red-700 "
+                    : "bg-[var(--gray-2)] cursor-not-allowed"
+                }`}
+              >
+                Next
+              </button>
+            </div>
           </div>
         </main>
       </div>
