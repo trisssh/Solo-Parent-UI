@@ -338,7 +338,7 @@ const formatDate = (dateString) => {
             {/* TABLE */}
             <div className="overflow-x-auto rounded">
               <table className="w-full text-lg text-gray-950">
-                <thead className="bg-gray-200 text-gray-900 text-lg uppercase tracking-wider">
+                <thead className="bg-gray-50 text-gray-900 text-lg uppercase tracking-wider">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold">ID</th>
                     <th className="px-4 py-3 text-left font-semibold">
@@ -355,7 +355,7 @@ const formatDate = (dateString) => {
                       Status
                     </th>
                     <th className="px-4 py-3 text-left font-semibold">
-                      Action
+                     { ""}
                     </th>
                   </tr>
                 </thead>
@@ -415,9 +415,15 @@ const formatDate = (dateString) => {
                         >
                           View
                         </button> */}
+                        {/* <button
+                          
+                          className="cursor-pointer px-3 py-1 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition"
+                        >
+                          View
+                        </button> */}
                         <button
                           onClick={() => handleView(u)}
-                          className="cursor-pointer px-3 py-1 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition"
+                          className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer"
                         >
                           View
                         </button>

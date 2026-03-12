@@ -155,7 +155,7 @@ class AdminListView(ListAPIView):
     def get_queryset(self):
         if self.request.user.is_superuser:
             excluded_queryset = self.queryset.exclude(
-                username=self.request.user.username
+                pk=self.request.user.pk
             ).order_by('id')
             return excluded_queryset
         else:

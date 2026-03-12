@@ -9,9 +9,12 @@ export default function AdminList() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
 
+  const [admins, setAdmins] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const fetchAdmins = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = authTokens?.access;
 
       const response = await fetch("http://127.0.0.1:8000/api/admin/list", {
         headers: {
@@ -20,8 +23,8 @@ export default function AdminList() {
       });
 
       const data = await response.json();
-
-      setAdmins(data);
+    //   setAdmins(data);
+      setAdmins(data.results);
     } catch (error) {
       console.error("Error fetching admins:", error);
     } finally {
@@ -34,18 +37,24 @@ export default function AdminList() {
   }, []);
 
   //Filter
-//   const filteredUsers = users.filter((u) => {
-//     const name = getFullName(u).toLowerCase();
+  //   const filteredUsers = users.filter((u) => {
+  //     const name = getFullName(u).toLowerCase();
 
-//     const matchesSearch = name.includes(search.toLowerCase());
+  //     const matchesSearch = name.includes(search.toLowerCase());
 
-//     const matchesFilter =
-//       filter === "all" ||
-//       (filter === "verified" && u.is_verified) ||
-//       (filter === "unverified" && !u.is_verified);
+  //     const matchesFilter =
+  //       filter === "all" ||
+  //       (filter === "verified" && u.is_verified) ||
+  //       (filter === "unverified" && !u.is_verified);
 
-//     return matchesSearch && matchesFilter;
-//   });
+  //     return matchesSearch && matchesFilter;
+  //   });
+
+  // RENDER
+//   if (loading) {
+//     return <p className="text-center mt-10">Loading admins...</p>;
+//   }
+
   return (
     <div className="flex bg-white md:h-screen">
       {/* SIDEBAR */}
@@ -108,139 +117,109 @@ export default function AdminList() {
             </p>
           </article>
 
-       
-            {/* SEARCH & FILTER & ADD Button  */}
-            <div className="grid md:grid-cols-3 gap-3 mb-3">
-              <div>
-                <label className="block text-sm md:text-base text-gray-700 font-medium">
-                  Search by
-                </label>
-                <div className="flex border border-gray-200 rounded-lg overflow-hidden">
-                  <input
-                    type="text"
-                    placeholder=""
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="flex-1 px-3 py-1.5 outline-none"
-                  />
+          {/* SEARCH & FILTER & ADD Button  */}
+          <div className="grid md:grid-cols-3 gap-3 mb-3">
+            <div>
+              <label className="block text-sm md:text-base text-gray-700 font-medium">
+                Search by
+              </label>
+              <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+                <input
+                  type="text"
+                  placeholder=""
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="flex-1 px-3 py-1.5 outline-none"
+                />
 
-                  <button className="bg-red-600 text-white px-6 hover:bg-red-700">
-                    Search
-                  </button>
-                </div>
+                <button className="bg-red-600 text-white px-6 hover:bg-red-700">
+                  Search
+                </button>
               </div>
-
-              <div>
-                <label className="block text-sm md:text-base text-gray-700 font-medium">
-                  Filter by
-                </label>
-                <select
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="border border-gray-200 rounded-lg w-full py-1.5 px-3"
-                >
-                  <option value="all">All</option>
-                  <option value="superadmin">Superadmin</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-
-              <button
-                // onClick={() => setOpenCreate(true)}
-                className="flex items-center gap-1 justify-center md:mt-5.5 py-2 md:py-0 w-full  rounded bg-red-600 hover:bg-red-700 text-white font-medium"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-                Add Admin Account
-              </button>
             </div>
-        
+
+            <div>
+              <label className="block text-sm md:text-base text-gray-700 font-medium">
+                Filter by
+              </label>
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="border border-gray-200 rounded-lg w-full py-1.5 px-3"
+              >
+                <option value="all">All</option>
+                <option value="superadmin">Superadmin</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <button
+              // onClick={() => setOpenCreate(true)}
+              className="flex items-center gap-1 justify-center md:mt-5.5 py-2 md:py-0 w-full  rounded bg-red-600 hover:bg-red-700 text-white font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Admin Account
+            </button>
+          </div>
 
           {/* ADMIN LIST TABLE -- MOBILE VIEW  */}
-    
-          {/* <div className="md:hidden space-y-4">
-            {filteredUsers.map((u) => {
-              const idImage = u.image?.find(
-                (img) => img.image_type === "id",
-              )?.image;
+          <div className="bg-white rounded-xl shadow border border-gray-200 overflow-x-auto">
+            <table className="w-full text-lg">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-3 text-left">ID</th>
+                  <th className="px-4 py-3 text-left">Email</th>
+                  <th className="px-4 py-3 text-left">Role</th>
+                  <th className="px-4 py-3 text-left">Action</th>
+                </tr>
+              </thead>
 
-              const idImageUrl = idImage
-                ? `http://127.0.0.1:8000${idImage}`
-                : null;
+            
 
-              return (
-                <div
-                  key={u.id}
-                  className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
-                >
-                  <div className="grid grid-cols-[80px_1fr] gap-4 items-center">
-                    <div className="w-20 h-20 rounded-full overflow-hidden bg-red-100 flex items-center justify-center">
-                      {idImageUrl ? (
-                        <img
-                          src={idImageUrl}
-                          alt="ID"
-                          className="w-full h-full object-cover"
-                        />
+              <tbody className="divide-y divide-gray-100">
+                {admins.map((admin) => (
+                  <tr key={admin.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-gray-400 font-mono">
+                      {admin.id}
+                    </td>
+
+                    <td className="px-4 py-3">{admin.email}</td>
+
+                    <td className="px-4 py-3">
+                      {admin.is_superuser ? (
+                        <span className="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
+                          Superadmin
+                        </span>
                       ) : (
-                        <span className="text-2xl font-semibold text-red-600">
-                          {u.first_name?.[0]}
+                        <span className="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                          Admin
                         </span>
                       )}
-                    </div>
+                    </td>
 
-                    <div>
-                      <div className="font-semibold text-lg text-gray-900">
-                        {getFullName(u)}
-                      </div>
-
-                      <div className="text-sm text-gray-600 mt-1">
-                        ID: {u.uuid}
-                      </div>
-
-                      <div className="text-sm text-gray-600">
-                        Birthday: {u.birthday}
-                      </div>
-
-                      <div className="text-sm text-gray-600">
-                        Gender: {u.gender}
-                      </div>
-
-                      <div className="mt-2">
-                        {u.is_verified ? (
-                          <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-700">
-                            Verified
-                          </span>
-                        ) : (
-                          <span className="px-3 py-1 text-sm rounded-full bg-red-100 text-red-600">
-                            Unverified
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleView(u)}
-                    className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
-                  >
-                    View
-                  </button>
-                </div>
-              );
-            })}
-          </div> */}
+                    <td className="px-4 py-3">
+                      <button className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer">
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </main>
       </div>
     </div>
