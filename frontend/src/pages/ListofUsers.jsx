@@ -29,40 +29,44 @@ export default function ListofUsers() {
   }
 
   // FETCH USERS
-  const fetchUsers = async (url = "http://127.0.0.1:8000/api/parent/list") => {
-    if (!authTokens?.access) return;
+ const fetchUsers = async (
+   url = `http://127.0.0.1:8000/api/parent/list?search=${search}&filter=${filter}`,
+ ) => {
+   if (!authTokens?.access) return;
 
-    try {
-      const res = await fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authTokens.access}`,
-        },
-      });
+   try {
+     const res = await fetch(url, {
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${authTokens.access}`,
+       },
+     });
 
-      if (!res.ok) throw new Error("Failed to fetch users");
+     if (!res.ok) throw new Error("Failed to fetch users");
 
-      const data = await res.json();
+     const data = await res.json();
 
-      // Set the array of users
-      setUsers(data.results);
+     setUsers(data.results);
+     setNextPage(data.next);
+     setPrevPage(data.previous);
+     setTotalCount(data.count);
+   } catch (err) {
+     showAlert({ title: "Error", message: err.message });
+   } finally {
+     setLoading(false);
+   }
+ };
 
-      // Save pagination URLs
-      setNextPage(data.next);
-      setPrevPage(data.previous);
-
-      // Save total count
-      setTotalCount(data.count);
-    } catch (err) {
-      showAlert("Error", err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
+// useEffect(() => {
+//   fetchUsers();
+// }, [search, filter]);
+useEffect(() => {
+  const delay = setTimeout(() => {
     fetchUsers();
-  }, [authTokens]);
+  }, 500);
+
+  return () => clearTimeout(delay);
+}, [search, filter]);
 
   // HANDLERS
   const handleView = (user) => {
@@ -169,19 +173,21 @@ export default function ListofUsers() {
   };
 
   //Filter
-  const filteredUsers = users.filter((u) => {
+const filteredUsers = users;
 
-    const name = getFullName(u).toLowerCase();
+  // const filteredUsers = users.filter((u) => {
 
-    const matchesSearch = name.includes(search.toLowerCase());
+  //   const name = getFullName(u).toLowerCase();
 
-    const matchesFilter =
-      filter === "all" ||
-      (filter === "verified" && u.is_verified) ||
-      (filter === "unverified" && !u.is_verified);
+  //   const matchesSearch = name.includes(search.toLowerCase());
 
-    return matchesSearch && matchesFilter;
-  });
+  //   const matchesFilter =
+  //     filter === "all" ||
+  //     (filter === "verified" && u.is_verified) ||
+  //     (filter === "unverified" && !u.is_verified);
+
+  //   return matchesSearch && matchesFilter;
+  // });
 
 
   //Span filter
@@ -294,7 +300,12 @@ const formatDate = (dateString) => {
                   type="text"
                   placeholder=""
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    fetchUsers(
+                      `http://127.0.0.1:8000/api/parent/list?search=${e.target.value}&filter=${filter}`,
+                    );
+                  }}
                   className="flex-1 px-3 py-1.5 outline-none"
                 />
 
@@ -421,6 +432,18 @@ const formatDate = (dateString) => {
                       </td>
                     </tr>
                   ))}
+
+                  {/* EMPTY STATE */}
+                  {filteredUsers.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="text-center py-6 text-gray-400"
+                      >
+                        No users found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -541,6 +564,15 @@ const formatDate = (dateString) => {
                   </div>
                 );
               })}
+
+              {/* EMPTY STATE */}
+              {filteredUsers.length === 0 && (
+                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
+                  <div colSpan="6" className="text-center py-6 text-gray-400">
+                    No Admin found
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* PAGINATION */}
