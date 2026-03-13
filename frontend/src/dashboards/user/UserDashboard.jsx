@@ -114,23 +114,23 @@ useEffect(() => {
        <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
          {/* HEADER */}
          <header className="relative z-50 bg-gradient-to-br from-[var(--red-1)] border-b border-red-200 to-[#8B1E2F] flex flex-row items-center justify-between px-4 sm:px-6 md:py-2 p-2 drop-shadow-[0_0_0.25rem_#CC3535]">
-            <div className="flex items-center">
-              <div className="bg-white size-12 sm:size-14 rounded-full shadow-md shadow-red-700 flex justify-center items-center">
-                <img
-                  src="SP.png"
-                  className="size-12 sm:size-13 object-contain"
-                />
-              </div>
+           <div className="flex items-center">
+             <div className="bg-white size-12 sm:size-14 rounded-full shadow-md shadow-red-700 flex justify-center items-center">
+               <img
+                 src="SP.png"
+                 className="size-12 sm:size-13 object-contain"
+               />
+             </div>
 
-              <div className="leading-tight mx-2 md:mx-4">
-                <h2 className="font-bold uppercase text-white text-base sm:text-xl">
-                  Solo Parent System
-                </h2>
-                <p className="text-white/80 text-[10px] sm:text-xs">
-                  City of San Juan, Metro Manila
-                </p>
-              </div>
-            </div>
+             <div className="leading-tight mx-2 md:mx-4">
+               <h2 className="font-bold uppercase text-white text-base sm:text-xl">
+                 Solo Parent System
+               </h2>
+               <p className="text-white/80 text-[10px] sm:text-xs">
+                 City of San Juan, Metro Manila
+               </p>
+             </div>
+           </div>
 
            <nav id="userDropdown" className="relative">
              <button
@@ -284,10 +284,14 @@ useEffect(() => {
                    <h3 className="font-semibold text-gray-700">ID Details</h3>
                    <button
                      onClick={toggleModal}
-                     className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-white
-                    bg-red-500 backdrop-blur rounded-xl
-                    shadow-sm hover:bg-red-700 hover:shadow-md
-                    active:scale-95 transition"
+                     disabled={!userInfo?.parent?.is_verified}
+                     className={`flex items-center gap-2 px-4 py-1.5 text-sm font-medium text-white
+                    backdrop-blur rounded-xl shadow-sm transition
+                    ${
+                      userInfo?.parent?.is_verified
+                        ? "bg-red-500 hover:bg-red-700 hover:shadow-md active:scale-95"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
                    >
                      <svg
                        xmlns="http://www.w3.org/2000/svg"
