@@ -29,37 +29,42 @@ export default function ListofUsers() {
   }
 
   // FETCH USERS
- const fetchUsers = async (
-   url = `http://127.0.0.1:8000/api/parent/list?search=${search}&filter=${filter}`,
- ) => {
-   if (!authTokens?.access) return;
+const fetchUsers = async (url = null) => {
+  if (!authTokens?.access) return;
 
-   try {
-     const res = await fetch(url, {
-       headers: {
-         "Content-Type": "application/json",
-         Authorization: `Bearer ${authTokens.access}`,
-       },
-     });
+  if (!url) {
+    url = `http://127.0.0.1:8000/api/parent/list?search=${search}`;
 
-     if (!res.ok) throw new Error("Failed to fetch users");
+    if (filter === "verified") {
+      url += "&is_verified=true";
+    } else if (filter === "unverified") {
+      url += "&is_verified=false";
+    }
+  }
 
-     const data = await res.json();
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authTokens.access}`,
+      },
+    });
 
-     setUsers(data.results);
-     setNextPage(data.next);
-     setPrevPage(data.previous);
-     setTotalCount(data.count);
-   } catch (err) {
-     showAlert({ title: "Error", message: err.message });
-   } finally {
-     setLoading(false);
-   }
- };
+    if (!res.ok) throw new Error("Failed to fetch users");
 
-// useEffect(() => {
-//   fetchUsers();
-// }, [search, filter]);
+    const data = await res.json();
+
+    setUsers(data.results);
+    setNextPage(data.next);
+    setPrevPage(data.previous);
+    setTotalCount(data.count);
+  } catch (err) {
+    showAlert({ title: "Error", message: err.message });
+  } finally {
+    setLoading(false);
+  }
+};
+
 useEffect(() => {
   const delay = setTimeout(() => {
     fetchUsers();
@@ -173,31 +178,18 @@ useEffect(() => {
   };
 
   //Filter
-const filteredUsers = users;
+const filteredUsers = users.filter((u) => {
+  const name = getFullName(u).toLowerCase();
 
-  // const filteredUsers = users.filter((u) => {
+  const matchesSearch = name.includes(search.toLowerCase());
 
-  //   const name = getFullName(u).toLowerCase();
+  const matchesFilter =
+    filter === "all" ||
+    (filter === "verified" && u.is_verified) ||
+    (filter === "unverified" && !u.is_verified);
 
-  //   const matchesSearch = name.includes(search.toLowerCase());
-
-  //   const matchesFilter =
-  //     filter === "all" ||
-  //     (filter === "verified" && u.is_verified) ||
-  //     (filter === "unverified" && !u.is_verified);
-
-  //   return matchesSearch && matchesFilter;
-  // });
-
-
-  //Span filter
-  // let totalLabel = "Total of Registered Accounts";
-
-  // if (filter === "verified") {
-  //   totalLabel = "Total of Verified Accounts";
-  // } else if (filter === "unverified") {
-  //   totalLabel = "Total of Unverified Accounts";
-  // }
+  return matchesSearch && matchesFilter;
+});
 
 const getOffsetFromUrl = (url) => {
   if (!url) return 0;
@@ -300,12 +292,7 @@ const formatDate = (dateString) => {
                   type="text"
                   placeholder=""
                   value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    fetchUsers(
-                      `http://127.0.0.1:8000/api/parent/list?search=${e.target.value}&filter=${filter}`,
-                    );
-                  }}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="flex-1 px-3 py-1.5 outline-none"
                 />
 
