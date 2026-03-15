@@ -1,6 +1,15 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import AdminChangeChildView, AdminChildListView, AdminDeleteChildView, ChildListView, RegistrationView, DeleteUserView, DeleteParentView, MyTokenObtainPairView, ChangeEmailView, ChangePasswordView, CreateAdminView, AdminChangeEmailView, AdminChangePasswordView, ParentInfoView, AdminStatisticsView, ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView, AdminChangeParentInfoView, PasswordResetEmailView, PasswordResetConfirmView, CreateChildView, ChangeChildView, DeleteChildView
+from .views import (
+    AdminChangeChildView, AdminChildListView, AdminDeleteChildView,
+    AdminStatisticsListView, ChildListView, RegistrationView, DeleteUserView,
+    DeleteParentView, MyTokenObtainPairView, ChangeEmailView,
+    ChangePasswordView, CreateAdminView, AdminChangeEmailView,
+    AdminChangePasswordView, ParentInfoView, AdminStatisticsView,
+    ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView,
+    AdminChangeParentInfoView, PasswordResetEmailView, PasswordResetConfirmView,
+    CreateChildView, ChangeChildView, DeleteChildView, SuperadminStatisticsView
+)
 
 urlpatterns = [
     # login
@@ -72,7 +81,7 @@ urlpatterns = [
         name='reset_password_confirm'
     ),
     # superadmin create admins
-    path('admin/create', CreateAdminView.as_view(), name='create_admin'),
+    path('superadmin/create', CreateAdminView.as_view(), name='create_admin'),
     # list/table of admins superadmin
     path('admin/list', AdminListView.as_view(), name='list_admin'),
     # admin and superadmin dashboard
@@ -80,6 +89,16 @@ urlpatterns = [
         'admin/statistics', 
         AdminStatisticsView.as_view(), 
         name='statistics_admin'
+    ),
+    path(
+        'admin/statistics-list', 
+        AdminStatisticsListView.as_view(), 
+        name='statistics_list_admin'
+    ),
+    path(
+        'superadmin/statistics', 
+        SuperadminStatisticsView.as_view(), 
+        name='statistics_superadmin'
     ),
     # admin change parent email
     path(

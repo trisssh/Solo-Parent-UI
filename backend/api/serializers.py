@@ -520,3 +520,19 @@ class ChildInfoSerializer(serializers.ModelSerializer):
             'gender',
             'is_incapable',
         ]
+
+class AdminStatisticsListSerializer(serializers.Serializer):
+    barangay = serializers.CharField(read_only=True)
+    male_count = serializers.IntegerField(read_only=True)
+    female_count = serializers.IntegerField(read_only=True)
+    average_age = serializers.IntegerField(read_only=True)
+    share_of_total = serializers.FloatField(read_only=True)
+
+    class Meta:
+        fields = [
+            'barangay',
+            'male_count',
+            'female_count',
+            'average_age',
+            'share_of_total',
+        ]

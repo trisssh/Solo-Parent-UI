@@ -16,7 +16,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import check_password
 from .models import Contact, User, Parent, Child, Image
-from .serializers import AdminChangePasswordSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeVerificationSerializer, ChildInfoSerializer, ContactSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .serializers import AdminChangePasswordSerializer, AdminStatisticsListSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeVerificationSerializer, ChildInfoSerializer, ContactSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
 from .utils.emailer import emailer
 from .utils.send_password_reset_email import send_password_reset_email
 
@@ -168,52 +168,63 @@ class AdminStatisticsView(APIView):
         if not self.request.user.is_staff:
             raise PermissionDenied('Admins only.')
 
-        if self.request.user.is_staff:
-            current_year = datetime.date.today().year
-            single_parents = Parent.objects.aggregate(
-                male_count=Count('id', filter=Q(gender='male')),
-                female_count=Count('id', filter=Q(gender='female')),
-                parents_count=Count('id'),
-                average_age=Avg(current_year - ExtractYear('birthday')),
-            )
+        current_year = datetime.date.today().year
+        data = Parent.objects.aggregate(
+            male_count=Count('id', filter=Q(gender='male')),
+            female_count=Count('id', filter=Q(gender='female')),
+            parents_count=Count('id'),
+            average_age=Avg(current_year - ExtractYear('birthday')),
+        )
 
-            single_parents_by_barangay = (
-                Parent.objects.values('barangay')
-                .annotate(count=Count('id'))
-            )
-            total_single_parents = (single_parents_by_barangay.aggregate(
-                total=Sum('count')
-            ))['total']
-            single_parents_by_barangay = (
-                single_parents_by_barangay.annotate(
-                    male_count=Count('id', filter=Q(gender='male')),
-                    female_count=Count('id', filter=Q(gender='female')),
-                    average_age=Avg(current_year - ExtractYear('birthday')),
-                    share_of_total=ExpressionWrapper(
-                        F('count') / total_single_parents,
-                        output_field=FloatField(),
-                    ),
-                )
-            ) 
+        return Response(data, status=status.HTTP_200_OK)
 
-        if self.request.user.is_superuser:
-            admins = User.objects.filter(
-                is_staff=True, 
-                is_superuser=False
-            ).count()
+class AdminStatisticsListView(ListAPIView):
+    current_year = datetime.date.today().year
+    single_parents_by_barangay = (
+        Parent.objects.values('barangay')
+        .annotate(count=Count('id'))
+    )
+    total_single_parents = (single_parents_by_barangay.aggregate(
+        total=Sum('count')
+    ))['total']
+    queryset = (
+        single_parents_by_barangay.annotate(
+            male_count=Count('id', filter=Q(gender='male')),
+            female_count=Count('id', filter=Q(gender='female')),
+            average_age=Avg(current_year - ExtractYear('birthday')),
+            share_of_total=ExpressionWrapper(
+                F('count') / total_single_parents,
+                output_field=FloatField(),
+            ),
+        )
+    ) 
 
-            superadmins = User.objects.filter(
-                is_staff=True,
-                is_superuser=True
-            ).count()
+    permission_classes = [IsAuthenticated]
+    serializer_class = AdminStatisticsListSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['barangay']
 
-        data = {
-            'single_parents': single_parents,
-            'single_parents_by_barangay': single_parents_by_barangay,
-        }
+    def get_queryset(self):
+        if not self.request.user.is_staff:
+            raise PermissionDenied('Admins only.')
+        return self.queryset
 
-        if self.request.user.is_superuser:
-            data.update({'admins': admins, 'superadmins': superadmins})
+class SuperadminStatisticsView(APIView):
+    def get(self, request):
+        if not self.request.user.is_superuser:
+            raise PermissionDenied('Superadmins only.')
+
+        admins = User.objects.filter(
+            is_staff=True, 
+            is_superuser=False
+        ).count()
+
+        superadmins = User.objects.filter(
+            is_staff=True,
+            is_superuser=True
+        ).count()
+
+        data = {'admins': admins, 'superadmins': superadmins}
 
         return Response(data, status=status.HTTP_200_OK)
 
