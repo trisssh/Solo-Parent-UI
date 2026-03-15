@@ -225,11 +225,11 @@ export default function AdminList() {
 
                       <td className="px-4 py-3">
                         {admin.is_superuser ? (
-                          <span className="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
+                          <span className="px-3 py-1 text-sm font-medium rounded-full bg-pink-100 text-pink-600">
                             Superadmin
                           </span>
                         ) : (
-                          <span className="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                          <span className="px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-600">
                             Admin
                           </span>
                         )}

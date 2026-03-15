@@ -352,7 +352,7 @@ const formatDate = (dateString) => {
                     <th className="px-3 py-2 text-left font-semibold">
                       Status
                     </th>
-                    <th className="px-3 py-2 text-left font-semibold">{""}</th>
+                    <th className="px-3 py-2 text-left font-semibold">Action</th>
                   </tr>
                 </thead>
 
@@ -806,26 +806,32 @@ const formatDate = (dateString) => {
                   </div>
                 </div>
 
-                <div className="mt-6 flex gap-2">
+                <div className="mt-6 ">
                   {isEdit ? (
                     <>
-                      <button
-                        className="flex-1 bg-gray-400 text-white py-2 rounded-lg"
-                        onClick={() => setIsEdit(false)}
-                      >
-                        Cancel
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          className="flex-1 bg-gray-400 text-white py-2 rounded-lg"
+                          onClick={() => setIsEdit(false)}
+                        >
+                          Cancel
+                        </button>
 
-                      <button
-                        className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
-                        onClick={handleSave}
-                      >
-                        Save
-                      </button>
-                      {/* <button disabled={saving}
+                        <button
+                          className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                          onClick={handleSave}
+                        >
+                          Save
+                        </button>
+                        {/* <button disabled={saving} 
                       className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
                         {saving ? "Saving..." : "Save"}
                       </button> */}
+                      </div>
+
+                      <button className="border-2  border-red-600 py-2 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer">
+                        Delete an account
+                      </button>
                     </>
                   ) : (
                     <button
