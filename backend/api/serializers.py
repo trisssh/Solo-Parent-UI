@@ -536,3 +536,27 @@ class AdminStatisticsListSerializer(serializers.Serializer):
             'average_age',
             'share_of_total',
         ]
+
+class SuperadminEditAdminSerializer(serializers.ModelSerializer):
+    is_staff = serializers.BooleanField(default=True)
+    is_superuser = serializers.BooleanField(default=False)
+
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'is_staff',
+            'is_superuser'
+        ]
+
+    def validate(self, data):
+        if data['is_superuser']:
+            data['is_staff'] = True
+        return data
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance

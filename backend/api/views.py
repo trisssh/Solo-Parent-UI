@@ -14,9 +14,18 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.hashers import check_password
 from .models import Contact, User, Parent, Child, Image
-from .serializers import AdminChangePasswordSerializer, AdminStatisticsListSerializer, ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer, ChangeVerificationSerializer, ChildInfoSerializer, ContactSerializer, CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer, RegistrationSerializer, MyTokenObtainPairSerializer
+from .serializers import (
+    AdminChangePasswordSerializer, AdminStatisticsListSerializer,
+    ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer,
+    ChangeVerificationSerializer, ChildInfoSerializer, ContactSerializer,
+    CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer,
+    UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer,
+    RegistrationSerializer, MyTokenObtainPairSerializer,
+    SuperadminEditAdminSerializer,
+)
 from .utils.emailer import emailer
 from .utils.send_password_reset_email import send_password_reset_email
 
@@ -136,8 +145,9 @@ class ParentListView(ListAPIView):
     queryset = Parent.objects.all().order_by('last_name')
     permission_classes = [IsAuthenticated]
     serializer_class = ParentSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['uuid', 'last_name']
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    search_fields = ['uuid', 'last_name', 'first_name', 'middle_name']
+    filterset_fields = ['is_verified']
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -149,8 +159,9 @@ class AdminListView(ListAPIView):
     queryset = User.objects.filter(is_staff=True)
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['email']
+    filterset_fields = ['is_superuser']
 
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -394,26 +405,30 @@ class AdminChangeParentInfoView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# class SuperadminChangeUsernameView(APIView):
-#     permission_classes = [IsAuthenticated]
+class SuperadminEditAdminView(APIView):
+    permission_classes = [IsAuthenticated]
 
-#     def put(self, request, pk):
-#         user = get_object_or_404(User, pk=pk)
+    def put(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        is_parent = Parent.objects.filter(user_id=pk)
 
-#         if not self.request.user.is_superuser:
-#             raise PermissionDenied('Superuser only.')
+        if is_parent:
+            raise PermissionDenied('User is a Parent.')
+
+        if not self.request.user.is_superuser:
+            raise PermissionDenied('Superuser only.')
             
-#         serializer = ChangeUsernameSerializer(user, data=request.data)
+        serializer = SuperadminEditAdminSerializer(user, data=request.data)
 
-#         if serializer.is_valid():
-#             serializer.save()
-#         else:
-#             return Response(
-#                 serializer.errors,
-#                 status=status.HTTP_400_BAD_REQUEST
-#             )
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-#         return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # class ChangeUsernameView(APIView):
 #     permission_classes = [IsAuthenticated]
@@ -614,8 +629,9 @@ class ChildListView(ListAPIView):
     queryset = Child.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ChildInfoSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['last_name', 'first_name', 'middle_name']
+    filterset_fields = ['is_incapable']
 
     def get_queryset(self):
         parent = get_object_or_404(Parent, user_id=self.request.user.pk)

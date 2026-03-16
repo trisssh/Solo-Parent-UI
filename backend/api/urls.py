@@ -8,7 +8,8 @@ from .views import (
     AdminChangePasswordView, ParentInfoView, AdminStatisticsView,
     ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView,
     AdminChangeParentInfoView, PasswordResetEmailView, PasswordResetConfirmView,
-    CreateChildView, ChangeChildView, DeleteChildView, SuperadminStatisticsView
+    CreateChildView, ChangeChildView, DeleteChildView, SuperadminStatisticsView,
+    SuperadminEditAdminView,
 )
 
 urlpatterns = [
@@ -81,7 +82,17 @@ urlpatterns = [
         name='reset_password_confirm'
     ),
     # superadmin create admins
-    path('superadmin/create', CreateAdminView.as_view(), name='create_admin'),
+    path(
+        'superadmin/create-admin', 
+        CreateAdminView.as_view(), 
+        name='create_admin'
+    ),
+    # superadmin edit admins
+    path(
+        'superadmin/edit-admin/<int:pk>', 
+        SuperadminEditAdminView.as_view(), 
+        name='edit_admin'
+    ),
     # list/table of admins superadmin
     path('admin/list', AdminListView.as_view(), name='list_admin'),
     # admin and superadmin dashboard
