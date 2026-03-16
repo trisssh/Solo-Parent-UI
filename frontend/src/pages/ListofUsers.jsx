@@ -28,50 +28,70 @@ export default function ListofUsers() {
     );
   }
 
-  // FETCH USERS
-const fetchUsers = async (url = null) => {
-  if (!authTokens?.access) return;
-
-  if (!url) {
-    url = `http://127.0.0.1:8000/api/parent/list?search=${search}`;
-
-    if (filter === "verified") {
-      url += "&is_verified=true";
-    } else if (filter === "unverified") {
-      url += "&is_verified=false";
-    }
-  }
-
-  try {
-    const res = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authTokens.access}`,
+  // SWEET ALERT HELPER
+  const showAlert = ({ title, message, icon = "error" }) => {
+    Swal.fire({
+      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+      icon,
+      iconColor: "#DC2626",
+      background: "#ffffff",
+      showConfirmButton: true,
+      confirmButtonText: "Okay",
+      buttonsStyling: false,
+      customClass: {
+        popup: "rounded-xl px-6 py-4",
+        confirmButton:
+          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
       },
     });
+  };
 
-    if (!res.ok) throw new Error("Failed to fetch users");
+  // FETCH USERS
+  const fetchUsers = async (url = null) => {
+    if (!authTokens?.access) return;
 
-    const data = await res.json();
+    if (!url) {
+      url = `http://127.0.0.1:8000/api/parent/list?search=${search}`;
 
-    setUsers(data.results);
-    setNextPage(data.next);
-    setPrevPage(data.previous);
-    setTotalCount(data.count);
-  } catch (err) {
-    showAlert({ title: "Error", message: err.message });
-  } finally {
-    setLoading(false);
-  }
-};
+      if (filter === "verified") {
+        url += "&is_verified=true";
+      } else if (filter === "unverified") {
+        url += "&is_verified=false";
+      }
+    }
 
-useEffect(() => {
-  const delay = setTimeout(() => {
-    fetchUsers();
-  }, 500);
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
 
-  return () => clearTimeout(delay);
-}, [search, filter]);
+      if (!res.ok) throw new Error("Failed to fetch users");
+
+      const data = await res.json();
+
+      setUsers(data.results);
+      setNextPage(data.next);
+      setPrevPage(data.previous);
+      setTotalCount(data.count);
+    } catch (err) {
+      showAlert({ title: "Error", message: err.message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // PAGINATION RESET
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchUsers();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [search, filter]);
 
   // HANDLERS
   const handleView = (user) => {
@@ -133,7 +153,6 @@ useEffect(() => {
     }
   };
 
-
   // DELETE USER
   const handleDelete = async () => {
     const confirm = await showAlert({
@@ -148,6 +167,7 @@ useEffect(() => {
     console.log("User confirmed delete");
   };
 
+  // CONCAT FULLNAME
   const getFullName = (u) =>
     [u.first_name, u.middle_name, u.last_name, u.suffix]
       .filter(Boolean)
@@ -158,66 +178,33 @@ useEffect(() => {
     return <p className="text-center mt-10">Loading...</p>;
   }
 
-  // SWEET ALERT HELPER
-  const showAlert = ({ title, message, icon = "error" }) => {
-    Swal.fire({
-      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
-      icon,
-      iconColor: "#DC2626",
-      background: "#ffffff",
-      showConfirmButton: true,
-      confirmButtonText: "Okay",
-      buttonsStyling: false,
-      customClass: {
-        popup: "rounded-xl px-6 py-4",
-        confirmButton:
-          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
-      },
-    });
+  
+  const getOffsetFromUrl = (url) => {
+    if (!url) return 0;
+    const params = new URL(url).searchParams;
+    return parseInt(params.get("offset")) || 0;
   };
 
-  //Filter
-const filteredUsers = users.filter((u) => {
-  const name = getFullName(u).toLowerCase();
+  const limit = users.length || 5;
 
-  const matchesSearch = name.includes(search.toLowerCase());
+  const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
 
-  const matchesFilter =
-    filter === "all" ||
-    (filter === "verified" && u.is_verified) ||
-    (filter === "unverified" && !u.is_verified);
+  const totalPages = Math.ceil(totalCount / limit);
 
-  return matchesSearch && matchesFilter;
-});
+  const currentPage = Math.floor(offset / limit) + 1;
 
-const getOffsetFromUrl = (url) => {
-  if (!url) return 0;
-  const params = new URL(url).searchParams;
-  return parseInt(params.get("offset")) || 0;
-};
+  // DATE REFORMAT
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
 
-const limit = users.length || 5;
+    const date = new Date(dateString);
 
-const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
 
-const totalPages = Math.ceil(totalCount / limit);
-
-const currentPage = Math.floor(offset / limit) + 1;
-
-
-//date reformat
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-
-  const date = new Date(dateString);
-
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-
-  return `${month}/${day}/${year}`;
-};
+    return `${month}/${day}/${year}`;
+  };
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -359,7 +346,7 @@ const formatDate = (dateString) => {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100">
-                  {filteredUsers.map((u) => (
+                  {users.map((u) => (
                     <tr key={u.id} className="hover:bg-gray-50 transition">
                       {/* ID */}
                       <td className="px-4 py-3 text-sm text-gray-400 font-mono">
@@ -423,7 +410,7 @@ const formatDate = (dateString) => {
                   ))}
 
                   {/* EMPTY STATE */}
-                  {filteredUsers.length === 0 && (
+                  {users.length === 0 && (
                     <tr>
                       <td
                         colSpan="6"
@@ -484,7 +471,7 @@ const formatDate = (dateString) => {
           <div>
             {/* CARD */}
             <div className="md:hidden space-y-4">
-              {filteredUsers.map((u) => {
+              {users.map((u) => {
                 const idImage = u.image?.find(
                   (img) => img.image_type === "id",
                 )?.image;
@@ -555,7 +542,7 @@ const formatDate = (dateString) => {
               })}
 
               {/* EMPTY STATE */}
-              {filteredUsers.length === 0 && (
+              {users.length === 0 && (
                 <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
                   <div colSpan="6" className="text-center py-6 text-gray-400">
                     No Admin found
@@ -574,7 +561,7 @@ const formatDate = (dateString) => {
                 <span className="font-medium">{totalPages}</span>
               </span>
               {/* <span className="text-sm font-medium">
-              {totalLabel}: {filteredUsers.length}
+              {totalLabel}: {users.length}
             </span> */}
 
               <div className="flex items-center gap-2">
@@ -838,7 +825,10 @@ const formatDate = (dateString) => {
 
                           <button
                             className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
-                            onClick={handleSave}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleSave();
+                            }}
                           >
                             Save
                           </button>
