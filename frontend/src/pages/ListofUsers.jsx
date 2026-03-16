@@ -271,32 +271,43 @@ export default function ListofUsers() {
           {/* SEARCH & FILTER BY */}
           <div className="grid md:grid-cols-2 gap-3 mb-3">
             <div>
-              <label className="block text-sm md:text-base text-gray-700 font-medium">
+              <label className="block text-sm md:text-base text-gray-500 font-medium">
                 Search by
               </label>
-              <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+              <div className="flex justify-center items-center border border-gray-200 py-1.5 rounded-md focus:outline-red-600 px-2">
+                {/* SVG */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-5 text-gray-500 font-semibold"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                  />
+                </svg>
                 <input
+                  className="border-none outline-none w-full ps-2 text-gray-800"
                   type="text"
                   placeholder=""
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 px-3 py-1.5 outline-none"
                 />
-
-                <button className="bg-red-600 text-white px-6 hover:bg-red-700">
-                  Search
-                </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm md:text-base text-gray-700 font-medium">
+              <label className="block text-sm md:text-base text-gray-500 font-medium">
                 Filter by
               </label>
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="border border-gray-200 rounded-lg w-full py-1.5 px-3"
+                className="border border-gray-200 rounded-md w-full py-1.5 px-3 text-gray-800"
               >
                 <option value="all">All</option>
                 <option value="verified">Verified</option>
@@ -838,7 +849,7 @@ export default function ListofUsers() {
                       </button> */}
                         </div>
 
-                        <button className="border-2  border-red-600 py-2 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer">
+                        <button className="border-2  border-red-600 py-1.5 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer">
                           Delete an account
                         </button>
                       </>

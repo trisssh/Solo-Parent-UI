@@ -20,7 +20,7 @@ export default function AdminList() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("admin");
-    
+  const [selectedUser, setSelectedUser] = useState(null);
 
   // SWEET ALERT HELPER
   const showAlert = ({ title, message, icon = "error" }) => {
@@ -42,41 +42,41 @@ export default function AdminList() {
   };
 
   // FETCH USERS
- const fetchAdmins = async (url = null) => {
-   if (!authTokens?.access) return;
+  const fetchAdmins = async (url = null) => {
+    if (!authTokens?.access) return;
 
-   if (!url) {
-     url = `http://127.0.0.1:8000/api/admin/list?search=${search}`;
+    if (!url) {
+      url = `http://127.0.0.1:8000/api/admin/list?search=${search}`;
 
-     if (filter === "superadmin") {
-       url += "&is_superuser=true";
-     } else if (filter === "admin") {
-       url += "&is_superuser=false";
-     }
-   }
+      if (filter === "superadmin") {
+        url += "&is_superuser=true";
+      } else if (filter === "admin") {
+        url += "&is_superuser=false";
+      }
+    }
 
-   try {
-     const res = await fetch(url, {
-       headers: {
-         "Content-Type": "application/json",
-         Authorization: `Bearer ${authTokens.access}`,
-       },
-     });
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
 
-     if (!res.ok) throw new Error("Failed to fetch admins");
+      if (!res.ok) throw new Error("Failed to fetch admins");
 
-     const data = await res.json();
+      const data = await res.json();
 
-     setAdmins(data.results);
-     setNextPage(data.next);
-     setPrevPage(data.previous);
-     setTotalCount(data.count);
-   } catch (err) {
-     console.error(err);
-   } finally {
-     setLoading(false);
-   }
- };
+      setAdmins(data.results);
+      setNextPage(data.next);
+      setPrevPage(data.previous);
+      setTotalCount(data.count);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // PAGINATION RESET
   useEffect(() => {
@@ -94,52 +94,114 @@ export default function AdminList() {
   };
 
   // FETCH CREATE
- const createAdmin = async (e) => {
-   e.preventDefault();
+  const createAdmin = async (e) => {
+    e.preventDefault();
 
-   try {
-     const res = await fetch(
-       "http://127.0.0.1:8000/api/superadmin/create-admin",
-       {
-         method: "POST",
-         headers: {
-           "Content-Type": "application/json",
-           Authorization: `Bearer ${authTokens.access}`,
-         },
-         body: JSON.stringify({
-           email: email,
-           password: password,
-           is_superuser: role === "superadmin",
-         }),
-       },
-     );
+    try {
+      const res = await fetch(
+        "http://127.0.0.1:8000/api/superadmin/create-admin",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+            is_superuser: role === "superadmin",
+          }),
+        },
+      );
 
-     const data = await res.json();
+      const data = await res.json();
 
-     if (!res.ok) {
-       throw new Error(data?.detail || "Failed to create admin");
-     }
+      if (!res.ok) {
+        throw new Error(data?.detail || "Failed to create admin");
+      }
 
-    showAlert({
-      title: "Success",
-      message: "User updated successfully",
-      icon: "success",
-    });
+      showAlert({
+        title: "Success",
+        message: "User updated successfully",
+        icon: "success",
+      });
 
-     setOpenCreate(false);
-     setEmail("");
-     setPassword("");
-     setRole("admin");
+      setOpenCreate(false);
+      setEmail("");
+      setPassword("");
+      setRole("admin");
 
-     fetchAdmins(); // refresh table
-   } catch (err) {
-    showAlert({
-      title: "Error",
-      text: err.message,
-      icon: "error",
-    });
-   }
+      fetchAdmins(); // refresh table
+    } catch (err) {
+      showAlert({
+        title: "Error",
+        text: err.message,
+        icon: "error",
+      });
+    }
+  };
+
+  // HANDLERS
+ const handleView = (admin) => {
+   setSelectedUser(admin);
+   setIsEdit(false);
+   setShowModal(true);
  };
+
+ const handleEdit = () => {
+   setIsEdit(true);
+ };
+
+ const handleClose = () => {
+   setSelectedUser(null);
+   setShowModal(false);
+   setIsEdit(false);
+ };
+
+ const handleChange = (e) => {
+   const { name, value } = e.target;
+
+   setSelectedUser({
+     ...selectedUser,
+     [name]: value,
+   });
+ };
+
+  // UPDATE USER
+  const handleSave = async () => {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/superadmin/edit-admin/${selectedUser.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+          body: JSON.stringify({
+            email: selectedUser.email,
+            is_superuser: selectedUser.is_superuser,
+          }),
+        },
+      );
+
+      if (!res.ok) throw new Error("Failed to update user");
+
+      const updated = await res.json();
+
+      fetchAdmins(); // reload updated data
+
+      showAlert({
+        title: "Success",
+        message: "Admin updated successfully",
+        icon: "success",
+      });
+
+      handleClose();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const limit = admins.length || 5;
 
@@ -177,7 +239,7 @@ export default function AdminList() {
 
           <div>
             <h2 className="text-2xl font-bold text-gray-800 hidden md:block">
-              User Management
+              Admin Management
             </h2>
             <p className="text-gray-600 text-sm font-medium hidden md:block">
               To manage admin accounts
@@ -214,32 +276,43 @@ export default function AdminList() {
           {/* SEARCH & FILTER & ADD Button  */}
           <div className="grid md:grid-cols-3 gap-3 mb-3">
             <div>
-              <label className="block text-sm md:text-base text-gray-700 font-medium">
+              <label className="block text-sm md:text-base text-gray-500 font-medium">
                 Search by
               </label>
-              <div className="flex border border-gray-200 rounded-lg overflow-hidden">
+              <div className="flex justify-center items-center border border-gray-200 py-1.5 rounded-md focus:outline-red-600 px-2">
+                {/* SVG */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-5 text-gray-500 font-semibold"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                  />
+                </svg>
                 <input
+                  className="border-none outline-none w-full ps-2 text-gray-800"
                   type="text"
                   placeholder=""
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1 px-3 py-1.5 outline-none"
                 />
-
-                <button className="bg-red-600 text-white px-6 hover:bg-red-700">
-                  Search
-                </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm md:text-base text-gray-700 font-medium">
+              <label className="block text-sm md:text-base text-gray-500 font-medium">
                 Filter by
               </label>
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="border border-gray-200 rounded-lg w-full py-1.5 px-3"
+                className="border border-gray-200 rounded-md w-full py-1.5 px-3 text-gray-800"
               >
                 <option value="all">All</option>
                 <option value="superadmin">Superadmin</option>
@@ -305,7 +378,11 @@ export default function AdminList() {
                       </td>
 
                       <td className="px-4 py-3">
-                        <button className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer">
+                        <button
+                          // onClick={() => setShowModal(true)}
+                          onClick={() => handleView(admin)}
+                          className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer"
+                        >
                           View
                         </button>
                       </td>
@@ -382,7 +459,11 @@ export default function AdminList() {
                     )}
                   </div>
 
-                  <button className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg">
+                  <button
+                    // onClick={() => setShowModal(true)}
+                    onClick={() => handleView(admin)}
+                    className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+                  >
                     View
                   </button>
                 </div>
@@ -461,18 +542,6 @@ export default function AdminList() {
                     />
                   </div>
 
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                      required
-                    />
-                  </div> */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       Password
@@ -552,6 +621,127 @@ export default function AdminList() {
                   >
                     Create Account
                   </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL VIEW */}
+          {showModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div className="relative z-10 w-full max-w-2xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
+                {/* Close button */}
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                >
+                  ✕
+                </button>
+
+                {/* Modal title */}
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Manage admin account
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  To view and edit account for Admin and Superadmin
+                </p>
+
+                <form className="space-y-4">
+                  {/* EMAIL */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={selectedUser?.email || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    />
+                  </div>
+
+                  {/* ROLE */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Role
+                    </label>
+
+                    <select
+                      name="is_superuser"
+                      value={selectedUser?.is_superuser ? "true" : "false"}
+                      onChange={(e) =>
+                        setSelectedUser({
+                          ...selectedUser,
+                          is_superuser: e.target.value === "true",
+                        })
+                      }
+                      disabled={!isEdit}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    >
+                      <option value="false">Admin</option>
+                      <option value="true">Superadmin</option>
+                    </select>
+                  </div>
+
+                  {/* ACTION BUTTONS */}
+                  <div className="mt-6 ">
+                    {isEdit ? (
+                      <>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            className="flex-1 bg-gray-400 text-white py-2 rounded-lg"
+                            onClick={handleClose}
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            type="button"
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                            onClick={handleSave}
+                          >
+                            Save
+                          </button>
+                          {/* <button disabled={saving} 
+                      className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
+                        {saving ? "Saving..." : "Save"}
+                      </button> */}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="border-2  border-red-600 py-1.5 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer"
+                        >
+                          Delete an account
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        className="w-full flex gap-1 justify-center items-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                        onClick={handleEdit}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                        <span>Edit</span>
+                      </button>
+                    )}
+                  </div>
                 </form>
               </div>
             </div>
