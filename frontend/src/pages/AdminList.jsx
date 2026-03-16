@@ -15,6 +15,7 @@ export default function AdminList() {
     const [filter, setFilter] = useState("all");
     const [admins, setAdmins] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [openCreate, setOpenCreate] = useState(false);
 
     const fetchAdmins = async () => {
     try {
@@ -79,6 +80,9 @@ export default function AdminList() {
     const totalPages = Math.ceil(totalCount / limit);
 
     const currentPage = Math.floor(offset / limit) + 1;
+
+
+
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -179,7 +183,7 @@ export default function AdminList() {
             </div>
 
             <button
-              // onClick={() => setOpenCreate(true)}
+              onClick={() => setOpenCreate(true)}
               className="flex items-center gap-1 justify-center md:mt-5.5 py-2 md:py-0 w-full  rounded bg-red-600 hover:bg-red-700 text-white font-medium"
             >
               <svg
@@ -358,7 +362,36 @@ export default function AdminList() {
             </div>
           </div>
 
+          {openCreate && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div
+                className="relative z-10 w-full max-w-2xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto"
+              >
+                {/* Close button */}
+                <button
+                  onClick={() => setOpenCreate(false)}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                >
+                  ✕
+                </button>
 
+                {/* Modal title */}
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Create an account
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  Create an account for Admin and Superadmin
+                </p>
+
+                {/* <div
+                  onSuccess={() => {
+                    setOpenCreate(false);
+                    fetchAdmins(); // refresh list after creating admin
+                  }}
+                /> */}
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>

@@ -216,7 +216,7 @@ const formatDate = (dateString) => {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
-  return `${day}/${month}/${year}`;
+  return `${month}/${day}/${year}`;
 };
 
   return (
@@ -352,7 +352,9 @@ const formatDate = (dateString) => {
                     <th className="px-3 py-2 text-left font-semibold">
                       Status
                     </th>
-                    <th className="px-3 py-2 text-left font-semibold">Action</th>
+                    <th className="px-3 py-2 text-left font-semibold">
+                      Action
+                    </th>
                   </tr>
                 </thead>
 
@@ -521,10 +523,10 @@ const formatDate = (dateString) => {
                         </div>
 
                         <div className="text-sm text-gray-600">
-                          Birthday: {u.birthday}
+                          Birthday: {formatDate(u.birthday)}
                         </div>
 
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-gray-600 capitalize">
                           Gender: {u.gender}
                         </div>
 
@@ -605,264 +607,275 @@ const formatDate = (dateString) => {
 
           {/* MODAL */}
           {showModal && selectedUser && (
-            <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4">
-              <div className="bg-white w-full max-w-3xl rounded-xl shadow-xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
-                <h3 className="text-lg font-semibold mb-4">Parent Details</h3>
-
-                <div className="grid md:grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      First Name
-                    </label>
-                    <input
-                      name="first_name"
-                      value={selectedUser.first_name || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Middle Name
-                    </label>
-                    <input
-                      name="middle_name"
-                      value={selectedUser.middle_name || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Last Name
-                    </label>
-                    <input
-                      name="last_name"
-                      value={selectedUser.last_name || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Suffix
-                    </label>
-                    <input
-                      name="suffix"
-                      value={selectedUser.suffix || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Date of Birth
-                    </label>
-                    <input
-                      type="date"
-                      name="birthday"
-                      value={selectedUser.birthday || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Gender
-                    </label>
-                    <select
-                      name="gender"
-                      value={selectedUser.gender || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    >
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Phone Number
-                    </label>
-                    <input
-                      name="phone"
-                      value={selectedUser.phone || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Street
-                    </label>
-                    <input
-                      name="street"
-                      value={selectedUser.street || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Barangay
-                    </label>
-                    <select
-                      name="barangay"
-                      value={selectedUser.barangay || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
-                    >
-                      <option value="">Select Barangay</option>
-                      <option value="greenhills">Greenhills</option>
-                      <option value="maytunas">Maytunas</option>
-                      <option value="kabayanan">Kabayanan</option>
-                      <option value="salapan">Salapan</option>
-                      <option value="west_crame">West Crame</option>
-                      <option value="onse">Onse</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Subdivision
-                    </label>
-                    <input
-                      name="subdivision"
-                      value={selectedUser.subdivision || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Status
-                    </label>
-                    <select
-                      name="is_verified"
-                      value={String(selectedUser.is_verified)}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
-                    >
-                      <option value="">Select Status</option>
-                      <option value="true">Verified</option>
-                      <option value="false">Unverified</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 font-medium">
-                      Reason
-                    </label>
-                    <select
-                      name="reason"
-                      value={selectedUser.reason || ""}
-                      onChange={handleChange}
-                      disabled={!isEdit}
-                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
-                    >
-                      <option value="">Select Reason</option>
-                      <option value="crime_against_chastity">
-                        Crime Against Chastity
-                      </option>
-                      <option value="death_of_spouse">Death of Spouse</option>
-                      <option value="spouse_detained">
-                        Spouse is Detained
-                      </option>
-                      <option value="physical_mental_incapacity">
-                        Physical/Mental Incapacity of Spouse
-                      </option>
-                      <option value="separation">
-                        Legal/De Facto Separation
-                      </option>
-                      <option value="annuled">Annulment of Marriage</option>
-                      <option value="abandonment">Abandonment of Spouse</option>
-                      <option value="preferred_to_keep">
-                        Preferred To Keep Child/Children Instead of Giving Them
-                        To Welfare
-                      </option>
-                      <option value="sole_provider">
-                        Solely Provides Parental Care
-                      </option>
-                      <option value="assumed_responsibility">
-                        Assumed Responsibility of Head of Family
-                      </option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="mt-6 ">
-                  {isEdit ? (
-                    <>
-                      <div className="flex gap-2">
-                        <button
-                          className="flex-1 bg-gray-400 text-white py-2 rounded-lg"
-                          onClick={() => setIsEdit(false)}
-                        >
-                          Cancel
-                        </button>
-
-                        <button
-                          className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
-                          onClick={handleSave}
-                        >
-                          Save
-                        </button>
-                        {/* <button disabled={saving} 
-                      className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
-                        {saving ? "Saving..." : "Save"}
-                      </button> */}
-                      </div>
-
-                      <button className="border-2  border-red-600 py-2 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer">
-                        Delete an account
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className="w-full flex gap-1 justify-center items-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
-                      onClick={() => setIsEdit(true)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                      <span>Edit</span>
-                    </button>
-                  )}
-                </div>
-
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+              <div className="relative z-10 w-full max-w-2xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
+                {/* Close button */}
                 <button
-                  className="absolute top-3 right-4 text-gray-500"
                   onClick={handleClose}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
                 >
                   ✕
                 </button>
+
+                {/* Modal title */}
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Parent Details
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  To View and Edit Parent Details Account
+                </p>
+
+                <form>
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        First Name
+                      </label>
+                      <input
+                        name="first_name"
+                        value={selectedUser.first_name || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Middle Name
+                      </label>
+                      <input
+                        name="middle_name"
+                        value={selectedUser.middle_name || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Last Name
+                      </label>
+                      <input
+                        name="last_name"
+                        value={selectedUser.last_name || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Suffix
+                      </label>
+                      <input
+                        name="suffix"
+                        value={selectedUser.suffix || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Date of Birth
+                      </label>
+                      <input
+                        type="date"
+                        name="birthday"
+                        value={selectedUser.birthday || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Gender
+                      </label>
+                      <select
+                        name="gender"
+                        value={selectedUser.gender || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      >
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Phone Number
+                      </label>
+                      <input
+                        name="phone"
+                        value={selectedUser.phone || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Street
+                      </label>
+                      <input
+                        name="street"
+                        value={selectedUser.street || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Barangay
+                      </label>
+                      <select
+                        name="barangay"
+                        value={selectedUser.barangay || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
+                      >
+                        <option value="">Select Barangay</option>
+                        <option value="greenhills">Greenhills</option>
+                        <option value="maytunas">Maytunas</option>
+                        <option value="kabayanan">Kabayanan</option>
+                        <option value="salapan">Salapan</option>
+                        <option value="west_crame">West Crame</option>
+                        <option value="onse">Onse</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Subdivision
+                      </label>
+                      <input
+                        name="subdivision"
+                        value={selectedUser.subdivision || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Status
+                      </label>
+                      <select
+                        name="is_verified"
+                        value={String(selectedUser.is_verified)}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
+                      >
+                        <option value="">Select Status</option>
+                        <option value="true">Verified</option>
+                        <option value="false">Unverified</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        Reason
+                      </label>
+                      <select
+                        name="reason"
+                        value={selectedUser.reason || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
+                      >
+                        <option value="">Select Reason</option>
+                        <option value="crime_against_chastity">
+                          Crime Against Chastity
+                        </option>
+                        <option value="death_of_spouse">Death of Spouse</option>
+                        <option value="spouse_detained">
+                          Spouse is Detained
+                        </option>
+                        <option value="physical_mental_incapacity">
+                          Physical/Mental Incapacity of Spouse
+                        </option>
+                        <option value="separation">
+                          Legal/De Facto Separation
+                        </option>
+                        <option value="annuled">Annulment of Marriage</option>
+                        <option value="abandonment">
+                          Abandonment of Spouse
+                        </option>
+                        <option value="preferred_to_keep">
+                          Preferred To Keep Child/Children Instead of Giving
+                          Them To Welfare
+                        </option>
+                        <option value="sole_provider">
+                          Solely Provides Parental Care
+                        </option>
+                        <option value="assumed_responsibility">
+                          Assumed Responsibility of Head of Family
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 ">
+                    {isEdit ? (
+                      <>
+                        <div className="flex gap-2">
+                          <button
+                            className="flex-1 bg-gray-400 text-white py-2 rounded-lg"
+                            onClick={() => setIsEdit(false)}
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                            onClick={handleSave}
+                          >
+                            Save
+                          </button>
+                          {/* <button disabled={saving} 
+                      className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
+                        {saving ? "Saving..." : "Save"}
+                      </button> */}
+                        </div>
+
+                        <button className="border-2  border-red-600 py-2 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer">
+                          Delete an account
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        className="w-full flex gap-1 justify-center items-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
+                        onClick={() => setIsEdit(true)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                        <span>Edit</span>
+                      </button>
+                    )}
+                  </div>
+                </form>
               </div>
             </div>
           )}
