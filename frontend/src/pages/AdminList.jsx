@@ -289,71 +289,76 @@ export default function AdminList() {
             </div>
           </div>
 
-          {/* ADMIN LIST TABLE -- MOBILE VIEW  */}
-          <div className="md:hidden space-y-4">
-            {admins.map((admin) => (
-              <div
-                key={admin.id}
-                className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
-              >
-                <div className="font-semibold text-lg text-gray-900">
-                  Email: {admin.email}
-                </div>
-                <div className="mt-2">
-                  {admin.is_superuser ? (
-                    <span className="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
-                      Superadmin
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
-                      Admin
-                    </span>
-                  )}
-                </div>
+          {/* ADMIN LIST -- MOBILE VIEW CARD */}
+          <div>
+            {/* ADMIN CARD */}
+            <div className="md:hidden space-y-4">
+              {admins.map((admin) => (
+                <div
+                  key={admin.id}
+                  className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6"
+                >
+                  <div className="font-semibold text-lg text-gray-900">
+                    Email: {admin.email}
+                  </div>
+                  <div className="mt-2">
+                    {admin.is_superuser ? (
+                      <span className="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
+                        Superadmin
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                        Admin
+                      </span>
+                    )}
+                  </div>
 
-                <button className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg">
-                  View
-                </button>
-              </div>
-            ))}
-          </div>
+                  <button className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg">
+                    View
+                  </button>
+                </div>
+              ))}
+            </div>
 
-          {/* PAGINATION FOR MOBILE VIEW CARD*/}
-          <div className="md:hidden flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
-            <span className="text-xs">
-              Page <span className="font-medium">{currentPage}</span> of{" "}
-              <span className="font-medium">{totalPages}</span>
-            </span>
-            {/* <span className="text-sm font-medium">
+            {/* PAGINATION */}
+            <div className="md:hidden flex items-center justify-between p-4 border-t border-gray-100 text-sm text-gray-500">
+              <span className="text-xs">
+                Page <span className="font-medium">{currentPage}</span> of{" "}
+                <span className="font-medium">{totalPages}</span>
+              </span>
+              {/* <span className="text-sm font-medium">
               {totalLabel}: {filteredUsers.length}
             </span> */}
 
-            <div className="flex items-center gap-2">
-              <button
-                disabled={!prevPage}
-                onClick={() => fetchUsers(prevPage)}
-                className={`px-3 py-1 border rounded-md text-white ${
-                  prevPage
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-[var(--gray-2)] text-white cursor-not-allowed"
-                }`}
-              >
-                Prev
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={!prevPage}
+                  onClick={() => fetchUsers(prevPage)}
+                  className={`px-3 py-1 border rounded-md text-white ${
+                    prevPage
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-[var(--gray-2)] text-white cursor-not-allowed"
+                  }`}
+                >
+                  Prev
+                </button>
 
-              <button
-                disabled={!nextPage}
-                onClick={() => fetchUsers(nextPage)}
-                className={`px-3 py-1 border rounded-md text-white ${
-                  nextPage
-                    ? "bg-red-600 hover:bg-red-700 "
-                    : "bg-[var(--gray-2)] cursor-not-allowed"
-                }`}
-              >
-                Next
-              </button>
+                <button
+                  disabled={!nextPage}
+                  onClick={() => fetchUsers(nextPage)}
+                  className={`px-3 py-1 border rounded-md text-white ${
+                    nextPage
+                      ? "bg-red-600 hover:bg-red-700 "
+                      : "bg-[var(--gray-2)] cursor-not-allowed"
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
+
+
         </main>
       </div>
     </div>
