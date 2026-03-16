@@ -4,85 +4,150 @@ import Swal from "sweetalert2";
 import Sidebar from "../components/Sidebar";
 
 export default function AdminList() {
-    const { authTokens, user } = useContext(AuthContext);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
-    const [prevPage, setPrevPage] = useState(null);
-    const [nextPage, setNextPage] = useState(null);
-    const [totalCount, setTotalCount] = useState(0);
-    const [search, setSearch] = useState("");
-    const [filter, setFilter] = useState("all");
-    const [admins, setAdmins] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [openCreate, setOpenCreate] = useState(false);
-
-    const fetchAdmins = async () => {
-    try {
-        const token = authTokens?.access;
-
-        const response = await fetch("http://127.0.0.1:8000/api/admin/list", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        });
-
-        const data = await response.json();
-        //   setAdmins(data);
-        setAdmins(data.results);
-
-        // Save pagination URLs
-        setNextPage(data.next);
-        setPrevPage(data.previous);
-
-        // Save total count
-        setTotalCount(data.count);
-    } catch (error) {
-        console.error("Error fetching admins:", error);
-    } finally {
-        setLoading(false);
-    }
-    };
-
-    useEffect(() => {
-    fetchAdmins();
-    }, []);
-
-  //Filter
-    // const filteredAdmins = admins.filter((u) => {
+  const { authTokens, user } = useContext(AuthContext);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [prevPage, setPrevPage] = useState(null);
+  const [nextPage, setNextPage] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [admins, setAdmins] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState("admin");
     
 
-    //   const matchesSearch = name.includes(search.toLowerCase());
+  // SWEET ALERT HELPER
+  const showAlert = ({ title, message, icon = "error" }) => {
+    Swal.fire({
+      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+      icon,
+      iconColor: "#DC2626",
+      background: "#ffffff",
+      showConfirmButton: true,
+      confirmButtonText: "Okay",
+      buttonsStyling: false,
+      customClass: {
+        popup: "rounded-xl px-6 py-4",
+        confirmButton:
+          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+      },
+    });
+  };
 
-    //   const matchesFilter =
-    //     filter === "all" ||
-    //     (filter === "verified" && u.is_verified) ||
-    //     (filter === "unverified" && !u.is_verified);
+  // FETCH USERS
+ const fetchAdmins = async (url = null) => {
+   if (!authTokens?.access) return;
 
-    //   return matchesSearch && matchesFilter;
-    // });
+   if (!url) {
+     url = `http://127.0.0.1:8000/api/admin/list?search=${search}`;
 
-  // RENDER
-//   if (loading) {
-//     return <p className="text-center mt-10">Loading admins...</p>;
-//   }
+     if (filter === "superadmin") {
+       url += "&is_superuser=true";
+     } else if (filter === "admin") {
+       url += "&is_superuser=false";
+     }
+   }
 
-    const getOffsetFromUrl = (url) => {
+   try {
+     const res = await fetch(url, {
+       headers: {
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${authTokens.access}`,
+       },
+     });
+
+     if (!res.ok) throw new Error("Failed to fetch admins");
+
+     const data = await res.json();
+
+     setAdmins(data.results);
+     setNextPage(data.next);
+     setPrevPage(data.previous);
+     setTotalCount(data.count);
+   } catch (err) {
+     console.error(err);
+   } finally {
+     setLoading(false);
+   }
+ };
+
+  // PAGINATION RESET
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchAdmins();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [search, filter]);
+
+  const getOffsetFromUrl = (url) => {
     if (!url) return 0;
     const params = new URL(url).searchParams;
     return parseInt(params.get("offset")) || 0;
-    };
+  };
 
-    const limit = admins.length || 5;
+  // FETCH CREATE
+ const createAdmin = async (e) => {
+   e.preventDefault();
 
-    const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
+   try {
+     const res = await fetch(
+       "http://127.0.0.1:8000/api/superadmin/create-admin",
+       {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
+           Authorization: `Bearer ${authTokens.access}`,
+         },
+         body: JSON.stringify({
+           email: email,
+           password: password,
+           is_superuser: role === "superadmin",
+         }),
+       },
+     );
 
-    const totalPages = Math.ceil(totalCount / limit);
+     const data = await res.json();
 
-    const currentPage = Math.floor(offset / limit) + 1;
+     if (!res.ok) {
+       throw new Error(data?.detail || "Failed to create admin");
+     }
 
+    showAlert({
+      title: "Success",
+      message: "User updated successfully",
+      icon: "success",
+    });
 
+     setOpenCreate(false);
+     setEmail("");
+     setPassword("");
+     setRole("admin");
 
+     fetchAdmins(); // refresh table
+   } catch (err) {
+    showAlert({
+      title: "Error",
+      text: err.message,
+      icon: "error",
+    });
+   }
+ };
+
+  const limit = admins.length || 5;
+
+  const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
+
+  const totalPages = Math.ceil(totalCount / limit);
+
+  const currentPage = Math.floor(offset / limit) + 1;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -267,7 +332,7 @@ export default function AdminList() {
                 <div className="flex items-center gap-2">
                   <button
                     disabled={!prevPage}
-                    onClick={() => fetchUsers(prevPage)}
+                    onClick={() => fetchAdmins(prevPage)}
                     className={`px-3 py-1 rounded-md text-white ${
                       prevPage
                         ? "bg-red-600 hover:bg-red-700"
@@ -279,7 +344,7 @@ export default function AdminList() {
 
                   <button
                     disabled={!nextPage}
-                    onClick={() => fetchUsers(nextPage)}
+                    onClick={() => fetchAdmins(nextPage)}
                     className={`px-3 py-1 rounded-md text-white ${
                       nextPage
                         ? "bg-red-600 hover:bg-red-700"
@@ -337,7 +402,7 @@ export default function AdminList() {
               <div className="flex items-center gap-2">
                 <button
                   disabled={!prevPage}
-                  onClick={() => fetchUsers(prevPage)}
+                  onClick={() => fetchAdmins(prevPage)}
                   className={`px-3 py-1 border rounded-md text-white ${
                     prevPage
                       ? "bg-red-600 hover:bg-red-700"
@@ -349,7 +414,7 @@ export default function AdminList() {
 
                 <button
                   disabled={!nextPage}
-                  onClick={() => fetchUsers(nextPage)}
+                  onClick={() => fetchAdmins(nextPage)}
                   className={`px-3 py-1 border rounded-md text-white ${
                     nextPage
                       ? "bg-red-600 hover:bg-red-700 "
@@ -362,11 +427,10 @@ export default function AdminList() {
             </div>
           </div>
 
+          {/* MODAL TO CREATE ADD ADMIN ACCOUNT */}
           {openCreate && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <div
-                className="relative z-10 w-full max-w-2xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto"
-              >
+              <div className="relative z-10 w-full max-w-2xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
                 {/* Close button */}
                 <button
                   onClick={() => setOpenCreate(false)}
@@ -383,12 +447,112 @@ export default function AdminList() {
                   Create an account for Admin and Superadmin
                 </p>
 
-                {/* <div
-                  onSuccess={() => {
-                    setOpenCreate(false);
-                    fetchAdmins(); // refresh list after creating admin
-                  }}
-                /> */}
+                <form onSubmit={createAdmin} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      required
+                    />
+                  </div>
+
+                  {/* <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      required
+                    />
+                  </div> */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Password
+                    </label>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      placeholder=" "
+                      name="password"
+                    />
+
+                    {/* Eye icon */}
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-10 top-54 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Role
+                    </label>
+                    <select
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    >
+                      <option value="admin">Admin</option>
+                      <option value="superadmin">Superadmin</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-medium"
+                  >
+                    Create Account
+                  </button>
+                </form>
               </div>
             </div>
           )}
