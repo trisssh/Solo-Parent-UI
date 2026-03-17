@@ -29,20 +29,46 @@ export default function ListofUsers() {
   }
 
   // SWEET ALERT HELPER
-  const showAlert = ({ title, message, icon = "error" }) => {
-    Swal.fire({
+  // const showAlert = ({ title, message, icon = "error" }) => {
+  //   Swal.fire({
+  //     title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+  //     html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+  //     icon,
+  //     iconColor: "#DC2626",
+  //     background: "#ffffff",
+  //     showConfirmButton: true,
+  //     confirmButtonText: "Okay",
+  //     buttonsStyling: false,
+  //     customClass: {
+  //       popup: "rounded-xl px-6 py-4",
+  //       confirmButton:
+  //         "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+  //     },
+  //   });
+  // };
+  const showAlert = ({
+    title,
+    message,
+    icon = "error",
+    showCancelButton = false,
+  }) => {
+    return Swal.fire({
       title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
       html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
       icon,
       iconColor: "#DC2626",
       background: "#ffffff",
       showConfirmButton: true,
+      showCancelButton,
       confirmButtonText: "Okay",
+      cancelButtonText: "Cancel",
       buttonsStyling: false,
       customClass: {
         popup: "rounded-xl px-6 py-4",
         confirmButton:
           "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+        cancelButton:
+          "mt-4 ml-2 bg-gray-300 text-black px-6 py-2 rounded text-xl",
       },
     });
   };
@@ -86,12 +112,21 @@ export default function ListofUsers() {
 
   // PAGINATION RESET
   useEffect(() => {
+    setLoading(true);
+
     const delay = setTimeout(() => {
       fetchUsers();
     }, 500);
 
     return () => clearTimeout(delay);
   }, [search, filter]);
+  // useEffect(() => {
+  //   const delay = setTimeout(() => {
+  //     fetchUsers();
+  //   }, 500);
+
+  //   return () => clearTimeout(delay);
+  // }, [search, filter]);
 
   // HANDLERS
   const handleView = (user) => {
@@ -155,23 +190,50 @@ export default function ListofUsers() {
 
   // DELETE USER
   const handleDelete = async () => {
-    const confirm = await showAlert({
-      title: "Are you sure?",
-      message: "This action cannot be undone.",
-      icon: "warning",
-      showCancelButton: true,
-    });
+   const confirm = await showAlert({
+     title: "Delete User?",
+     message: "This action cannot be undone.",
+     icon: "warning",
+     showCancelButton: true,
+   });
+
 
     if (!confirm.isConfirmed) return;
 
-    console.log("User confirmed delete");
+     try {
+       const res = await fetch(
+         `http://127.0.0.1:8000/api/user/delete/${selectedUser.id}`,
+         {
+           method: "DELETE",
+           headers: {
+             Authorization: `Bearer ${authTokens.access}`,
+           },
+         },
+       );
+
+       if (!res.ok) throw new Error("Failed to delete user");
+
+       showAlert({
+         title: "Deleted!",
+         message: "User account has been deleted.",
+         icon: "success",
+       });
+
+       fetchUsers();
+       handleClose();
+     } catch (err) {
+       showAlert({
+         title: "Error",
+         message: err.message,
+       });
+     }
   };
 
   // CONCAT FULLNAME
   const getFullName = (u) =>
-    [u.first_name, u.middle_name, u.last_name, u.suffix]
-      .filter(Boolean)
-      .join(" ");
+    `${u.first_name || ""} ${u.middle_name || ""} ${u.last_name || ""} ${u.suffix || ""}`.trim();
+
+
 
   // RENDER
   if (loading) {
@@ -185,7 +247,7 @@ export default function ListofUsers() {
     return parseInt(params.get("offset")) || 0;
   };
 
-  const limit = users.length || 5;
+  const limit = 5;
 
   const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
 
@@ -260,7 +322,7 @@ export default function ListofUsers() {
         <main className="flex-1 overflow-y-auto bg-white p-5 sm:p-6">
           {/* PAGE TITLE */}
           <article className="md:hidden">
-            <h3 className="text-xl text- font-bold text-gray-900 mb-0">
+            <h3 className="text-xl font-bold text-gray-900 mb-0">
               List of Parent's Account
             </h3>
             <p className="text-gray-600 text-xs font-medium mb-3">
@@ -849,12 +911,17 @@ export default function ListofUsers() {
                       </button> */}
                         </div>
 
-                        <button className="border-2  border-red-600 py-1.5 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer">
+                        <button
+                         type="button"
+                         onClick={handleDelete}
+                          className="border-2  border-red-600 py-1.5 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer"
+                        >
                           Delete an account
                         </button>
                       </>
                     ) : (
                       <button
+                        type="button"
                         className="w-full flex gap-1 justify-center items-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg"
                         onClick={() => setIsEdit(true)}
                       >

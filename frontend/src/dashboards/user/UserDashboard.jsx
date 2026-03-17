@@ -12,9 +12,6 @@ export default function UserDashboard() {
   const navigate = useNavigate();
 
   //View ID
-    // useEffect(() => {
-    //   setShowModal(true);
-    // }, []);
     const toggleModal = () => {
       setShowModal(true)
     }
@@ -282,7 +279,7 @@ useEffect(() => {
 
                {/* ID DETAILS */}
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
-                 <div className="flex items-center justify-between mb-3">
+                 <div className="flex items-center justify-between">
                    <h3 className="font-semibold text-gray-700">ID Details</h3>
                    <button
                      onClick={toggleModal}
@@ -321,7 +318,7 @@ useEffect(() => {
 
                {/* E-SIGNATURE */}
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
-                 <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                 <h3 className="text-lg font-semibold text-gray-700">
                    E-Signature
                  </h3>
                  <p className="text-xs text-gray-400 mb-3">
