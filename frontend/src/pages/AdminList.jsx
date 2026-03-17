@@ -203,7 +203,7 @@ export default function AdminList() {
     }
   };
 
-  const limit = admins.length || 5;
+  const limit = 5;
 
   const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
 
@@ -379,7 +379,6 @@ export default function AdminList() {
 
                       <td className="px-4 py-3">
                         <button
-                          // onClick={() => setShowModal(true)}
                           onClick={() => handleView(admin)}
                           className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer"
                         >
@@ -460,7 +459,6 @@ export default function AdminList() {
                   </div>
 
                   <button
-                    // onClick={() => setShowModal(true)}
                     onClick={() => handleView(admin)}
                     className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
                   >

@@ -60,15 +60,15 @@ export default function ListofUsers() {
       background: "#ffffff",
       showConfirmButton: true,
       showCancelButton,
-      confirmButtonText: "Okay",
       cancelButtonText: "Cancel",
+      confirmButtonText: "Okay",
       buttonsStyling: false,
       customClass: {
         popup: "rounded-xl px-6 py-4",
-        confirmButton:
-          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
         cancelButton:
-          "mt-4 ml-2 bg-gray-300 text-black px-6 py-2 rounded text-xl",
+          "mt-4 ml-2 bg-[var(--gray-1)] text-black px-6 py-2 rounded text-base text-white",
+        confirmButton:
+          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-base hover:bg-red-700",
       },
     });
   };
@@ -201,7 +201,7 @@ export default function ListofUsers() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/user/delete/${selectedUser.user}`,
+        `http://127.0.0.1:8000/api/user/delete/${selectedUser.user}/`,
         {
           method: "DELETE",
           headers: {
