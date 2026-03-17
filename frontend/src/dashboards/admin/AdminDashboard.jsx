@@ -11,9 +11,9 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
 
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col ml-0 lg:ml-auto h-screen">
-        <header className="bg-white border-b border-gray-200 flex flex-row items-center justify-center md:justify-between md:px-6 md:py-2.5 p-2 shadow-sm">
+        <header className="bg-white border-b border-gray-200 flex flex-row items-center justify-center md:justify-start lg:justify-between md:px-6 md:py-2.5 p-2 shadow-sm">
           <button
-            className="md:hidden text-gray-800 mr-3"
+            className="lg:hidden text-gray-800 mr-3"
             onClick={() => setSidebarOpen(true)}
           >
             <svg
@@ -30,14 +30,15 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
             </svg>
           </button>
 
-          <div>
+          {/* HEADER TITLE */}
+          <article className="hidden md:block">
             <h2 className="text-2xl font-bold text-gray-800 hidden md:block">
               Admin Dashboard
             </h2>
             <p className="text-gray-600 text-sm font-medium hidden md:block">
               Here you can manage users and view system stats
             </p>
-          </div>
+          </article>
 
           <div className="flex items-center md:hidden">
             <div className="bg-red-600 border border-gray-400 size-14 rounded-md shadow flex justify-center items-center">
