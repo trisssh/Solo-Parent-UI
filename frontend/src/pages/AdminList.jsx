@@ -23,20 +23,24 @@ export default function AdminList() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   // SWEET ALERT HELPER
-  const showAlert = ({ title, message, icon = "error" }) => {
-    Swal.fire({
+  const showAlert = ({ title, message, icon = "error", showCancelButton = false, }) => {
+    return Swal.fire({
       title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
       html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
       icon,
       iconColor: "#DC2626",
       background: "#ffffff",
       showConfirmButton: true,
+      showCancelButton,
+      cancelButtonText: "Cancel",
       confirmButtonText: "Okay",
       buttonsStyling: false,
       customClass: {
         popup: "rounded-xl px-6 py-4",
+        cancelButton:
+          "mt-4 ml-2 bg-[var(--gray-1)] text-black px-6 py-2 rounded text-base text-white",
         confirmButton:
-          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
+          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-base hover:bg-red-700",
       },
     });
   };
@@ -142,30 +146,30 @@ export default function AdminList() {
   };
 
   // HANDLERS
- const handleView = (admin) => {
-   setSelectedUser(admin);
-   setIsEdit(false);
-   setShowModal(true);
- };
+  const handleView = (admin) => {
+    setSelectedUser(admin);
+    setIsEdit(false);
+    setShowModal(true);
+  };
 
- const handleEdit = () => {
-   setIsEdit(true);
- };
+  const handleEdit = () => {
+    setIsEdit(true);
+  };
 
- const handleClose = () => {
-   setSelectedUser(null);
-   setShowModal(false);
-   setIsEdit(false);
- };
+  const handleClose = () => {
+    setSelectedUser(null);
+    setShowModal(false);
+    setIsEdit(false);
+  };
 
- const handleChange = (e) => {
-   const { name, value } = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-   setSelectedUser({
-     ...selectedUser,
-     [name]: value,
-   });
- };
+    setSelectedUser({
+      ...selectedUser,
+      [name]: value,
+    });
+  };
 
   // UPDATE USER
   const handleSave = async () => {
@@ -210,6 +214,47 @@ export default function AdminList() {
   const totalPages = Math.ceil(totalCount / limit);
 
   const currentPage = Math.floor(offset / limit) + 1;
+
+  
+  // DELETE USER
+  const handleDelete = async () => {
+    const confirm = await showAlert({
+      title: "Delete User?",
+      message: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/user/delete/${selectedUser.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        },
+      );
+
+      if (!res.ok) throw new Error("Failed to delete admin");
+
+      showAlert({
+        title: "Deleted!",
+        message: "Admin account has been deleted.",
+        icon: "success",
+      });
+
+      fetchAdmins();
+      handleClose();
+    } catch (err) {
+      showAlert({
+        title: "Error",
+        message: err.message,
+      });
+    }
+  };
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -711,7 +756,8 @@ export default function AdminList() {
 
                         <button
                           type="button"
-                          className="border-2  border-red-600 py-1.5 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer"
+                          onClick={handleDelete}
+                          className="border-2 border-red-600 py-1.5 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer"
                         >
                           Delete an account
                         </button>

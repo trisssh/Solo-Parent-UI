@@ -29,23 +29,6 @@ export default function ListofUsers() {
   }
 
   // SWEET ALERT HELPER
-  // const showAlert = ({ title, message, icon = "error" }) => {
-  //   Swal.fire({
-  //     title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-  //     html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
-  //     icon,
-  //     iconColor: "#DC2626",
-  //     background: "#ffffff",
-  //     showConfirmButton: true,
-  //     confirmButtonText: "Okay",
-  //     buttonsStyling: false,
-  //     customClass: {
-  //       popup: "rounded-xl px-6 py-4",
-  //       confirmButton:
-  //         "mt-4 bg-red-600 text-white px-6 py-2 rounded text-xl hover:bg-red-700",
-  //     },
-  //   });
-  // };
   const showAlert = ({
     title,
     message,
@@ -201,7 +184,7 @@ export default function ListofUsers() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/user/delete/${selectedUser.user}/`,
+        `http://127.0.0.1:8000/api/user/delete/${selectedUser.user}`,
         {
           method: "DELETE",
           headers: {
