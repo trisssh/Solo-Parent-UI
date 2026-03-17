@@ -190,57 +190,53 @@ export default function ListofUsers() {
 
   // DELETE USER
   const handleDelete = async () => {
-   const confirm = await showAlert({
-     title: "Delete User?",
-     message: "This action cannot be undone.",
-     icon: "warning",
-     showCancelButton: true,
-   });
-
+    const confirm = await showAlert({
+      title: "Delete User?",
+      message: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+    });
 
     if (!confirm.isConfirmed) return;
 
-     try {
-       const res = await fetch(
-         `http://127.0.0.1:8000/api/user/delete/${selectedUser.id}`,
-         {
-           method: "DELETE",
-           headers: {
-             Authorization: `Bearer ${authTokens.access}`,
-           },
-         },
-       );
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/user/delete/${selectedUser.user}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        },
+      );
 
-       if (!res.ok) throw new Error("Failed to delete user");
+      if (!res.ok) throw new Error("Failed to delete user");
 
-       showAlert({
-         title: "Deleted!",
-         message: "User account has been deleted.",
-         icon: "success",
-       });
+      showAlert({
+        title: "Deleted!",
+        message: "User account has been deleted.",
+        icon: "success",
+      });
 
-       fetchUsers();
-       handleClose();
-     } catch (err) {
-       showAlert({
-         title: "Error",
-         message: err.message,
-       });
-     }
+      fetchUsers();
+      handleClose();
+    } catch (err) {
+      showAlert({
+        title: "Error",
+        message: err.message,
+      });
+    }
   };
 
   // CONCAT FULLNAME
   const getFullName = (u) =>
     `${u.first_name || ""} ${u.middle_name || ""} ${u.last_name || ""} ${u.suffix || ""}`.trim();
 
-
-
   // RENDER
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
   }
 
-  
   const getOffsetFromUrl = (url) => {
     if (!url) return 0;
     const params = new URL(url).searchParams;
@@ -421,6 +417,8 @@ export default function ListofUsers() {
                 <tbody className="divide-y divide-gray-100">
                   {users.map((u) => (
                     <tr key={u.id} className="hover:bg-gray-50 transition">
+                      {/* to delete using u.user */}
+                      <td className="hidden">{u.user}</td>
                       {/* ID */}
                       <td className="px-4 py-3 text-sm text-gray-400 font-mono">
                         {u.uuid}
@@ -912,8 +910,8 @@ export default function ListofUsers() {
                         </div>
 
                         <button
-                         type="button"
-                         onClick={handleDelete}
+                          type="button"
+                          onClick={handleDelete}
                           className="border-2  border-red-600 py-1.5 rounded-lg w-full mt-3 text-red-600 font-semibold hover:cursor-pointer"
                         >
                           Delete an account
