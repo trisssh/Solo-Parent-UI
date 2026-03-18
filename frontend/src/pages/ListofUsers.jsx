@@ -600,7 +600,7 @@ export default function ListofUsers() {
               {users.length === 0 && (
                 <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
                   <div colSpan="6" className="text-center py-6 text-gray-400">
-                    No Admin found
+                    No user found
                   </div>
                 </div>
               )}

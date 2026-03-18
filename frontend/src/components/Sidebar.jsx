@@ -59,7 +59,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   return (
     <aside
-      className={`fixed lg:static z-50 h-screen w-64 bg-gradient-to-b from-[var(--red-1)] to-[var(--red-3)] text-white transition-transform duration-300
+      className={`fixed lg:static z-50 h-screen w-64  bg-gradient-to-b from-red-700 to-red-600 text-white transition-transform duration-300
       ${sidebarOpen ? "translate-x-0" : "-translate-x-64 lg:translate-x-0"}`}
     >
       {/* HEADER */}

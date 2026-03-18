@@ -433,6 +433,19 @@ export default function AdminList() {
                       </td>
                     </tr>
                   ))}
+
+
+                  {/* EMPTY STATE */}
+                  {admins.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="text-center py-6 text-gray-400"
+                      >
+                        No Admin found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -512,6 +525,15 @@ export default function AdminList() {
                   </button>
                 </div>
               ))}
+
+              {/* EMPTY STATE */}
+              {admins.length === 0 && (
+                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
+                  <div colSpan="6" className="text-center py-6 text-gray-400">
+                    No Admin found
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* PAGINATION */}
