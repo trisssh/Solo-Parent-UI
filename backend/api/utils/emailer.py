@@ -6,7 +6,7 @@ env = environ.Env()
 environ.Env.read_env()
 
 def emailer(
-    is_verified, 
+    reason, 
     parent,
     remarks=None,
 ):
@@ -20,21 +20,22 @@ def emailer(
         'remarks': remarks,
     }
 
-    text_content = render_to_string(
-        is_verified and 
-            'emails/verified_email.txt' or 
-            'emails/unverified_email.txt',
-        context=context
-    )
-    html_content = render_to_string(
-        is_verified and 
-            'emails/verified_email.html' or 
-            'emails/unverified_email.html',
-        context=context
-    )
-    subject = is_verified and \
-        'Successful solo parent registration' or \
-        'Unsuccessful solo parent registration'
+    match reason:
+        case 'unverified':
+            text = 'emails/unverified_email.txt'
+            email = 'emails/unverified_email.html'
+            subject = 'Unsuccessful solo parent registration'
+        case 'verified':
+            text = 'emails/verified_email.txt'
+            email = 'emails/verified_email.html'
+            subject = 'Successful solo parent registration'
+        case 'deleted':
+            text = 'emails/deleted_email.txt'
+            email = 'emails/deleted_email.html'
+            subject = 'Account deleted, insufficient information'
+
+    text_content = render_to_string(text, context=context)
+    html_content = render_to_string(email, context=context)
 
     message = EmailMultiAlternatives(
         subject,

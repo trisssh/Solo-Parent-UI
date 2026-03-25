@@ -247,8 +247,16 @@ class DeleteUserView(APIView, UserPassesTestMixin):
             raise PermissionDenied('Admins only.')
 
         user = get_object_or_404(User, pk=pk)
-        user.delete()
+        parent = Parent.objects.filter(user_id=user.pk).first()
 
+        if parent:
+            emailer(
+                'deleted',
+                parent,
+                request.data.get('remarks'),
+            )
+
+        user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DeleteParentView(APIView):
@@ -309,9 +317,14 @@ class ChangeVerificationView(APIView):
         if serializer.is_valid():
             serializer.save()
             parent = serializer.instance
+
+            if parent.is_verified:
+                reason = 'verified'
+            else:
+                reason = 'unverified'
             
             emailer(
-                parent.is_verified,
+                reason,
                 parent,
                 request.data.get('remarks'),
             )
@@ -391,9 +404,14 @@ class AdminChangeParentInfoView(APIView):
             serializer.save()
             parent = serializer.instance
 
-            if not old_is_verified == parent.is_verified:
+            if old_is_verified != parent.is_verified:
+                if parent.is_verified:
+                    reason = 'verified'
+                else:
+                    reason = 'unverified'
+
                 emailer(
-                    parent.is_verified,
+                    reason,
                     parent,
                     request.data.get('remarks'),
                 )
