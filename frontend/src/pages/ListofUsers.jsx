@@ -216,9 +216,9 @@ export default function ListofUsers() {
     `${u.first_name || ""} ${u.middle_name || ""} ${u.last_name || ""} ${u.suffix || ""}`.trim();
 
   // RENDER
-  if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
-  }
+  // if (loading) {
+  //   return <p className="text-center mt-10">Loading...</p>;
+  // }
 
   const getOffsetFromUrl = (url) => {
     if (!url) return 0;
