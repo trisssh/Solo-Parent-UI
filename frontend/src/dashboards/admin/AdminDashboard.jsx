@@ -108,6 +108,7 @@ export default function AdminDashboard() {
   const totalPages = Math.ceil(totalCount / limit);
   const currentPage = Math.floor(offset / limit) + 1;
 
+
   return (
     <div className="flex bg-white md:h-screen">
       {/* SIDEBAR */}
@@ -306,31 +307,6 @@ export default function AdminDashboard() {
                     </tr>
                   </thead>
 
-                  {/* <tbody>
-                    <tr>
-                      <td colSpan="4" className="text-red-500"></td>
-                    </tr>
-
-                    <tr>
-                      <td className="px-4 py-3 text-gray-600 font-medium tracking-widest text-base">
-                        Barangay Official Name
-                      </td>
-                      <td className="px-4 py-3 text-left font-mono text-gray-800">
-                        404
-                      </td>
-                      <td className="px-4 py-3 text-left font-mono text-gray-800">
-                        101
-                      </td>
-                      <td className="px-4 py-3 text-left font-mono text-gray-800">
-                        101
-                      </td>
-                    </tr>
-
-                    <tr>
-                        <td colSpan="4">No data found</td>
-                      </tr>
-                  </tbody> */}
-
                   <tbody>
                     {barangayList.length === 0 ? (
                       <tr>
@@ -402,19 +378,13 @@ export default function AdminDashboard() {
                     <span className="font-medium">{totalPages}</span>
                   </span>
 
-                  {/* <span className="text-xs">
-                    Page <span className="font-medium">1</span> of{" "}
-                    <span className="font-medium">3</span>
-                  </span> */}
-
                   <div className="flex items-center gap-2">
                     <button
-                      // disabled={!prevPage}
                       onClick={() => fetchBarangayList(prevPage)}
                       className={`px-3 py-1 rounded-md text-white ${
                         prevPage
                           ? "bg-red-600 hover:bg-red-700"
-                          : "bg-gray-300 cursor-not-allowed"
+                          : "bg-[var(--gray-2)] cursor-not-allowed"
                       }`}
                       disabled={!prevPage}
                     >
@@ -422,12 +392,11 @@ export default function AdminDashboard() {
                     </button>
 
                     <button
-                      // disabled={!nextPage}
                       onClick={() => fetchBarangayList(nextPage)}
                       className={`px-3 py-1 rounded-md text-white ${
                         nextPage
                           ? "bg-red-600 hover:bg-red-700"
-                          : "bg-gray-300 cursor-not-allowed"
+                          : "bg-[var(--gray-2)] cursor-not-allowed"
                       }`}
                       disabled={!nextPage}
                     >
@@ -473,102 +442,72 @@ export default function AdminDashboard() {
               </div>
 
               <div className="md:hidden grid gap-4">
-                <div>
-                  {/* Title & Icon */}
-                  {/* <div className="flex items-center gap-3 mb-2">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100 text-red-600">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.8}
-                        stroke="currentColor"
-                        className="w-5 h-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18"
-                        />
-                      </svg>
-                    </div>
-
-                    <h4 className="text-lg font-semibold text-gray-900">
-                      Barangay Name
-                    </h4>
-                  </div> */}
-
-                  {barangayList.map((item, index) => (
-                    <div key={index}>
-                      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-3">
-                        {/* Title & Icon */}
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100 text-red-600">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.8}
-                              stroke="currentColor"
-                              className="w-5 h-5"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18"
-                              />
-                            </svg>
-                          </div>
-
-                          <h4 className="text-lg font-semibold text-gray-900 capitalize tracking-widest">
-                            {item.barangay}
-                          </h4>
+                {barangayList.map((item, index) => (
+                  <div key={index}>
+                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-3">
+                      {/* Title & Icon */}
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100 text-red-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.8}
+                            stroke="currentColor"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18"
+                            />
+                          </svg>
                         </div>
 
-                        {/* Stats */}
-                        <div>
-                          <p>Average Age: {Math.round(item.average_age)}</p>
-                          <p>Male: {item.male_count}</p>
-                          <p>Female: {item.female_count}</p>
-                        </div>
+                        <h4 className="text-lg font-semibold text-gray-900 capitalize tracking-widest">
+                          {item.barangay}
+                        </h4>
+                      </div>
+
+                      {/* Stats */}
+                      <div>
+                        <p>Average Age: {Math.round(item.average_age)}</p>
+                        <p>Male: {item.male_count}</p>
+                        <p>Female: {item.female_count}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
 
               {/* PAGINATION */}
               <div className="md:hidden flex items-center justify-between p-1 border-t border-gray-100 text-sm text-gray-500">
-                {/* <span className="text-xs">
-                Page <span className="font-medium">{currentPage}</span> of{" "}
-                <span className="font-medium">{totalPages}</span>
-              </span> */}
                 <span className="text-xs">
-                  Page <span className="font-medium">1</span> of{" "}
-                  <span className="font-medium">3</span>
+                  Page <span className="font-medium">{currentPage}</span> of{" "}
+                  <span className="font-medium">{totalPages}</span>
                 </span>
 
                 <div className="flex items-center gap-2">
                   <button
-                  // disabled={!prevPage}
-                  // onClick={() => fetchUsers(prevPage)}
-                  // className={`px-3 py-1 border rounded-md text-white ${
-                  //   prevPage
-                  //     ? "bg-red-600 hover:bg-red-700"
-                  //     : "bg-[var(--gray-2)] text-white cursor-not-allowed"
-                  // }`}
+                    disabled={!prevPage}
+                    onClick={() => fetchBarangayList(prevPage)}
+                    className={`px-3 py-1 border rounded-md text-white ${
+                      prevPage
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-[var(--gray-2)] text-white cursor-not-allowed"
+                    }`}
                   >
                     Prev
                   </button>
 
                   <button
-                  // disabled={!nextPage}
-                  // onClick={() => fetchUsers(nextPage)}
-                  // className={`px-3 py-1 border rounded-md text-white ${
-                  //   nextPage
-                  //     ? "bg-red-600 hover:bg-red-700 "
-                  //     : "bg-[var(--gray-2)] cursor-not-allowed"
-                  // }`}
+                    disabled={!nextPage}
+                    onClick={() => fetchBarangayList(nextPage)}
+                    className={`px-3 py-1 border rounded-md text-white ${
+                      nextPage
+                        ? "bg-red-600 hover:bg-red-700 "
+                        : "bg-[var(--gray-2)] cursor-not-allowed"
+                    }`}
                   >
                     Next
                   </button>
