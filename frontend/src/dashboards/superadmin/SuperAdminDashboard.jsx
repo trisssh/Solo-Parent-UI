@@ -1,8 +1,111 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "../../context/AuthContext";
 import Sidebar from "../../components/Sidebar";
 
 export default function SuperAdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [stats, setStats] = useState(null);
+  const [barangayList, setBarangayList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const {authTokens, user} = useContext(AuthContext);
+  const [search, setSearch] = useState("");
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
+  const [totalCount, setTotalCount] =useState(0);
+
+
+   useEffect(() => {
+     const fetchData = async () => {
+       if (!authTokens?.access) return;
+
+       try {
+         const statsRes = await fetch(
+           "http://127.0.0.1:8000/api/admin/statistics",
+           {
+             headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${authTokens.access}`,
+             },
+           },
+         );
+
+         if (!statsRes.ok) throw new Error("Failed to fetch stats");
+
+         const listRes = await fetch(
+           "http://127.0.0.1:8000/api/admin/statistics-list",
+           {
+             headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${authTokens.access}`,
+             },
+           },
+         );
+
+         if (!listRes.ok) throw new Error("Failed to fetch list");
+
+         const statsData = await statsRes.json();
+         const listData = await listRes.json();
+
+         setStats(statsData);
+         setBarangayList(listData.results);
+       } catch (error) {
+         console.error("Error fetching data:", error);
+       } finally {
+         setLoading(false);
+       }
+     };
+
+     fetchData();
+   }, [authTokens]);
+
+   const fetchBarangayList = async (url = null) => {
+     if (!authTokens?.access) return;
+
+     if (!url) {
+       url = `http://127.0.0.1:8000/api/admin/statistics-list?search=${search}`;
+     }
+
+     try {
+       const res = await fetch(url, {
+         headers: {
+           "Content-Type": "application/json",
+           Authorization: `Bearer ${authTokens.access}`,
+         },
+       });
+
+       if (!res.ok) throw new Error("Failed to fetch list");
+
+       const data = await res.json();
+
+       setBarangayList(data.results);
+       setNextPage(data.next);
+       setPrevPage(data.previous);
+       setTotalCount(data.count);
+     } catch (error) {
+       console.error(error);
+     }
+   };
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchBarangayList();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [search, authTokens]);
+
+  const getOffsetFromUrl = (url) => {
+    if (!url) return 0;
+    const params = new URL(url).searchParams;
+    return parseInt(params.get("offset")) || 0;
+  };
+
+  const limit = 5;
+
+  const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
+
+  const totalPages = Math.ceil(totalCount / limit);
+  const currentPage = Math.floor(offset / limit) + 1;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -75,7 +178,10 @@ export default function SuperAdminDashboard() {
             <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="bg-white/20 backdrop-blur rounded-lg p-2 md:p-4">
                 <p className="text-cyan-100">Email</p>
-                <p className="font-semibold break-all">test6@test.com</p>
+                <p className="font-semibold break-all">
+                  {" "}
+                  {user?.email || "No email"}
+                </p>
               </div>
               <div className="bg-white/20 backdrop-blur rounded-lg p-2 md:p-4">
                 <p className="text-cyan-100">Role</p>
@@ -89,7 +195,7 @@ export default function SuperAdminDashboard() {
           {/* STATS SECTION - CARDS */}
           <section className="grid grid-cols-1 md:flex gap-3 mb-10">
             <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-              <h3 className="text-4xl font-mono text-gray-700">7</h3>
+              <h3 className="text-4xl font-mono text-gray-700">404</h3>
               <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
                 Total Number of Admins
               </p>
@@ -97,29 +203,37 @@ export default function SuperAdminDashboard() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">67</h3>
+                <h3 className="text-4xl font-mono text-gray-700">
+                  {stats?.parents_count || 0}
+                </h3>
                 <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
                   Total Number of Parents
                 </p>
               </div>
 
               <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">31</h3>
+                <h3 className="text-4xl font-mono text-gray-700">
+                  {Math.round(stats?.average_age || 0)}
+                </h3>
                 <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
                   Average Age of Solo Parents
                 </p>
               </div>
 
               <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">7</h3>
+                <h3 className="text-4xl font-mono text-gray-700">
+                  {stats?.male_count || 0}
+                </h3>
                 <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                  Total Number of Verified
+                  Total of Male Solo Parent
                 </p>
               </div>
               <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">67</h3>
+                <h3 className="text-4xl font-mono text-gray-700">
+                  {stats?.female_count || 0}
+                </h3>
                 <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                  Total Number of Unverified
+                  Total of Female Solo Parent
                 </p>
               </div>
             </div>
@@ -175,7 +289,7 @@ export default function SuperAdminDashboard() {
                     </tr>
                   </thead>
 
-                  <tbody>
+                  {/* <tbody>
                     <tr>
                       <td colSpan="4" className="text-red-500"></td>
                     </tr>
@@ -195,9 +309,36 @@ export default function SuperAdminDashboard() {
                       </td>
                     </tr>
 
-                    {/* <tr>
-                        <td colSpan="4">No data found</td>
-                      </tr> */}
+               
+                  </tbody> */}
+                  <tbody>
+                    {barangayList.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="text-center py-4 text-gray-500"
+                        >
+                          No data found
+                        </td>
+                      </tr>
+                    ) : (
+                      barangayList.map((item, index) => (
+                        <tr key={index}>
+                          <td className="px-4 py-3 text-gray-600 font-medium capitalize tracking-wide">
+                            {item.barangay}
+                          </td>
+                          <td className="px-4 py-3 font-mono">
+                            {Math.round(item.average_age)}
+                          </td>
+                          <td className="px-4 py-3 font-mono">
+                            {item.female_count}
+                          </td>
+                          <td className="px-4 py-3 font-mono">
+                            {item.male_count}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -229,44 +370,36 @@ export default function SuperAdminDashboard() {
                   <span className="font-medium">
                     Total Solo Parent in San Juan, Manila: 505
                   </span>
-                  {/* <span className="font-medium">
-                  Total Solo Parent: {totalCount}
-                </span> */}
                 </div>
 
                 {/* RIGHT */}
                 <div className="flex items-center gap-4">
-                  {/* <span className="text-xs">
+                  <span className="text-xs">
                     Page <span className="font-medium">{currentPage}</span> of{" "}
                     <span className="font-medium">{totalPages}</span>
-                  </span> */}
-
-                  <span className="text-xs">
-                    Page <span className="font-medium">1</span> of{" "}
-                    <span className="font-medium">3</span>
                   </span>
 
                   <div className="flex items-center gap-2">
                     <button
-                    // disabled={!prevPage}
-                    // onClick={() => fetchAdmins(prevPage)}
-                    // className={`px-3 py-1 rounded-md text-white ${
-                    //   prevPage
-                    //     ? "bg-red-600 hover:bg-red-700"
-                    //     : "bg-gray-300 cursor-not-allowed"
-                    // }`}
+                      disabled={!prevPage}
+                      onClick={() => fetchBarangayList(prevPage)}
+                      className={`px-3 py-1 rounded-md text-white ${
+                        prevPage
+                          ? "bg-red-600 hover:bg-red-700"
+                          : "bg-[var(--gray-2)] cursor-not-allowed"
+                      }`}
                     >
                       Prev
                     </button>
 
                     <button
-                    // disabled={!nextPage}
-                    // onClick={() => fetchAdmins(nextPage)}
-                    // className={`px-3 py-1 rounded-md text-white ${
-                    //   nextPage
-                    //     ? "bg-red-600 hover:bg-red-700"
-                    //     : "bg-gray-300 cursor-not-allowed"
-                    // }`}
+                      disabled={!nextPage}
+                      onClick={() => fetchBarangayList(nextPage)}
+                      className={`px-3 py-1 rounded-md text-white ${
+                        nextPage
+                          ? "bg-red-600 hover:bg-red-700"
+                          : "bg-[var(--gray-2)] cursor-not-allowed"
+                      }`}
                     >
                       Next
                     </button>
@@ -309,45 +442,44 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
 
+              {/* CARDS -- Barangay List */}
               <div className="md:hidden grid gap-4">
-                <div className="relative rounded-xl p-[1px] bg-white border border-gray-200 shadow-lg">
-                  <div className="bg-white rounded-2xl p-5 backdrop-blur-xl">
-                    {/* Title & Icon */}
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100 text-red-600">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.8}
-                          stroke="currentColor"
-                          className="w-5 h-5"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18"
-                          />
-                        </svg>
+                {barangayList.map((item, index) => (
+                  <div key={index}>
+                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-3">
+                      {/* Title & Icon */}
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-100 text-red-600">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.8}
+                            stroke="currentColor"
+                            className="w-5 h-5"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18"
+                            />
+                          </svg>
+                        </div>
+
+                        <h4 className="text-lg font-semibold text-gray-900 capitalize tracking-widest">
+                          {item.barangay}
+                        </h4>
                       </div>
 
-                      <h4 className="text-lg font-semibold text-gray-900">
-                        Barangay Name
-                      </h4>
+                      {/* Stats */}
+                      <div>
+                        <p>Average Age: {Math.round(item.average_age)}</p>
+                        <p>Male: {item.male_count}</p>
+                        <p>Female: {item.female_count}</p>
+                      </div>
                     </div>
-
-                    {/* Stats */}
-                    <p className="text-sm text-gray-700 mt-1">
-                      Average Age: 404
-                    </p>
-                    <p className="text-sm text-gray-700 mt-1">
-                      Number of Male Solo Parent:101
-                    </p>
-                    <p className="text-sm text-gray-700 mt-1">
-                      Number of Female Solo Parent: 101
-                    </p>
                   </div>
-                </div>
+                ))}
               </div>
 
               {/* PAGINATION */}
