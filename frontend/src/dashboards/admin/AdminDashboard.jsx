@@ -9,6 +9,10 @@ export default function AdminDashboard() {
   const [barangayList, setBarangayList] = useState([]);
   const [loading, setLoading] = useState(false);
   const { authTokens, user } = useContext(AuthContext);
+  const [search, setSearch] = useState("");
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +57,56 @@ export default function AdminDashboard() {
 
     fetchData();
   }, [authTokens]);
+
+
+  const fetchBarangayList = async (url = null) => {
+    if (!authTokens?.access) return;
+
+    if (!url) {
+      url = `http://127.0.0.1:8000/api/admin/statistics-list?search=${search}`;
+    }
+
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch list");
+
+      const data = await res.json();
+
+      setBarangayList(data.results);
+      setNextPage(data.next);
+      setPrevPage(data.previous);
+      setTotalCount(data.count);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchBarangayList();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [search, authTokens]);
+
+  const getOffsetFromUrl = (url) => {
+    if (!url) return 0;
+    const params = new URL(url).searchParams;
+    return parseInt(params.get("offset")) || 0;
+  };
+
+  const limit = 5;
+
+  const offset = prevPage ? getOffsetFromUrl(prevPage) + limit : 0;
+
+  const totalPages = Math.ceil(totalCount / limit);
+  const currentPage = Math.floor(offset / limit) + 1;
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -231,10 +285,10 @@ export default function AdminDashboard() {
                 </svg>
 
                 <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="border-none outline-none w-full ps-2 text-gray-800"
-                  type="text"
-                  placeholder=""
-                ></input>
+                />
               </div>
             </div>
 
@@ -343,37 +397,39 @@ export default function AdminDashboard() {
 
                 {/* RIGHT */}
                 <div className="flex items-center gap-4">
-                  {/* <span className="text-xs">
+                  <span className="text-xs">
                     Page <span className="font-medium">{currentPage}</span> of{" "}
                     <span className="font-medium">{totalPages}</span>
-                  </span> */}
+                  </span>
 
-                  <span className="text-xs">
+                  {/* <span className="text-xs">
                     Page <span className="font-medium">1</span> of{" "}
                     <span className="font-medium">3</span>
-                  </span>
+                  </span> */}
 
                   <div className="flex items-center gap-2">
                     <button
-                    // disabled={!prevPage}
-                    // onClick={() => fetchAdmins(prevPage)}
-                    // className={`px-3 py-1 rounded-md text-white ${
-                    //   prevPage
-                    //     ? "bg-red-600 hover:bg-red-700"
-                    //     : "bg-gray-300 cursor-not-allowed"
-                    // }`}
+                      // disabled={!prevPage}
+                      onClick={() => fetchBarangayList(prevPage)}
+                      className={`px-3 py-1 rounded-md text-white ${
+                        prevPage
+                          ? "bg-red-600 hover:bg-red-700"
+                          : "bg-gray-300 cursor-not-allowed"
+                      }`}
+                      disabled={!prevPage}
                     >
                       Prev
                     </button>
 
                     <button
-                    // disabled={!nextPage}
-                    // onClick={() => fetchAdmins(nextPage)}
-                    // className={`px-3 py-1 rounded-md text-white ${
-                    //   nextPage
-                    //     ? "bg-red-600 hover:bg-red-700"
-                    //     : "bg-gray-300 cursor-not-allowed"
-                    // }`}
+                      // disabled={!nextPage}
+                      onClick={() => fetchBarangayList(nextPage)}
+                      className={`px-3 py-1 rounded-md text-white ${
+                        nextPage
+                          ? "bg-red-600 hover:bg-red-700"
+                          : "bg-gray-300 cursor-not-allowed"
+                      }`}
+                      disabled={!nextPage}
                     >
                       Next
                     </button>
