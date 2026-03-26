@@ -125,7 +125,10 @@ export default function AdminDashboard() {
             <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="bg-white/20 backdrop-blur rounded-lg p-2 md:p-4">
                 <p className="text-cyan-100">Email</p>
-                <p className="font-semibold break-all">test4@test.com</p>
+                <p className="font-semibold break-all">
+                  {" "}
+                  {user?.email || "No email"}
+                </p>
               </div>
               <div className="bg-white/20 backdrop-blur rounded-lg p-2 md:p-4">
                 <p className="text-cyan-100">Role</p>
@@ -461,9 +464,6 @@ export default function AdminDashboard() {
                             </svg>
                           </div>
 
-                          {/* <h4 className="text-lg font-semibold text-gray-900">
-                            {item.barangay}
-                          </h4> */}
                           <h4 className="text-lg font-semibold text-gray-900 capitalize tracking-widest">
                             {item.barangay}
                           </h4>
