@@ -268,9 +268,9 @@ export default function SuperAdminDashboard() {
                   />
                 </svg>
                 <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                   className="border-none outline-none w-full ps-2 text-gray-800"
-                  type="text"
-                  placeholder=""
                 />
               </div>
             </div>
@@ -443,7 +443,7 @@ export default function SuperAdminDashboard() {
               </div>
 
               {/* CARDS -- Barangay List */}
-              <div className="md:hidden grid gap-4">
+              <div className="md:hidden">
                 {barangayList.map((item, index) => (
                   <div key={index}>
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-3">
@@ -484,36 +484,32 @@ export default function SuperAdminDashboard() {
 
               {/* PAGINATION */}
               <div className="md:hidden flex items-center justify-between p-1 border-t border-gray-100 text-sm text-gray-500">
-                {/* <span className="text-xs">
-                Page <span className="font-medium">{currentPage}</span> of{" "}
-                <span className="font-medium">{totalPages}</span>
-              </span> */}
                 <span className="text-xs">
-                  Page <span className="font-medium">1</span> of{" "}
-                  <span className="font-medium">3</span>
+                  Page <span className="font-medium">{currentPage}</span> of{" "}
+                  <span className="font-medium">{totalPages}</span>
                 </span>
 
                 <div className="flex items-center gap-2">
                   <button
-                  // disabled={!prevPage}
-                  // onClick={() => fetchUsers(prevPage)}
-                  // className={`px-3 py-1 border rounded-md text-white ${
-                  //   prevPage
-                  //     ? "bg-red-600 hover:bg-red-700"
-                  //     : "bg-[var(--gray-2)] text-white cursor-not-allowed"
-                  // }`}
+                    disabled={!prevPage}
+                    onClick={() => fetchBarangayList(prevPage)}
+                    className={`px-3 py-1 border rounded-md text-white ${
+                      prevPage
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-[var(--gray-2)] text-white cursor-not-allowed"
+                    }`}
                   >
                     Prev
                   </button>
 
                   <button
-                  // disabled={!nextPage}
-                  // onClick={() => fetchUsers(nextPage)}
-                  // className={`px-3 py-1 border rounded-md text-white ${
-                  //   nextPage
-                  //     ? "bg-red-600 hover:bg-red-700 "
-                  //     : "bg-[var(--gray-2)] cursor-not-allowed"
-                  // }`}
+                    disabled={!nextPage}
+                    onClick={() => fetchBarangayList(nextPage)}
+                    className={`px-3 py-1 border rounded-md text-white ${
+                      nextPage
+                        ? "bg-red-600 hover:bg-red-700 "
+                        : "bg-[var(--gray-2)] cursor-not-allowed"
+                    }`}
                   >
                     Next
                   </button>

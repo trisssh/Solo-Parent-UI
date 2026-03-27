@@ -440,8 +440,9 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
-
-              <div className="md:hidden grid gap-4">
+              
+              {/* CARDS -- Barangay List */}
+              <div className="md:hidden">
                 {barangayList.map((item, index) => (
                   <div key={index}>
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 mb-3">
