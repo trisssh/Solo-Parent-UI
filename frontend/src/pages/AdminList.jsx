@@ -23,27 +23,34 @@ export default function AdminList() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   // SWEET ALERT HELPER
-  const showAlert = ({ title, message, icon = "error", showCancelButton = false, }) => {
-    return Swal.fire({
-      title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
-      html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
-      icon,
-      iconColor: "#DC2626",
-      background: "#ffffff",
-      showConfirmButton: true,
-      showCancelButton,
-      cancelButtonText: "No, Cancel",
-      confirmButtonText: "Yes, Delete account",
-      buttonsStyling: false,
-      customClass: {
-        popup: "rounded-xl px-6 py-4",
-        cancelButton:
-          "mt-4 ml-2 bg-[var(--gray-1)] text-black px-6 py-2 rounded text-base text-white",
-        confirmButton:
-          "mt-4 bg-red-600 text-white px-6 py-2 rounded text-base hover:bg-red-700",
-      },
-    });
-  };
+  const showAlert = ({
+      title,
+      message,
+      icon = "error",
+      showCancelButton = false,
+      confirmButtonText = "Okay",
+      cancelButtonText = "Cancel",
+    }) => {
+      return Swal.fire({
+        title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
+        html: `<p class="text-xl text-gray-600 mt-1">${message}</p>`,
+        icon,
+        iconColor: "#DC2626",
+        background: "#ffffff",
+        showConfirmButton: true,
+        showCancelButton,
+        cancelButtonText,
+        confirmButtonText,
+        buttonsStyling: false,
+        customClass: {
+          popup: "rounded-xl px-6 py-4",
+          cancelButton:
+            "mt-4 ml-2 bg-[var(--gray-1)] text-black px-6 py-2 rounded text-base text-white",
+          confirmButton:
+            "mt-4 bg-red-600 text-white px-6 py-2 rounded text-base hover:bg-red-700",
+        },
+      });
+    };
 
   // FETCH USERS
   const fetchAdmins = async (url = null) => {
@@ -223,6 +230,8 @@ export default function AdminList() {
       message: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonText: "Yes, Delete account",
+      cancelButtonText: "No, Cancel",
     });
 
     if (!confirm.isConfirmed) return;

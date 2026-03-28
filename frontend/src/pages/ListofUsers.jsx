@@ -23,7 +23,6 @@ export default function ListofUsers() {
   // const [totalPages, setTotalPages] = useState(1);
   //  const [pages, setPages] = useState([]);
 
- 
   // ROLE PROTECTION
   if (!user || (!user.is_staff && !user.is_superuser)) {
     return (
@@ -37,6 +36,8 @@ export default function ListofUsers() {
     message,
     icon = "error",
     showCancelButton = false,
+    confirmButtonText = "Okay",
+    cancelButtonText = "Cancel",
   }) => {
     return Swal.fire({
       title: `<p class="text-2xl font-semibold text-gray-800">${title}</p>`,
@@ -46,8 +47,8 @@ export default function ListofUsers() {
       background: "#ffffff",
       showConfirmButton: true,
       showCancelButton,
-      cancelButtonText: "No, Cancel",
-      confirmButtonText: "Yes, Delete",
+      cancelButtonText,
+      confirmButtonText,
       buttonsStyling: false,
       customClass: {
         popup: "rounded-xl px-6 py-4",
@@ -106,7 +107,6 @@ export default function ListofUsers() {
 
     return () => clearTimeout(delay);
   }, [search, filter]);
-
 
   // HANDLERS
   const handleView = (user) => {
@@ -183,6 +183,8 @@ export default function ListofUsers() {
       message: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonText: "Yes, Delete account",
+      cancelButtonText: "No, Cancel",
     });
 
     if (!confirm.isConfirmed) return;
