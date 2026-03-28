@@ -11,7 +11,7 @@ env.read_env()
 def send_password_reset_email(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
-    reset_url = f"{env('FRONTEND_URL')}api/user/reset-password-confirm/{uid}/{token}"
+    reset_url = f"{env('FRONTEND_URL')}/reset-password/{uid}/{token}"
 
     context = {'email': user.email, 'reset_url': reset_url}
 
