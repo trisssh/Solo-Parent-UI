@@ -193,21 +193,21 @@ export default function SuperAdminDashboard() {
           </section>
 
           {/* STATS SECTION - CARDS */}
-          <section className="grid grid-cols-1 md:flex gap-3 mb-10">
+          <section className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-10">
             <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
               <h3 className="text-4xl font-mono text-gray-700">404</h3>
-              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                Total Number of Admins
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-widest">
+                Total of Admins
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="col-span-1 md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-3">
               <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
                 <h3 className="text-4xl font-mono text-gray-700">
                   {stats?.parents_count || 0}
                 </h3>
-                <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                  Total Number of Parents
+                <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-widest">
+                  Total of Solo Parents
                 </p>
               </div>
 
@@ -286,6 +286,7 @@ export default function SuperAdminDashboard() {
                       <th className="px-4 py-3 text-left">Average Age</th>
                       <th className="px-4 py-3 text-left">Female</th>
                       <th className="px-4 py-3 text-left">Male</th>
+                      <th className="px-4 py-3 text-left">Share of Total</th>
                     </tr>
                   </thead>
 
@@ -336,6 +337,9 @@ export default function SuperAdminDashboard() {
                           <td className="px-4 py-3 font-mono">
                             {item.male_count}
                           </td>
+                          <td className="px-4 py-3 font-mono">
+                            {item.share_of_total}
+                          </td>
                         </tr>
                       ))
                     )}
@@ -368,7 +372,7 @@ export default function SuperAdminDashboard() {
                   </svg>
 
                   <span className="font-medium">
-                    Total Solo Parent in San Juan, Manila: 505
+                    Total Solo Parent in San Juan, Manila: 
                   </span>
                 </div>
 
@@ -476,6 +480,7 @@ export default function SuperAdminDashboard() {
                         <p>Average Age: {Math.round(item.average_age)}</p>
                         <p>Male: {item.male_count}</p>
                         <p>Female: {item.female_count}</p>
+                        <p>Share of Total: {item.share_of_total}</p>
                       </div>
                     </div>
                   </div>

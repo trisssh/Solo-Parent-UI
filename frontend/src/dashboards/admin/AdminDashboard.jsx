@@ -200,8 +200,8 @@ export default function AdminDashboard() {
               <h3 className="text-4xl font-mono text-gray-700">
                 {stats?.parents_count || 0}
               </h3>
-              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                Total Number of Solo Parents
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-widest">
+                Total of Solo Parents
               </p>
             </div>
             <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
@@ -304,6 +304,7 @@ export default function AdminDashboard() {
                       <th className="px-4 py-3 text-left">Average Age</th>
                       <th className="px-4 py-3 text-left">Female</th>
                       <th className="px-4 py-3 text-left">Male</th>
+                      <th className="px-4 py-3 text-left">Share of Total</th>
                     </tr>
                   </thead>
 
@@ -331,6 +332,9 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-4 py-3 font-mono">
                             {item.male_count}
+                          </td>
+                          <td className="px-4 py-3 font-mono">
+                            {item.share_of_total}
                           </td>
                         </tr>
                       ))
@@ -364,7 +368,8 @@ export default function AdminDashboard() {
                   </svg>
 
                   <span className="font-medium">
-                    Total Solo Parent in San Juan, Manila: 505
+                    Total Solo Parent in San Juan, Manila:{" "}
+                    {stats?.parents_count || 0}
                   </span>
                   {/* <span className="font-medium">
                   Total Solo Parent: {totalCount}
@@ -440,7 +445,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
-              
+
               {/* CARDS -- Barangay List */}
               <div className="md:hidden">
                 {barangayList.map((item, index) => (
@@ -475,6 +480,7 @@ export default function AdminDashboard() {
                         <p>Average Age: {Math.round(item.average_age)}</p>
                         <p>Male: {item.male_count}</p>
                         <p>Female: {item.female_count}</p>
+                        <p>Share of Total: {item.share_of_total}</p>
                       </div>
                     </div>
                   </div>
