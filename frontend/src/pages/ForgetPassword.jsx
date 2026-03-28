@@ -119,9 +119,28 @@ const showError = (title, message) => {
     onNext();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); //stops page refresh
-    handleSendOTP();
+    // handleSendOTP();
+    try {
+      const res = await fetch(
+        'http://127.0.0.1:8000/api/user/reset-password-request', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "email": email,
+        }),
+      });
+      if (res.ok) {
+        alert('Reset email sent succesfully');
+      } else {
+        alert('Reset email sent unsuccesfully');
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
 

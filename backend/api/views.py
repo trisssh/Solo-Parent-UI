@@ -21,7 +21,7 @@ from .serializers import (
     AdminChangePasswordSerializer, AdminStatisticsListSerializer,
     ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer,
     ChangeVerificationSerializer, ChildInfoSerializer, ContactSerializer,
-    CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer,
+    CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, ResetPasswordSerializer,
     UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer,
     RegistrationSerializer, MyTokenObtainPairSerializer,
     SuperadminEditAdminSerializer,
@@ -523,7 +523,7 @@ class PasswordResetEmailView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 class PasswordResetConfirmView(APIView):
-    def post(self, request, uid, token):
+    def put(self, request, uid, token):
         try:
             uid = urlsafe_base64_decode(uid).decode()
         except Exception as e:
@@ -537,7 +537,7 @@ class PasswordResetConfirmView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        serializer = ChangePasswordSerializer(user, data=request.data)
+        serializer = ResetPasswordSerializer(user, data=request.data)
 
         if serializer.is_valid():
             serializer.save()

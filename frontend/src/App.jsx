@@ -16,6 +16,7 @@ import ListofUsers from "./pages/ListofUsers";
 import AdminList from "./pages/AdminList"
 import EditAccount from "./pages/EditAccount";
 import SuperAdminDashboard from './dashboards/superadmin/SuperAdminDashboard';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   return (
@@ -25,6 +26,10 @@ function App() {
           {/* PUBLIC ROUTES */}
           <Route path="/" element={<Login4 />} />
           <Route path="/forgot-password" element={<ForgetPassword />} />
+          <Route
+            path="/reset-password/:userID/:resetToken"
+            element={<ResetPassword />} 
+          />
           <Route path="/user-register" element={<UserRegister />} />
           <Route path="/change-password" element={<ChangePassword />} />
 

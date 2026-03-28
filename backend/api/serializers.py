@@ -223,7 +223,11 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['old_password', 'password', 'password_confirmation']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'old_password': {'write_only': True},
+            'password': {'write_only': True},
+            'password_confirmation': {'write_only': True}
+        }
 
     def validate(self, data):
         user = User.objects.get(pk=self.context.get('pk'))
@@ -253,6 +257,43 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         instance.set_password(password)
         instance.save()
         return instance
+
+class ResetPasswordSerializer(serializers.ModelSerializer):
+    password_confirmation = serializers.CharField(
+        max_length=180, 
+        write_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = ['password', 'password_confirmation']
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'password_confirmation': {'write_only': True},
+        }
+
+    def validate(self, data):
+        if data['password'] != data['password_confirmation']:
+            raise serializers.ValidationError({
+                'password_confirmation': 'Passwords do not match.'
+            })
+
+        if any(char.isspace() for char in data['password']):
+            raise serializers.ValidationError({
+                'password': 'Password cannot contain whitespace.'
+            })
+
+        return data
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password')
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.set_password(password)
+        instance.save()
+        return instance
+    
 
 class AdminChangePasswordSerializer(serializers.ModelSerializer):
     class Meta:
