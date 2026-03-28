@@ -32,8 +32,8 @@ export default function AdminList() {
       background: "#ffffff",
       showConfirmButton: true,
       showCancelButton,
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Okay",
+      cancelButtonText: "No, Cancel",
+      confirmButtonText: "Yes, Delete account",
       buttonsStyling: false,
       customClass: {
         popup: "rounded-xl px-6 py-4",

@@ -312,7 +312,7 @@ export default function AdminDashboard() {
                     {barangayList.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="4"
+                          colSpan="5"
                           className="text-center py-4 text-gray-500"
                         >
                           No data found
@@ -485,6 +485,15 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+
+                {/* EMPTY STATE */}
+                {barangayList.length === 0 && (
+                  <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
+                    <div colSpan="6" className="text-center py-6 text-gray-400">
+                      No data found
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* PAGINATION */}

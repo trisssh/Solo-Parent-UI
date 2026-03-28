@@ -12,6 +12,7 @@ export default function SuperAdminDashboard() {
   const [nextPage, setNextPage] = useState(null);
   const [prevPage, setPrevPage] = useState(null);
   const [totalCount, setTotalCount] =useState(0);
+  const [adminStats, setAdminStats] = useState(null);
 
 
    useEffect(() => {
@@ -107,6 +108,35 @@ export default function SuperAdminDashboard() {
   const totalPages = Math.ceil(totalCount / limit);
   const currentPage = Math.floor(offset / limit) + 1;
 
+
+  //fetch Admin total
+ useEffect(() => {
+  const fetchAdminStats = async () => {
+    if (!authTokens?.access) return;
+
+    try {
+      const res = await fetch(
+        "http://127.0.0.1:8000/api/superadmin/statistics",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to fetch admin stats");
+
+      const data = await res.json();
+      setAdminStats(data);
+    } catch (error) {
+      console.error("Admin stats error:", error);
+    }
+  };
+
+  fetchAdminStats();
+}, [authTokens]);
+
   return (
     <div className="flex bg-white md:h-screen">
       {/* SIDEBAR */}
@@ -193,49 +223,57 @@ export default function SuperAdminDashboard() {
           </section>
 
           {/* STATS SECTION - CARDS */}
-          <section className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-10">
+          <section className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-10">
             <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-              <h3 className="text-4xl font-mono text-gray-700">404</h3>
-              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-widest">
-                Total of Admins
+              <h3 className="text-4xl font-mono text-gray-700">
+                {stats?.parents_count || 0}
+              </h3>
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
+                Total of Solo Parents
               </p>
             </div>
 
-            <div className="col-span-1 md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">
-                  {stats?.parents_count || 0}
-                </h3>
-                <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-widest">
-                  Total of Solo Parents
-                </p>
-              </div>
+            <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
+              <h3 className="text-4xl font-mono text-gray-700">
+                {Math.round(stats?.average_age || 0)}
+              </h3>
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
+                Average Age of Solo Parents
+              </p>
+            </div>
 
-              <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">
-                  {Math.round(stats?.average_age || 0)}
-                </h3>
-                <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                  Average Age of Solo Parents
-                </p>
-              </div>
+            <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
+              <h3 className="text-4xl font-mono text-gray-700">
+                {stats?.male_count || 0}
+              </h3>
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
+                Total of Male Solo Parent
+              </p>
+            </div>
+            <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
+              <h3 className="text-4xl font-mono text-gray-700">
+                {stats?.female_count || 0}
+              </h3>
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
+                Total of Female Solo Parent
+              </p>
+            </div>
+            <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
+              <h3 className="text-4xl font-mono text-gray-700">
+                {adminStats?.superadmins || 0}
+              </h3>
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
+                Total of Super Admins
+              </p>
+            </div>
 
-              <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">
-                  {stats?.male_count || 0}
-                </h3>
-                <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                  Total of Male Solo Parent
-                </p>
-              </div>
-              <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
-                <h3 className="text-4xl font-mono text-gray-700">
-                  {stats?.female_count || 0}
-                </h3>
-                <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
-                  Total of Female Solo Parent
-                </p>
-              </div>
+            <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl text-center font-semibold shadow-md p-4 sm:p-6">
+              <h3 className="text-4xl font-mono text-gray-700">
+                {adminStats?.admins || 0}
+              </h3>
+              <p className="uppercase text-gray-900 text-sm sm:text-base tracking-tight md:tracking-wide">
+                Total of Admins
+              </p>
             </div>
           </section>
 
@@ -316,7 +354,7 @@ export default function SuperAdminDashboard() {
                     {barangayList.length === 0 ? (
                       <tr>
                         <td
-                          colSpan="4"
+                          colSpan="5"
                           className="text-center py-4 text-gray-500"
                         >
                           No data found
@@ -372,7 +410,7 @@ export default function SuperAdminDashboard() {
                   </svg>
 
                   <span className="font-medium">
-                    Total Solo Parent in San Juan, Manila: 
+                    Total Solo Parent in San Juan, Manila:
                   </span>
                 </div>
 
@@ -485,6 +523,15 @@ export default function SuperAdminDashboard() {
                     </div>
                   </div>
                 ))}
+
+                {/* EMPTY STATE */}
+                {barangayList.length === 0 && (
+                  <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6">
+                    <div colSpan="6" className="text-center py-6 text-gray-400">
+                      No data found
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* PAGINATION */}
