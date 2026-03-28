@@ -16,11 +16,14 @@ export default function ListofUsers() {
   const [totalCount, setTotalCount] = useState(0);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [deleteReason, setDeleteReason] = useState("");
+  const [customReason, setCustomReason] = useState("");
   // const [saving, setSaving] = useState(false);
   // const [page, setPage] = useState(2);
   // const [totalPages, setTotalPages] = useState(1);
   //  const [pages, setPages] = useState([]);
 
+ 
   // ROLE PROTECTION
   if (!user || (!user.is_staff && !user.is_superuser)) {
     return (
@@ -44,7 +47,7 @@ export default function ListofUsers() {
       showConfirmButton: true,
       showCancelButton,
       cancelButtonText: "No, Cancel",
-      confirmButtonText: "Yes, Delete account",
+      confirmButtonText: "Yes, Delete",
       buttonsStyling: false,
       customClass: {
         popup: "rounded-xl px-6 py-4",
@@ -103,13 +106,7 @@ export default function ListofUsers() {
 
     return () => clearTimeout(delay);
   }, [search, filter]);
-  // useEffect(() => {
-  //   const delay = setTimeout(() => {
-  //     fetchUsers();
-  //   }, 500);
 
-  //   return () => clearTimeout(delay);
-  // }, [search, filter]);
 
   // HANDLERS
   const handleView = (user) => {
@@ -173,6 +170,14 @@ export default function ListofUsers() {
 
   // DELETE USER
   const handleDelete = async () => {
+    if (!deleteReason && !customReason) {
+      showAlert({
+        title: "Missing Reason",
+        message: "Please select or enter a reason before deleting.",
+      });
+      return;
+    }
+
     const confirm = await showAlert({
       title: "Delete User?",
       message: "This action cannot be undone.",
@@ -182,14 +187,18 @@ export default function ListofUsers() {
 
     if (!confirm.isConfirmed) return;
 
+    const remarks = deleteReason === "others" ? customReason : deleteReason;
+
     try {
       const res = await fetch(
         `http://127.0.0.1:8000/api/user/delete/${selectedUser.user}`,
         {
           method: "DELETE",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${authTokens.access}`,
           },
+          body: JSON.stringify({ remarks }), // send reason to backend
         },
       );
 
@@ -203,6 +212,9 @@ export default function ListofUsers() {
 
       fetchUsers();
       handleClose();
+
+      setDeleteReason("");
+      setCustomReason("");
     } catch (err) {
       showAlert({
         title: "Error",
@@ -892,6 +904,38 @@ export default function ListofUsers() {
                         {saving ? "Saving..." : "Save"}
                       </button> */}
                         </div>
+
+                        {/* Reason for deletion */}
+                        <div className="mt-4">
+                          <label className="block text-gray-700 font-medium">
+                            Reason for deletion
+                          </label>
+                          <select
+                            value={deleteReason}
+                            onChange={(e) => setDeleteReason(e.target.value)}
+                            className="w-full border rounded-md p-2"
+                          >
+                            <option value="">Select reason</option>
+                            <option>Improper Profile Picture Upload</option>
+                            <option>Improper E-signature Upload</option>
+                            <option>Blurred Image Upload</option>
+                            <option>Inappropriate Image</option>
+                            <option>Inappropriate Information</option>
+                            <option value="others">Others</option>
+                          </select>
+                        </div>
+
+                        {/* Show textbox if Others */}
+                        {deleteReason === "others" && (
+                          <div className="mt-2">
+                            <textarea
+                              placeholder="Enter reason..."
+                              value={customReason}
+                              onChange={(e) => setCustomReason(e.target.value)}
+                              className="w-full border rounded-md p-2"
+                            />
+                          </div>
+                        )}
 
                         <button
                           type="button"
