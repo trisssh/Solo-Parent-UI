@@ -104,7 +104,7 @@ export default function AdminList() {
     return parseInt(params.get("offset")) || 0;
   };
 
-  // FETCH CREATE
+  // FETCH CREATE 
   const createAdmin = async (e) => {
     e.preventDefault();
 
@@ -133,7 +133,7 @@ export default function AdminList() {
 
       showAlert({
         title: "Success",
-        message: "User updated successfully",
+        message: "Admin account created successfully",
         icon: "success",
       });
 
@@ -144,9 +144,17 @@ export default function AdminList() {
 
       fetchAdmins(); // refresh table
     } catch (err) {
+       
+      let errorMessage = err.message
+
+       if (errorMessage.toLowerCase().includes("already exists")) {
+         errorMessage =
+           "This email is already registered. Please try another email.";
+       }
+
       showAlert({
         title: "Error",
-        text: err.message,
+        message: err.message,
         icon: "error",
       });
     }
@@ -685,6 +693,7 @@ export default function AdminList() {
                       onChange={(e) => setRole(e.target.value)}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2"
                     >
+                    
                       <option value="admin">Admin</option>
                       <option value="superadmin">Superadmin</option>
                     </select>
