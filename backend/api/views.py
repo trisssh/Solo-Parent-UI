@@ -2,6 +2,7 @@ import datetime
 from django.db import transaction
 from django.db.models import Avg, Q, F, Count, Sum, FloatField, ExpressionWrapper
 from django.db.models.functions import ExtractYear
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.utils.http import urlsafe_base64_decode
@@ -28,6 +29,11 @@ from .serializers import (
 )
 from .utils.emailer import emailer
 from .utils.send_password_reset_email import send_password_reset_email
+from .utils.generate_id import (
+    generate_id_front,
+    generate_id_back,
+    image_to_base64,
+)
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -680,3 +686,26 @@ class AdminChildListView(ListAPIView):
             return excluded_queryset
         else:
             raise PermissionDenied('Admins only.')
+
+# TODO; Generate ID View
+class GenerateIDView(APIView):
+    def get(self, request, pk=None):
+        if pk:
+            parent = get_object_or_404(Parent, pk=pk)
+        else:
+            parent = get_object_or_404(Parent, pk=pk)
+
+        images = Image.objects.filter(parent_id=pk)
+        contact = get_object_or_404(Contact, parent_id=pk)
+
+        id_front = generate_id_front(parent, images)
+        id_back = generate_id_back(parent, contact)
+        # response = HttpResponse(content_type='image/png')
+        # id_front.save(response, 'PNG')
+        # id_back.save(response, 'PNG')
+
+        # return response
+        return JsonResponse({
+            'id_front': image_to_base64(id_front),
+            'id_back': image_to_base64(id_back),
+        })

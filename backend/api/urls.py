@@ -9,7 +9,7 @@ from .views import (
     ChangeInfoView, ParentListView, AdminListView, ChangeVerificationView,
     AdminChangeParentInfoView, PasswordResetEmailView, PasswordResetConfirmView,
     CreateChildView, ChangeChildView, DeleteChildView, SuperadminStatisticsView,
-    SuperadminEditAdminView,
+    SuperadminEditAdminView, GenerateIDView
 )
 
 urlpatterns = [
@@ -152,5 +152,7 @@ urlpatterns = [
         'admin/parent/send-email/<int:pk>',
         ChangeVerificationView.as_view(),
         name='admin_send_email'
-    )
+    ),
+    # generate solo parent id
+    path('generate-id/<int:pk>', GenerateIDView.as_view(), name='generate_id'),
 ]
