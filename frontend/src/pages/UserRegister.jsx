@@ -25,8 +25,8 @@ const UserRegister = () => {
     street: "",
     barangay: "",
     subdivision: "",
-    city: "",
-    province: "",
+    city: "san_juan", // Default
+    province: "ncr", // Default
     reason: "",
 
     // Contact
@@ -570,7 +570,7 @@ const UserRegister = () => {
               {/* CITY */}
               <div>
                 <label className="block text-gray-700 font-medium">City</label>
-                <select
+                {/* <select
                   name="city"
                   value={form.city}
                   onChange={handleChange}
@@ -580,12 +580,22 @@ const UserRegister = () => {
                   disabled
                 >
                   <option value="san_juan">City of San Juan</option>
-                  {/* <option value="">Select City</option>
+                  <option value="">Select City</option>
                   <option value="manila">City of Manila</option>
                   <option value="quezon">Quezon City</option>
                   <option value="makati">City of Makati</option>
                   <option value="pasig">City of Pasig</option>
-                  <option value="taguig">City of Taguig</option> */}
+                  <option value="taguig">City of Taguig</option>
+                </select> */}
+                <select
+                  name="city"
+                  value={form.city}
+                  onChange={handleChange}
+                  className="w-full p-2 bg-gray-200 border rounded"
+                  required
+                  disabled
+                >
+                  <option value="san_juan">City of San Juan</option>
                 </select>
               </div>
 
@@ -594,7 +604,7 @@ const UserRegister = () => {
                 <label className="block text-gray-700 font-medium">
                   Province
                 </label>
-                <select
+                {/* <select
                   name="province"
                   value={form.province}
                   onChange={handleChange}
@@ -604,11 +614,21 @@ const UserRegister = () => {
                   disabled
                 >
                   <option value="ncr">National Capital Region</option>
-                  {/* <option value="">Select Province</option>
+                  <option value="">Select Province</option>
                   <option value="bulacan">Bulacan</option>
                   <option value="laguna">Laguna</option>
                   <option value="rizal">Rizal</option>
-                  <option value="cavite">Cavite</option> */}
+                  <option value="cavite">Cavite</option>
+                </select> */}
+                <select
+                  name="province"
+                  value={form.province}
+                  onChange={handleChange}
+                  className="w-full p-2 bg-gray-200 border rounded"
+                  required
+                  disabled
+                >
+                  <option value="ncr">National Capital Region</option>
                 </select>
               </div>
 
