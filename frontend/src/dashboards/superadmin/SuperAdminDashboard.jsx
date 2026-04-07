@@ -410,7 +410,8 @@ export default function SuperAdminDashboard() {
                   </svg>
 
                   <span className="font-medium">
-                    Total Solo Parent in San Juan, Manila:
+                    Total Solo Parent in San Juan, Manila:{" "}
+                    {stats?.parents_count || 0}
                   </span>
                 </div>
 

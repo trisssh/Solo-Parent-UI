@@ -221,7 +221,7 @@ useEffect(() => {
 
            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
              {/* LEFT COLUMN */}
-             <div className="lg:col-span-1 space-y-4">
+             <div className="lg:col-span-1 space-y-6">
                {/* PROFILE CARD */}
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6 text-center">
                  {/* <svg

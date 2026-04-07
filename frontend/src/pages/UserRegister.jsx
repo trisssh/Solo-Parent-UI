@@ -258,10 +258,8 @@ const UserRegister = () => {
                 className="w-full p-2 border rounded"
                 required
               />
-              { checks.email && (
-                <small className="text-red-700 font-light">
-                  { emailCheck }
-                </small>
+              {checks.email && (
+                <small className="text-red-700 font-light">{emailCheck}</small>
               )}
             </div>
 
@@ -278,10 +276,8 @@ const UserRegister = () => {
                 className="w-full p-2 border rounded"
                 required
               />
-              { checks.password && (
-                <small className="text-red-700 font-light">
-                  { passCheck }
-                </small>
+              {checks.password && (
+                <small className="text-red-700 font-light">{passCheck}</small>
               )}
             </div>
 
@@ -298,9 +294,9 @@ const UserRegister = () => {
                 className="w-full p-2 border rounded"
                 required
               />
-              { checks.password_confirmation && (
+              {checks.password_confirmation && (
                 <small className="text-red-700 font-light">
-                  { passConfirmCheck }
+                  {passConfirmCheck}
                 </small>
               )}
             </div>
@@ -308,27 +304,29 @@ const UserRegister = () => {
             <button
               type="button"
               onClick={() => {
-               const { isValid, checking } = checkLength([
-                  "email", 
-                  "password", 
+                const { isValid, checking } = checkLength([
+                  "email",
+                  "password",
                   "password_confirmation",
                 ]);
 
-                setChecks((prev) => ({...prev, ...checking}));
+                setChecks((prev) => ({ ...prev, ...checking }));
 
                 if (checking.email) {
                   setEmailCheck("Email is of invalid format.");
                 }
                 if (checking.password) {
                   setPassCheck(
-                    "Password must be a minimum of 8 characters and not contain any whitespace."
+                    "Password must be a minimum of 8 characters and not contain any whitespace.",
                   );
                 }
                 if (checking.password_confirmation) {
                   setPassConfirmCheck("Passwords are not similar.");
                 }
 
-                if (isValid) { setStep(2); }
+                if (isValid) {
+                  setStep(2);
+                }
               }}
               className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-2 rounded-lg"
             >
@@ -367,7 +365,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.first_name && (
+                {checks.first_name && (
                   <small className="text-red-700 font-light">
                     First name cannot be empty.
                   </small>
@@ -386,7 +384,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.middle_name && (
+                {checks.middle_name && (
                   <small className="text-red-700 font-light">
                     Middle name cannot be empty.
                   </small>
@@ -405,7 +403,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.last_name && (
+                {checks.last_name && (
                   <small className="text-red-700 font-light">
                     Middle name cannot be empty.
                   </small>
@@ -438,7 +436,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.birthday && (
+                {checks.birthday && (
                   <small className="text-red-700 font-light">
                     Date of birth cannot be empty.
                   </small>
@@ -458,9 +456,9 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.phone && (
+                {checks.phone && (
                   <small className="text-red-700 font-light">
-                    { phoneCheck }
+                    {phoneCheck}
                   </small>
                 )}
               </div>
@@ -481,7 +479,7 @@ const UserRegister = () => {
                   <option value="female">Female</option>
                   <option value="male">Male</option>
                 </select>
-                { checks.gender && (
+                {checks.gender && (
                   <small className="text-red-700 font-light">
                     Gender cannot be empty.
                   </small>
@@ -501,7 +499,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.house && (
+                {checks.house && (
                   <small className="text-red-700 font-light">
                     House number cannot be empty.
                   </small>
@@ -521,7 +519,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.street && (
+                {checks.street && (
                   <small className="text-red-700 font-light">
                     Street number cannot be empty.
                   </small>
@@ -548,7 +546,7 @@ const UserRegister = () => {
                   <option value="west_crame">West Crame</option>
                   <option value="onse">Onse</option>
                 </select>
-                { checks.barangay && (
+                {checks.barangay && (
                   <small className="text-red-700 font-light">
                     Barangay cannot be empty.
                   </small>
@@ -571,9 +569,7 @@ const UserRegister = () => {
 
               {/* CITY */}
               <div>
-                <label className="block text-gray-700 font-medium">
-                  City
-                </label>
+                <label className="block text-gray-700 font-medium">City</label>
                 <select
                   name="city"
                   value={form.city}
@@ -637,9 +633,7 @@ const UserRegister = () => {
                   <option value="physical_mental_incapacity">
                     Physical/Mental Incapacity of Spouse
                   </option>
-                  <option value="separation">
-                    Legal/De Facto Separation
-                  </option>
+                  <option value="separation">Legal/De Facto Separation</option>
                   <option value="annuled">Annulment of Marriage</option>
                   <option value="abandonment">Abandonment of Spouse</option>
                   <option value="preferred_to_keep">
@@ -653,7 +647,7 @@ const UserRegister = () => {
                     Assumed Responsibility of Head of Family
                   </option>
                 </select>
-                { checks.reason && (
+                {checks.reason && (
                   <small className="text-red-700 font-light">
                     Reason of single parenthood cannot be empty.
                   </small>
@@ -674,7 +668,7 @@ const UserRegister = () => {
               <button
                 type="button"
                 onClick={() => {
-                const { isValid, checking } = checkLength([
+                  const { isValid, checking } = checkLength([
                     "first_name",
                     "middle_name",
                     "last_name",
@@ -685,15 +679,17 @@ const UserRegister = () => {
                     "street",
                     "barangay",
                     "reason",
-                  ]);  
+                  ]);
 
-                  setChecks((prev) => ({...prev, ...checking}));
+                  setChecks((prev) => ({ ...prev, ...checking }));
 
                   if (checking.phone) {
                     setPhoneCheck("Invalid phone number format");
                   }
-                  
-                  if (isValid) { setStep(3); }
+
+                  if (isValid) {
+                    setStep(3);
+                  }
                 }}
                 className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
@@ -727,7 +723,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.contact_first_name && (
+                {checks.contact_first_name && (
                   <small className="text-red-700 font-light">
                     Contact first name cannot be empty.
                   </small>
@@ -746,7 +742,7 @@ const UserRegister = () => {
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
                 />
-                { checks.contact_middle_name && (
+                {checks.contact_middle_name && (
                   <small className="text-red-700 font-light">
                     Contact middle name cannot be empty.
                   </small>
@@ -766,7 +762,7 @@ const UserRegister = () => {
                   className="w-full p-2 border rounded"
                   required
                 />
-                { checks.contact_last_name && (
+                {checks.contact_last_name && (
                   <small className="text-red-700 font-light">
                     Contact last name cannot be empty.
                   </small>
@@ -801,10 +797,8 @@ const UserRegister = () => {
                 className="w-full p-2 border rounded"
                 required
               />
-              { checks.contact_phone && (
-                <small className="text-red-700 font-light">
-                  { phoneCheck }
-                </small>
+              {checks.contact_phone && (
+                <small className="text-red-700 font-light">{phoneCheck}</small>
               )}
             </div>
 
@@ -826,15 +820,17 @@ const UserRegister = () => {
                     "contact_last_name",
                     "contact_middle_name",
                     "contact_phone",
-                  ])
+                  ]);
 
-                  setChecks((prev) => ({...prev, ...checking}));
+                  setChecks((prev) => ({ ...prev, ...checking }));
 
                   if (checking.contact_phone) {
                     setPhoneCheck("Invalid phone number format");
                   }
-                  
-                  if (isValid) { setStep(4); }
+
+                  if (isValid) {
+                    setStep(4);
+                  }
                 }}
                 className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
               >
@@ -844,7 +840,7 @@ const UserRegister = () => {
           </div>
 
           {/* STEP 4 - FILE UPLOAD */}
-          <div style={{display: step === 4 ? "block" : "none" }}>
+          <div style={{ display: step === 4 ? "block" : "none" }}>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
                 Upload Requirements
@@ -855,6 +851,9 @@ const UserRegister = () => {
             </article>
 
             <div className="flex flex-col mb-2">
+              <label className="block text-gray-700 font-medium">
+                Upload 1x1 Picture
+              </label>
               {previews.id && (
                 <center>
                   <img
@@ -864,9 +863,7 @@ const UserRegister = () => {
                   />
                 </center>
               )}
-              <label className="block text-gray-700 font-medium">
-                Upload 1x1 Picture
-              </label>
+
               <input
                 type="file"
                 name="id"
@@ -878,18 +875,19 @@ const UserRegister = () => {
             </div>
 
             <div className="flex flex-col mb-2">
-              {previews.signature && (
-                <center>
-                <img
-                  src={previews.signature}
-                  alt="Signature Preview"
-                  className="h-48 w-48 object-contain rounded mb-2"
-                />
-                </center>
-              )}
               <label className="block text-gray-700 font-medium">
                 Upload E-Signature (over white background)
               </label>
+              {previews.signature && (
+                <center>
+                  <img
+                    src={previews.signature}
+                    alt="Signature Preview"
+                    className="h-48 w-48 object-contain rounded mb-2 "
+                  />
+                </center>
+              )}
+
               <input
                 type="file"
                 name="signature"
@@ -911,7 +909,7 @@ const UserRegister = () => {
               </button>
               <button
                 type="submit"
-                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg text-sm md:text-base"
               >
                 Submit Registration
               </button>
