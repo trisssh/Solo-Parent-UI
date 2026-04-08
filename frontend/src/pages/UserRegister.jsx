@@ -25,8 +25,8 @@ const UserRegister = () => {
     street: "",
     barangay: "",
     subdivision: "",
-    city: "san_juan", // Default
-    province: "ncr", // Default
+    city: "City of San Juan", // Default
+    province: "National Capital Region", // Default
     reason: "",
 
     // Contact
@@ -539,12 +539,12 @@ const UserRegister = () => {
                   required
                 >
                   <option value="">Select Barangay</option>
-                  <option value="greenhills">Greenhills</option>
-                  <option value="maytunas">Maytunas</option>
-                  <option value="kabayanan">Kabayanan</option>
-                  <option value="salapan">Salapan</option>
-                  <option value="west_crame">West Crame</option>
-                  <option value="onse">Onse</option>
+                  <option value="Greenhills">Greenhills</option>
+                  <option value="Maytunas">Maytunas</option>
+                  <option value="Kabayanan">Kabayanan</option>
+                  <option value="Salapan">Salapan</option>
+                  <option value="West Crame">West Crame</option>
+                  <option value="Onse">Onse</option>
                 </select>
                 {checks.barangay && (
                   <small className="text-red-700 font-light">
@@ -595,7 +595,7 @@ const UserRegister = () => {
                   required
                   disabled
                 >
-                  <option value="san_juan">City of San Juan</option>
+                  <option value="City of San Juan">City of San Juan</option>
                 </select>
               </div>
 
@@ -628,7 +628,9 @@ const UserRegister = () => {
                   required
                   disabled
                 >
-                  <option value="ncr">National Capital Region</option>
+                  <option value="National Capital Region">
+                    National Capital Region
+                  </option>
                 </select>
               </div>
 

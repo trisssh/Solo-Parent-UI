@@ -457,7 +457,9 @@ export default function SuperAdminDashboard() {
                 <div className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm">
                   <div>
                     <p className="text-sm text-gray-500">Total Solo Parent</p>
-                    <p className="text-lg font-bold text-gray-900">505</p>
+                    <p className="text-lg font-bold text-gray-900">
+                      {stats?.parents_count || 0}
+                    </p>
                   </div>
 
                   <div className="flex flex-col items-center">

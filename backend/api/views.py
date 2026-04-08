@@ -22,7 +22,7 @@ from .serializers import (
     AdminChangePasswordSerializer, AdminStatisticsListSerializer,
     ChangeEmailSerializer, ChangeInfoSerializer, ChangePasswordSerializer,
     ChangeVerificationSerializer, ChildInfoSerializer, ContactSerializer,
-    CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, ResetPasswordSerializer,
+    CreateAdminSerializer, DeleteParentSerializer, ParentInfoSerializer, ParentListSerializer, ResetPasswordSerializer,
     UserSerializer, ParentSerializer, ChildSerializer, ImageSerializer,
     RegistrationSerializer, MyTokenObtainPairSerializer,
     SuperadminEditAdminSerializer,
@@ -69,7 +69,6 @@ class RegistrationView(GenericAPIView):
                 {"detail": str(e)}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
         return Response(response, status=status.HTTP_201_CREATED)
 
@@ -148,11 +147,11 @@ class ParentInfoView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 class ParentListView(ListAPIView):
-    queryset = Parent.objects.all().order_by('last_name')
+    queryset = Parent.objects.select_related('contact').order_by('last_name')
     permission_classes = [IsAuthenticated]
-    serializer_class = ParentSerializer
+    serializer_class = ParentListSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
-    search_fields = ['uuid', 'last_name', 'first_name', 'middle_name']
+    search_fields = ['uuid', 'last_name', 'first_name', 'middle_name', 'suffix']
     filterset_fields = ['is_verified']
 
     def get_queryset(self):
@@ -162,7 +161,7 @@ class ParentListView(ListAPIView):
             raise PermissionDenied('Admins only.')
 
 class AdminListView(ListAPIView):
-    queryset = User.objects.filter(is_staff=True)
+    queryset = User.objects.filter(is_staff=True).order_by('-id')
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
@@ -429,6 +428,34 @@ class AdminChangeParentInfoView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class AdminChangeContactInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        if not self.request.user.is_staff:
+            raise PermissionDenied('Admins only.')
+
+        contact = get_object_or_404(Contact, pk=pk)   
+        serializer = ContactSerializer(instance=contact)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        if not self.request.user.is_staff:
+            raise PermissionDenied('Admins only.')
+
+        contact = get_object_or_404(Contact, pk=pk)   
+        serializer = ContactSerializer(contact, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
 class SuperadminEditAdminView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -650,7 +677,7 @@ class AdminDeleteChildView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ChildListView(ListAPIView):
-    queryset = Child.objects.all()
+    queryset = Child.objects.all().order_by('-id')
     permission_classes = [IsAuthenticated]
     serializer_class = ChildInfoSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
@@ -669,7 +696,7 @@ class ChildListView(ListAPIView):
             raise PermissionDenied('Parents only.')
 
 class AdminChildListView(ListAPIView):
-    queryset = Child.objects.all()
+    queryset = Child.objects.all().order_by('-id')
     permission_classes = [IsAuthenticated]
     serializer_class = ChildInfoSerializer
     filter_backends = [filters.SearchFilter]
@@ -687,7 +714,6 @@ class AdminChildListView(ListAPIView):
         else:
             raise PermissionDenied('Admins only.')
 
-# TODO; Generate ID View
 class GenerateIDView(APIView):
     def get(self, request, pk=None):
         if pk:

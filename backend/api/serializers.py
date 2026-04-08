@@ -360,6 +360,35 @@ class ParentSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {'user': {'read_only': True}}
 
+class ParentListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parent
+        fields = [
+            'id',
+            'first_name', 
+            'middle_name',
+            'last_name',
+            'suffix',
+            'birthday',
+            'phone',
+            'gender',
+            'house',
+            'street',
+            'barangay',
+            'subdivision',
+            'city',
+            'province',
+            'reason',
+            'user',
+            'uuid',
+            'is_verified',
+            'contact',
+        ]
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'user': {'read_only': True},
+        }
+
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact

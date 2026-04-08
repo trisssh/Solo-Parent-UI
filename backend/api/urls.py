@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
-    AdminChangeChildView, AdminChildListView, AdminDeleteChildView,
+    AdminChangeChildView, AdminChangeContactInfoView, AdminChildListView, AdminDeleteChildView,
     AdminStatisticsListView, ChildListView, RegistrationView, DeleteUserView,
     DeleteParentView, MyTokenObtainPairView, ChangeEmailView,
     ChangePasswordView, CreateAdminView, AdminChangeEmailView,
@@ -122,6 +122,12 @@ urlpatterns = [
         'admin/parent/info/<int:pk>', 
         AdminChangeParentInfoView.as_view(), 
         name='admin_edit_parent'
+    ),
+    # admin change parent contact info
+    path(
+        'admin/parent/contact/info/<int:pk>', 
+        AdminChangeContactInfoView.as_view(), 
+        name='admin_edit_contact'
     ),
     # superadmin change admin username
     # path(

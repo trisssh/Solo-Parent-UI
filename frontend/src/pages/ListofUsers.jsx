@@ -801,12 +801,12 @@ export default function ListofUsers() {
                         className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
                       >
                         <option value="">Select Barangay</option>
-                        <option value="greenhills">Greenhills</option>
-                        <option value="maytunas">Maytunas</option>
-                        <option value="kabayanan">Kabayanan</option>
-                        <option value="salapan">Salapan</option>
-                        <option value="west_crame">West Crame</option>
-                        <option value="onse">Onse</option>
+                        <option value="Greenhills">Greenhills</option>
+                        <option value="Maytunas">Maytunas</option>
+                        <option value="Kabayanan">Kabayanan</option>
+                        <option value="Salapan">Salapan</option>
+                        <option value="West Crame">West Crame</option>
+                        <option value="Onse">Onse</option>
                       </select>
                     </div>
                     <div>
