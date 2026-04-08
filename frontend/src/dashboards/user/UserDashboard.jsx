@@ -517,6 +517,10 @@ useEffect(() => {
                    ✕
                  </button>
 
+                 <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                   Solo Parent Beneficiary ID
+                 </h3>
+
                  {/* ID CARD */}
                  <div className="flex flex-col items-center gap-4">
                    {/* CARD CONTAINER */}
@@ -531,9 +535,12 @@ useEffect(() => {
                          <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900"></div>
 
                          {/* Watermark */}
-                         <div className="absolute right-2 top-2 opacity-10 text-7xl font-black">
+                         <div className="absolute right-2 top-2 opacity-10 text-6xl font-black text-end">
                            Solo Parent
                          </div>
+                         {/* <div className="absolute left-15 top-8 opacity-10 text-6xl font-black">
+                           Solo Parent
+                         </div> */}
 
                          {/* Content */}
                          <div className="relative p-4 flex flex-col justify-between h-full">
@@ -548,7 +555,7 @@ useEffect(() => {
                                </p>
                              </div>
 
-                             <img src="SP.png" className="w-8 h-8" />
+                             <img src="SP.png" className="w-12 h-12" />
                            </div>
 
                            {/* BODY */}
@@ -604,6 +611,11 @@ useEffect(() => {
                      ) : (
                        /* ================= BACK ================= */
                        <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900 text-white p-4 text-[10px] flex flex-col justify-between">
+                         {/* Watermark */}
+                         <div className="absolute right-2 top-2 opacity-10 text-6xl font-black text-end">
+                           Solo Parent
+                         </div>
+
                          {/* HEADER */}
                          <div>
                            <h2 className="font-bold text-xs mb-1">
