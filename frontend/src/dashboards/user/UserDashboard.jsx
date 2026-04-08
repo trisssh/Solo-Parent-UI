@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
+import html2canvas from "html2canvas";
+
 
 
 export default function UserDashboard() {
@@ -10,11 +12,30 @@ export default function UserDashboard() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showModal, setShowModal] =useState(false);
   const navigate = useNavigate();
+  const [showBack, setShowBack] = useState(false);
 
   //View ID
-    const toggleModal = () => {
-      setShowModal(true)
-    }
+  const toggleModal = () => {
+    setShowModal(true)
+  }
+
+const downloadID = async () => {
+  const element = document.getElementById("id-card");
+
+  if (!element) return;
+
+  await new Promise((resolve) => setTimeout(resolve, 300)); // wait render
+
+  const canvas = await html2canvas(element, {
+    scale: 3, // higher quality for printing
+    useCORS: true,
+  });
+
+  const link = document.createElement("a");
+  link.download = "solo-parent-id.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+};
 
 
   //LOGOUT
@@ -38,7 +59,7 @@ export default function UserDashboard() {
   //Guard the fetch on user and authTokens
 const fetchUser = async () => {
   try {
-    console.time("API");
+    // console.time("API");
 
     const response = await fetch(
       `http://127.0.0.1:8000/api/parent/info/${user.pk}`,
@@ -49,7 +70,7 @@ const fetchUser = async () => {
       },
     );
 
-    console.timeEnd("API");
+    // console.timeEnd("API");
 
     if (!response.ok) throw new Error("Failed to fetch user");
 
@@ -67,7 +88,7 @@ useEffect(() => {
 
   fetchUser();
 }, [user?.pk, authTokens?.access]);
- 
+
 
   //Calculate Parent's Age
   const calculateAge = (birthday) => {
@@ -100,9 +121,9 @@ useEffect(() => {
   // console.log(userInfo?.image);
 
   //console test
-  useEffect(() => {
-    console.log("User info loaded:", userInfo);
-  }, [userInfo]);
+  // useEffect(() => {
+  //   console.log("User info loaded:", userInfo);
+  // }, [userInfo]);
 
    return (
      <div className="flex bg-white md:h-screen">
@@ -488,6 +509,178 @@ useEffect(() => {
            {/* MODAL */}
            {showModal && (
              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+               <div className="relative bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+                 <button
+                   onClick={() => setShowModal(false)}
+                   className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                 >
+                   ✕
+                 </button>
+
+                 {/* ID CARD */}
+                 <div className="flex flex-col items-center gap-4">
+                   {/* CARD CONTAINER */}
+                   <div
+                     id="id-card"
+                     className="w-[340px] h-[210px] rounded-xl shadow-xl overflow-hidden relative"
+                   >
+                     {!showBack ? (
+                       /* ================= FRONT ================= */
+                       <div className="absolute inset-0 text-white">
+                         {/* Background */}
+                         <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900"></div>
+
+                         {/* Watermark */}
+                         <div className="absolute right-2 top-2 opacity-10 text-7xl font-black">
+                           Solo Parent
+                         </div>
+
+                         {/* Content */}
+                         <div className="relative p-4 flex flex-col justify-between h-full">
+                           {/* HEADER */}
+                           <div className="flex justify-between items-center">
+                             <div>
+                               <h2 className="text-[11px] font-bold uppercase tracking-wide">
+                                 Republic of the Philippines
+                               </h2>
+                               <p className="text-[10px] opacity-80">
+                                 Solo Parent Identification Card
+                               </p>
+                             </div>
+
+                             <img src="SP.png" className="w-8 h-8" />
+                           </div>
+
+                           {/* BODY */}
+                           <div className="flex items-center gap-3">
+                             <img
+                               src={
+                                 idImageUrl || "https://via.placeholder.com/80"
+                               }
+                               className="w-16 h-16 rounded-md object-cover border border-white"
+                             />
+
+                             <div className="leading-tight">
+                               <p className="text-sm font-bold uppercase">
+                                 {userInfo?.parent?.first_name}{" "}
+                                 {userInfo?.parent?.last_name}
+                               </p>
+
+                               <p className="text-[11px] opacity-90">
+                                 ID No: {userInfo?.parent?.uuid}
+                               </p>
+
+                               <p className="text-[10px] opacity-70">
+                                 Solo Parent Beneficiary
+                               </p>
+                             </div>
+                           </div>
+
+                           {/* FOOTER */}
+                           <div className="flex justify-between items-end">
+                             <div>
+                               <p className="text-[9px] opacity-80">
+                                 Signature
+                               </p>
+                               {signatureImageUrl && (
+                                 <img
+                                   src={signatureImageUrl}
+                                   className="h-6 object-contain"
+                                 />
+                               )}
+                             </div>
+
+                             <div className="text-right">
+                               <p className="text-[9px] opacity-70">
+                                 Valid Until
+                               </p>
+                               <p className="text-xs font-semibold">
+                                 2026-2027
+                               </p>
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     ) : (
+                       /* ================= BACK ================= */
+                       <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900 text-white p-4 text-[10px] flex flex-col justify-between">
+                         {/* HEADER */}
+                         <div>
+                           <h2 className="font-bold text-xs mb-1">
+                             Cardholder Information
+                           </h2>
+
+                           <p>
+                             <span className="font-semibold">Full Name:</span>{" "}
+                             {userInfo?.parent?.first_name}{" "}
+                             {userInfo?.parent?.middle_name}{" "}
+                             {userInfo?.parent?.last_name}{" "}
+                             {userInfo?.parent?.suffix}
+                           </p>
+
+                           <p>
+                             <span className="font-semibold">Birthdate:</span>{" "}
+                             {userInfo?.parent?.birthday}
+                           </p>
+
+                           <p>
+                             <span className="font-semibold">Address:</span>{" "}
+                             {userInfo?.parent?.barangay},{" "}
+                             {userInfo?.parent?.city}
+                           </p>
+                         </div>
+
+                         {/* EMERGENCY */}
+                         <div>
+                           <h2 className="font-bold text-xs mt-2 mb-1">
+                             Emergency Contact
+                           </h2>
+
+                           <p>
+                             {userInfo?.contact?.first_name}{" "}
+                             {userInfo?.contact?.last_name}{" "}
+                             {userInfo?.contact?.suffix}
+                           </p>
+
+                           <p>{userInfo?.contact?.phone}</p>
+                         </div>
+
+                         {/* FOOTER */}
+                         <div className="text-[9px] text-gray-200 border-t pt-2">
+                           <p>
+                             This ID is non-transferable and remains the
+                             property of the issuing authority.
+                           </p>
+
+                           <p className="mt-1">
+                             If found, please return to LGU San Juan.
+                           </p>
+                         </div>
+                       </div>
+                     )}
+                   </div>
+                 </div>
+
+                 {/* BUTTONS */}
+                 <div className="mt-6 flex gap-2">
+                   <button
+                     onClick={() => setShowBack(!showBack)}
+                     className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-md"
+                   >
+                     {showBack ? "View Front ID" : "View Back ID"}
+                   </button>
+                   {/* <button
+                     onClick={() => setShowModal(false)}
+                     className="flex-1 bg-gray-400 hover:bg-gray-500 text-white py-2 rounded-md"
+                   >
+                     Close
+                   </button> */}
+                 </div>
+               </div>
+             </div>
+           )}
+           {/* {showModal && (
+             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
                <div className="bg-white rounded-2xl shadow-lg p-6 max-w-sm text-center">
                  <h2 className="text-xl font-semibold mb-3 text-gray-800">
                    Solo Parent ID
@@ -504,7 +697,7 @@ useEffect(() => {
                  </button>
                </div>
              </div>
-           )}
+           )} */}
          </main>
        </div>
      </div>
