@@ -270,8 +270,7 @@ useEffect(() => {
                  )}
 
                  <h2 className="mt-4 text-xl font-semibold text-gray-800 capitalize">
-                   {`${userInfo?.parent?.first_name || ""} ${userInfo?.parent?.middle_name || ""} ${userInfo?.parent?.last_name || ""}`.trim() ||
-                     "Loading..."}
+                   {`${userInfo?.parent?.first_name || ""} ${userInfo?.parent?.middle_name || ""} ${userInfo?.parent?.last_name || ""} ${userInfo?.parent?.suffix || ""}`.trim() || "Loading..."} 
                  </h2>
 
                  <p className="text-sm text-gray-500 uppercase tracking-wide">
@@ -521,7 +520,7 @@ useEffect(() => {
                    Solo Parent Beneficiary ID
                  </h3>
 
-                 {/* ID CARD */}
+                   		{/* ID CARD */}
                  <div className="flex flex-col items-center gap-4">
                    {/* CARD CONTAINER */}
                    <div
@@ -530,145 +529,139 @@ useEffect(() => {
                    >
                      {!showBack ? (
                        /* ================= FRONT ================= */
-                       <div className="absolute inset-0 text-white">
-                         {/* Background */}
-                         <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900"></div>
+                       <div className="flex flex-col items-center gap-4">
+                        {/* CARD CONTAINER */}
+                        <div
+                        id="id-card"
+                        className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+                        >
 
-                         {/* Watermark */}
-                         <div className="absolute right-2 top-2 opacity-10 text-6xl font-black text-end">
-                           Solo Parent
-                         </div>
-                         {/* <div className="absolute left-15 top-8 opacity-10 text-6xl font-black">
-                           Solo Parent
-                         </div> */}
+                        {/* BACKGROUND TEMPLATE */}
+                        <img
+                          src="/Front (3).png"
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
 
-                         {/* Content */}
-                         <div className="relative p-4 flex flex-col justify-between h-full">
-                           {/* HEADER */}
-                           <div className="flex justify-between items-center">
-                             <div>
-                               <h2 className="text-[11px] font-bold uppercase tracking-wide">
-                                 Republic of the Philippines
-                               </h2>
-                               <p className="text-[10px] opacity-80">
-                                 Solo Parent Identification Card
-                               </p>
-                             </div>
+                        {/* PHOTO */}
+                        <img
+                          src={idImageUrl || "https://via.placeholder.com/80"}
+                          className="absolute top-[68px] left-[47px] w-24 h-24 object-cover rounded"
+                        />
 
-                             <img src="SP.png" className="w-12 h-12" />
-                           </div>
+                        {/* NAME */}
+                        <p className="absolute top-[75px] left-[145px] text-black text-sm font-bold uppercase">
+                          {userInfo?.parent?.first_name} {userInfo?.parent?.middle_name} {userInfo?.parent?.last_name} {userInfo?.parent?.suffix}
+                        </p>
 
-                           {/* BODY */}
-                           <div className="flex items-center gap-3">
-                             <img
-                               src={
-                                 idImageUrl || "https://via.placeholder.com/80"
-                               }
-                               className="w-16 h-16 rounded-md object-cover border border-white"
-                             />
+                        {/* DATE OF BIRTH */}
+                        <p className="absolute top-[97px] left-[145px] text-black text-xs font-semibold capitalize">
+                          {userInfo?.parent?.birthday}
+                        </p>
 
-                             <div className="leading-tight">
-                               <p className="text-sm font-bold uppercase">
-                                 {userInfo?.parent?.first_name}{" "}
-                                 {userInfo?.parent?.last_name}
-                               </p>
+                          {/* GENDER */}
+                          <p className="absolute top-[119px] left-[145px] text-black text-xs font-semibold uppercase">
+                          {userInfo?.parent?.gender}
+                        </p>
+                        {/* ISSUED DATE */}
+                          <p className="absolute top-[141px] left-[145px] text-black text-xs font-semibold capitalize">
+                          April 22, 2027
+                        </p>
 
-                               <p className="text-[11px] opacity-90">
-                                 ID No: {userInfo?.parent?.uuid}
-                               </p>
+                        {/* ID NUMBER */}
+                        <p className="absolute top-[55px] left-[80px] text-black font-bold text-[9px]">
+                          {userInfo?.parent?.uuid}
+                        </p>
 
-                               <p className="text-[10px] opacity-70">
-                                 Solo Parent Beneficiary
-                               </p>
-                             </div>
-                           </div>
-
-                           {/* FOOTER */}
-                           <div className="flex justify-between items-end">
-                             <div>
-                               <p className="text-[9px] opacity-80">
-                                 Signature
-                               </p>
-                               {signatureImageUrl && (
-                                 <img
-                                   src={signatureImageUrl}
-                                   className="h-6 object-contain"
-                                 />
-                               )}
-                             </div>
-
-                             <div className="text-right">
-                               <p className="text-[9px] opacity-70">
-                                 Valid Until
-                               </p>
-                               <p className="text-xs font-semibold">
-                                 2026-2027
-                               </p>
-                             </div>
-                           </div>
-                         </div>
-                       </div>
+                        {/* SIGNATURE */}
+                        {signatureImageUrl && (
+                          <img
+                            src={signatureImageUrl}
+                            className="absolute bottom-[12px] left-[60px] h-8 object-contain"
+                          />
+                        )}
+                        </div>
+                      </div>
                      ) : (
                        /* ================= BACK ================= */
-                       <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900 text-white p-4 text-[10px] flex flex-col justify-between">
-                         {/* Watermark */}
-                         <div className="absolute right-2 top-2 opacity-10 text-6xl font-black text-end">
-                           Solo Parent
-                         </div>
+                      //  <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900 text-white p-4 text-[10px] flex flex-col justify-between">
+                      //    {/* Watermark */}
+                      //    <div className="absolute right-2 top-2 opacity-10 text-6xl font-black text-end">
+                      //      Solo Parent
+                      //    </div>
 
-                         {/* HEADER */}
-                         <div>
-                           <h2 className="font-bold text-xs mb-1">
-                             Cardholder Information
-                           </h2>
+                      //    {/* HEADER */}
+                      //    <div>
+                      //      <h2 className="font-bold text-xs mb-1">
+                      //        Cardholder Information
+                      //      </h2>
 
-                           <p>
-                             <span className="font-semibold">Full Name:</span>{" "}
-                             {userInfo?.parent?.first_name}{" "}
-                             {userInfo?.parent?.middle_name}{" "}
-                             {userInfo?.parent?.last_name}{" "}
-                             {userInfo?.parent?.suffix}
-                           </p>
+                      //      <p>
+                      //        <span className="font-semibold">Full Name:</span>{" "}
+                      //        {userInfo?.parent?.first_name}{" "}
+                      //        {userInfo?.parent?.middle_name}{" "}
+                      //        {userInfo?.parent?.last_name}{" "}
+                      //        {userInfo?.parent?.suffix}
+                      //      </p>
 
-                           <p>
-                             <span className="font-semibold">Birthdate:</span>{" "}
-                             {userInfo?.parent?.birthday}
-                           </p>
+                      //      <p>
+                      //        <span className="font-semibold">Birthdate:</span>{" "}
+                      //        {userInfo?.parent?.birthday}
+                      //      </p>
 
-                           <p>
-                             <span className="font-semibold">Address:</span>{" "}
-                             {userInfo?.parent?.barangay},{" "}
-                             {userInfo?.parent?.city}
-                           </p>
-                         </div>
+                      //      <p>
+                      //        <span className="font-semibold">Address:</span>{" "}
+                      //        {userInfo?.parent?.barangay},{" "}
+                      //        {userInfo?.parent?.city}
+                      //      </p>
+                      //    </div>
 
-                         {/* EMERGENCY */}
-                         <div>
-                           <h2 className="font-bold text-xs mt-2 mb-1">
-                             Emergency Contact
-                           </h2>
+                      //    {/* EMERGENCY */}
+                      //    <div>
+                      //      <h2 className="font-bold text-xs mt-2 mb-1">
+                      //        Emergency Contact
+                      //      </h2>
 
-                           <p>
-                             {userInfo?.contact?.first_name}{" "}
-                             {userInfo?.contact?.last_name}{" "}
-                             {userInfo?.contact?.suffix}
-                           </p>
+                      //      <p>
+                      //        {userInfo?.contact?.first_name}{" "}
+                      //        {userInfo?.contact?.last_name}{" "}
+                      //        {userInfo?.contact?.suffix}
+                      //      </p>
 
-                           <p>{userInfo?.contact?.phone}</p>
-                         </div>
+                      //      <p>{userInfo?.contact?.phone}</p>
+                      //    </div>
 
-                         {/* FOOTER */}
-                         <div className="text-[9px] text-gray-200 border-t pt-2">
-                           <p>
-                             This ID is non-transferable and remains the
-                             property of the issuing authority.
-                           </p>
+                      //    {/* FOOTER */}
+                      //    <div className="text-[9px] text-gray-200 border-t pt-2">
+                      //      <p>
+                      //        This ID is non-transferable and remains the
+                      //        property of the issuing authority.
+                      //      </p>
 
-                           <p className="mt-1">
-                             If found, please return to LGU San Juan.
-                           </p>
-                         </div>
-                       </div>
+                      //      <p className="mt-1">
+                      //        If found, please return to LGU San Juan.
+                      //      </p>
+                      //    </div>
+                      //  </div>
+                       <div className="flex flex-col items-center gap-4">
+                        {/* CARD CONTAINER */}
+                        <div
+                        id="id-card"
+                        className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+                        >
+
+                        {/* BACKGROUND TEMPLATE */}
+                        <img
+                          src="/back.jpg"
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+
+                        {/* ADDRESS */}
+                        <p className="absolute top-[25px] left-[17px] text-black text-[10px] font-bold">
+                          {userInfo?.parent?.house} {userInfo?.parent?.street} {userInfo?.parent?.subdivision} {userInfo?.parent?.barangay}, {userInfo?.parent?.city}, {userInfo?.parent?.province}
+                        </p>
+
+                        </div>
+                      </div>
                      )}
                    </div>
                  </div>
