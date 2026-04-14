@@ -118,6 +118,23 @@ useEffect(() => {
   ? `${BASE_URL}${signatureImage}`
   : null;
 
+
+    // DATE REFORMAT
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    const month = date.toLocaleString("en-US", {
+    month: "long",
+    }).toUpperCase();
+
+    return `${month} ${day}, ${year}`;
+  };
+
   // console.log(userInfo?.image);
 
   //console test
@@ -538,7 +555,7 @@ useEffect(() => {
 
                         {/* BACKGROUND TEMPLATE */}
                         <img
-                          src="/Front (3).png"
+                          src="/front.png"
                           className="absolute inset-0 w-full h-full object-cover"
                         />
 
@@ -548,24 +565,30 @@ useEffect(() => {
                           className="absolute top-[68px] left-[47px] w-24 h-24 object-cover rounded"
                         />
 
-                        {/* NAME */}
-                        <p className="absolute top-[75px] left-[145px] text-black text-sm font-bold uppercase">
+                        <p className="absolute top-[65px] left-[185px] text-black text-xs font-bold uppercase">
+                          {userInfo?.parent?.last_name}
+                        </p> 
+                        <p className="absolute top-[89px] left-[185px] text-black text-xs font-bold uppercase">
+                          {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
+                        </p> 
+                        <p className="absolute top-[117px] left-[185px] text-black text-xs font-bold uppercase">
+                          {userInfo?.parent?.middle_name}
+                        </p> 
+
+                        {/* FULL NAME */}
+                        {/* <p className="absolute top-[65px] left-[145px] text-black text-sm font-bold capitalize">
                           {userInfo?.parent?.first_name} {userInfo?.parent?.middle_name} {userInfo?.parent?.last_name} {userInfo?.parent?.suffix}
-                        </p>
+                        </p> */}
 
                         {/* DATE OF BIRTH */}
-                        <p className="absolute top-[97px] left-[145px] text-black text-xs font-semibold capitalize">
-                          {userInfo?.parent?.birthday}
+                        <p className="absolute top-[142px] left-[185px] text-black text-xs font-semibold capitalize">
+                          {formatDate(userInfo?.parent?.birthday)}
                         </p>
 
-                          {/* GENDER */}
-                          <p className="absolute top-[119px] left-[145px] text-black text-xs font-semibold uppercase">
-                          {userInfo?.parent?.gender}
-                        </p>
                         {/* ISSUED DATE */}
-                          <p className="absolute top-[141px] left-[145px] text-black text-xs font-semibold capitalize">
+                        {/* <p className="absolute top-[141px] left-[145px] text-black text-xs font-semibold capitalize">
                           April 22, 2027
-                        </p>
+                        </p> */}
 
                         {/* ID NUMBER */}
                         <p className="absolute top-[55px] left-[80px] text-black font-bold text-[9px]">
@@ -576,72 +599,13 @@ useEffect(() => {
                         {signatureImageUrl && (
                           <img
                             src={signatureImageUrl}
-                            className="absolute bottom-[12px] left-[60px] h-8 object-contain"
+                            className="absolute bottom-[12px] left-[20px] h-7 object-contain"
                           />
                         )}
                         </div>
                       </div>
                      ) : (
                        /* ================= BACK ================= */
-                      //  <div className="absolute inset-0 bg-gradient-to-br from-red-700 via-red-600 to-red-900 text-white p-4 text-[10px] flex flex-col justify-between">
-                      //    {/* Watermark */}
-                      //    <div className="absolute right-2 top-2 opacity-10 text-6xl font-black text-end">
-                      //      Solo Parent
-                      //    </div>
-
-                      //    {/* HEADER */}
-                      //    <div>
-                      //      <h2 className="font-bold text-xs mb-1">
-                      //        Cardholder Information
-                      //      </h2>
-
-                      //      <p>
-                      //        <span className="font-semibold">Full Name:</span>{" "}
-                      //        {userInfo?.parent?.first_name}{" "}
-                      //        {userInfo?.parent?.middle_name}{" "}
-                      //        {userInfo?.parent?.last_name}{" "}
-                      //        {userInfo?.parent?.suffix}
-                      //      </p>
-
-                      //      <p>
-                      //        <span className="font-semibold">Birthdate:</span>{" "}
-                      //        {userInfo?.parent?.birthday}
-                      //      </p>
-
-                      //      <p>
-                      //        <span className="font-semibold">Address:</span>{" "}
-                      //        {userInfo?.parent?.barangay},{" "}
-                      //        {userInfo?.parent?.city}
-                      //      </p>
-                      //    </div>
-
-                      //    {/* EMERGENCY */}
-                      //    <div>
-                      //      <h2 className="font-bold text-xs mt-2 mb-1">
-                      //        Emergency Contact
-                      //      </h2>
-
-                      //      <p>
-                      //        {userInfo?.contact?.first_name}{" "}
-                      //        {userInfo?.contact?.last_name}{" "}
-                      //        {userInfo?.contact?.suffix}
-                      //      </p>
-
-                      //      <p>{userInfo?.contact?.phone}</p>
-                      //    </div>
-
-                      //    {/* FOOTER */}
-                      //    <div className="text-[9px] text-gray-200 border-t pt-2">
-                      //      <p>
-                      //        This ID is non-transferable and remains the
-                      //        property of the issuing authority.
-                      //      </p>
-
-                      //      <p className="mt-1">
-                      //        If found, please return to LGU San Juan.
-                      //      </p>
-                      //    </div>
-                      //  </div>
                        <div className="flex flex-col items-center gap-4">
                         {/* CARD CONTAINER */}
                         <div
@@ -656,7 +620,7 @@ useEffect(() => {
                         />
 
                         {/* ADDRESS */}
-                        <p className="absolute top-[25px] left-[17px] text-black text-[10px] font-bold">
+                        <p className="absolute top-[25px] left-[14px] text-black text-[11px] font-semibold text-center">
                           {userInfo?.parent?.house} {userInfo?.parent?.street} {userInfo?.parent?.subdivision} {userInfo?.parent?.barangay}, {userInfo?.parent?.city}, {userInfo?.parent?.province}
                         </p>
 
