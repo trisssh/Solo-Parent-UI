@@ -537,7 +537,7 @@ useEffect(() => {
                    Solo Parent Beneficiary ID
                  </h3>
 
-                   		{/* ID CARD */}
+                  {/* ID CARD */}
                  <div className="flex flex-col items-center gap-4">
                    {/* CARD CONTAINER */}
                    <div
