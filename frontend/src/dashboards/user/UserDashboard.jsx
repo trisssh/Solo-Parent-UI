@@ -602,17 +602,116 @@ useEffect(() => {
 
                         {/* BACKGROUND TEMPLATE */}
                         <img
-                          src="/front.png"
+                          src="/front-SP.png"
                           className="absolute inset-0 w-full h-full object-cover"
                         />
 
                         {/* PHOTO */}
                         <img
                           src={idImageUrl || "https://via.placeholder.com/80"}
-                          className="absolute top-[68px] left-[47px] w-24 h-24 object-cover rounded"
+                          className="absolute top-[67px] left-[47px] w-24 h-24 object-cover rounded border-2"
                         />
 
-                        <p className="absolute top-[65px] left-[185px] text-black text-xs font-bold uppercase">
+
+                       {/* (ignore this but dont delete) ////////////////////////////////////////////////////////////////////////////////////////////// */}
+                        {/* <div className="absolute top-[70px] left-[175px] w-[115px] flex flex-col leading-tight gap-2">                    ////
+                          <p className="text-black text-xs font-bold uppercase truncate">                                                     ////
+                            {userInfo?.parent?.last_name}                                                                                     ////
+                          </p>
+                          <p className="text-black text-xs font-bold uppercase truncate">
+                            {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
+                          </p>
+                        </div>
+
+                        <div className="absolute top-[122px] left-[175px] w-[115px] flex flex-col leading-tight gap-2">
+                            <p className="text-black text-xs font-bold uppercase truncate">
+                            {userInfo?.parent?.middle_name}
+                          </p>
+                          <p className="text-black text-xs font-bold uppercase truncate">
+                            {formatDate(userInfo?.parent?.birthday)}
+                          </p>
+                        </div> */}                                                                                                               
+                        {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+
+
+
+                        {/* FONT SIZE KASYA (di nakafix)*/}
+                        {/* <div className="absolute top-[71px] left-[175px] flex flex-col leading-tight gap-3">
+                          <p className="text-black text-[11px] font-bold uppercase truncate">
+                            {userInfo?.parent?.last_name}
+                          </p>
+                          <p className="text-black text-[11px] font-bold uppercase truncate">
+                            {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
+                          </p>
+                        </div>
+
+                        <div className="absolute top-[122px] left-[175px] flex flex-col leading-tight gap-3">
+                            <p className="text-black text-[11px] font-bold uppercase truncate">
+                            {userInfo?.parent?.middle_name}
+                          </p>
+                          <p className="text-black text-[11px] font-semibold uppercase truncate">
+                            {formatDate(userInfo?.parent?.birthday)}
+                          </p>
+                        </div> */}
+
+
+                        {/* FONT SIZE IF HINDI KASYA */}
+                        <div className="absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
+                          <p className="text-black text-[10px] font-bold uppercase truncate">
+                            {userInfo?.parent?.last_name}
+                          </p>
+                          <p className="text-black text-[10px] font-bold uppercase truncate">
+                            {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
+                          </p>
+                        </div>
+
+                        <div className="absolute top-[124px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
+                            <p className="text-black text-[10px] font-bold uppercase truncate">
+                            {userInfo?.parent?.middle_name}
+                          </p>
+                          <p className="text-black text-[10px] font-semibold uppercase truncate">
+                            {formatDate(userInfo?.parent?.birthday)}
+                          </p>
+                        </div>
+
+                      {/* ACTUAL FONT SIZE */}
+                       {/* <div className="absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight gap-2.5">
+                          <p className="text-black text-[11px] font-bold uppercase truncate">
+                            {userInfo?.parent?.last_name}
+                          </p>
+                          <p className="text-black text-[11px] font-bold uppercase truncate">
+                            {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
+                          </p>
+                        </div>
+
+                        <div className="absolute top-[124px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
+                            <p className="text-black text-[11px] font-bold uppercase truncate">
+                            {userInfo?.parent?.middle_name}
+                          </p>
+                          <p className="text-black text-[11px] font-semibold uppercase truncate">
+                            {formatDate(userInfo?.parent?.birthday)}
+                          </p>
+                        </div> */}
+
+
+
+                        {/* IGNORE BUT DONT DELETE */}
+                        {/* <p className="absolute top-[70px] left-[183px] text-black text-[11px] font-bold uppercase">
+                          {userInfo?.parent?.last_name} 
+                        </p> 
+                        <p className="absolute top-[93px] left-[183px] text-black text-[11px] font-bold uppercase">
+                          {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
+                        </p> 
+                        <p className="absolute top-[121px] left-[183px] text-black text-[11px] font-bold uppercase">
+                          {userInfo?.parent?.middle_name}
+                        </p> 
+                        <p className="absolute top-[146px] left-[183px] text-black text-[11px] font-semibold capitalize">
+                          {formatDate(userInfo?.parent?.birthday)}
+                        </p> */}
+                        
+
+
+                        {/* <p className="absolute top-[65px] left-[185px] text-black text-xs font-bold uppercase">
                           {userInfo?.parent?.last_name}
                         </p> 
                         <p className="absolute top-[89px] left-[185px] text-black text-xs font-bold uppercase">
@@ -620,7 +719,7 @@ useEffect(() => {
                         </p> 
                         <p className="absolute top-[117px] left-[185px] text-black text-xs font-bold uppercase">
                           {userInfo?.parent?.middle_name}
-                        </p> 
+                        </p>  */}
 
                         {/* FULL NAME */}
                         {/* <p className="absolute top-[65px] left-[145px] text-black text-sm font-bold capitalize">
@@ -628,9 +727,9 @@ useEffect(() => {
                         </p> */}
 
                         {/* DATE OF BIRTH */}
-                        <p className="absolute top-[142px] left-[185px] text-black text-xs font-semibold capitalize">
+                        {/* <p className="absolute top-[146px] left-[183px] text-black text-xs font-semibold capitalize">
                           {formatDate(userInfo?.parent?.birthday)}
-                        </p>
+                        </p> */}
 
                         {/* ISSUED DATE */}
                         {/* <p className="absolute top-[141px] left-[145px] text-black text-xs font-semibold capitalize">
@@ -646,7 +745,7 @@ useEffect(() => {
                         {signatureImageUrl && (
                           <img
                             src={cleanSignature || signatureImageUrl}
-                            className="absolute bottom-[5px] left-[53px] w-[83px]"
+                            className="absolute bottom-[10px] left-[53px] w-[83px]"
                           />
                         )}
                       
@@ -669,18 +768,18 @@ useEffect(() => {
 
                         {/* BACKGROUND TEMPLATE */}
                         <img
-                          src="/back.jpg"
+                          src="/back-SP.png"
                           className="absolute inset-0 w-full h-full object-cover"
                         />
 
                         {/* ADDRESS */}
-                    <div className="absolute text-center top-[25px] left-[20px] w-[310px]">
-  <p className="text-black text-[11px] font-semibold break-words leading-tight">
-    {userInfo?.parent?.house} {userInfo?.parent?.street}{" "}
-    {userInfo?.parent?.subdivision} {userInfo?.parent?.barangay},{" "}
-    {userInfo?.parent?.city}, {userInfo?.parent?.province}
-  </p>
-</div>
+                        <div className="absolute text-center top-[25px] left-[20px] w-[310px]">
+                        <p className="text-black text-[11px] font-semibold break-words leading-tight">
+                        {userInfo?.parent?.house} {userInfo?.parent?.street}{" "}
+                        {userInfo?.parent?.subdivision} {userInfo?.parent?.barangay},{" "}
+                        {userInfo?.parent?.city}, {userInfo?.parent?.province}
+                        </p>
+                        </div>
 
                         </div>
                       </div>
