@@ -599,9 +599,16 @@ useEffect(() => {
                         {signatureImageUrl && (
                           <img
                             src={signatureImageUrl}
-                            className="absolute bottom-[12px] left-[20px] h-7 object-contain"
+                            className="absolute bottom-[5px] left-[53px] w-[83px]"
                           />
                         )}
+                      
+                        {/* <div className="absolute bottom-[12px] left-[20px] w-[130px]">
+                      <p className="text-black text-xs font-semibold">
+                      {formatDate(userInfo?.parent?.birthday)}
+                      </p>
+                      </div> */}
+                
                         </div>
                       </div>
                      ) : (
@@ -620,9 +627,13 @@ useEffect(() => {
                         />
 
                         {/* ADDRESS */}
-                        <p className="absolute top-[25px] left-[14px] text-black text-[11px] font-semibold text-center">
-                          {userInfo?.parent?.house} {userInfo?.parent?.street} {userInfo?.parent?.subdivision} {userInfo?.parent?.barangay}, {userInfo?.parent?.city}, {userInfo?.parent?.province}
-                        </p>
+                    <div className="absolute text-center top-[25px] left-[20px] w-[310px]">
+  <p className="text-black text-[11px] font-semibold break-words leading-tight">
+    {userInfo?.parent?.house} {userInfo?.parent?.street}{" "}
+    {userInfo?.parent?.subdivision} {userInfo?.parent?.barangay},{" "}
+    {userInfo?.parent?.city}, {userInfo?.parent?.province}
+  </p>
+</div>
 
                         </div>
                       </div>
