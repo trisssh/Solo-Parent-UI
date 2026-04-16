@@ -678,7 +678,7 @@ const nameStyle = getTextStyle(fullName);
                             {userInfo?.parent?.middle_name}
                           </p>
                           {/* <p className="text-black text-[11px] font-semibold uppercase truncate"> */}
-                            <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
+                            <p className={`text-black font-semibold uppercase truncate ${nameStyle.size}`}>
                             {formatDate(userInfo?.parent?.birthday)}
                           </p>
                         </div>
