@@ -189,6 +189,27 @@ useEffect(() => {
   //   console.log("User info loaded:", userInfo);
   // }, [userInfo]);
 
+
+  const getTextStyle = (text) => {
+  if (!text) return { size: "text-[11px]", gap: "gap-2.5" };
+
+  if (text.length >= 23) {
+    return {
+      size: "text-[10px]",
+      gap: "gap-3",
+    };
+  }
+
+  return {
+    size: "text-[11px]",
+    gap: "gap-2.5",
+  };
+};
+
+const fullName = `${userInfo?.parent?.first_name || ""} ${userInfo?.parent?.middle_name || ""} ${userInfo?.parent?.last_name || ""} ${userInfo?.parent?.suffix || ""}`;
+
+const nameStyle = getTextStyle(fullName);
+
    return (
      <div className="flex bg-white md:h-screen">
        {/* SIDEBAR */}
@@ -613,50 +634,8 @@ useEffect(() => {
                         />
 
 
-                       {/* (ignore this but dont delete) ////////////////////////////////////////////////////////////////////////////////////////////// */}
-                        {/* <div className="absolute top-[70px] left-[175px] w-[115px] flex flex-col leading-tight gap-2">                    ////
-                          <p className="text-black text-xs font-bold uppercase truncate">                                                     ////
-                            {userInfo?.parent?.last_name}                                                                                     ////
-                          </p>
-                          <p className="text-black text-xs font-bold uppercase truncate">
-                            {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
-                          </p>
-                        </div>
-
-                        <div className="absolute top-[122px] left-[175px] w-[115px] flex flex-col leading-tight gap-2">
-                            <p className="text-black text-xs font-bold uppercase truncate">
-                            {userInfo?.parent?.middle_name}
-                          </p>
-                          <p className="text-black text-xs font-bold uppercase truncate">
-                            {formatDate(userInfo?.parent?.birthday)}
-                          </p>
-                        </div> */}                                                                                                               
-                        {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-
-
-
-                        {/* FONT SIZE KASYA (di nakafix)*/}
-                        {/* <div className="absolute top-[71px] left-[175px] flex flex-col leading-tight gap-3">
-                          <p className="text-black text-[11px] font-bold uppercase truncate">
-                            {userInfo?.parent?.last_name}
-                          </p>
-                          <p className="text-black text-[11px] font-bold uppercase truncate">
-                            {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
-                          </p>
-                        </div>
-
-                        <div className="absolute top-[122px] left-[175px] flex flex-col leading-tight gap-3">
-                            <p className="text-black text-[11px] font-bold uppercase truncate">
-                            {userInfo?.parent?.middle_name}
-                          </p>
-                          <p className="text-black text-[11px] font-semibold uppercase truncate">
-                            {formatDate(userInfo?.parent?.birthday)}
-                          </p>
-                        </div> */}
-
-
                         {/* FONT SIZE IF HINDI KASYA */}
-                        <div className="absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
+                        {/* <div className="absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
                           <p className="text-black text-[10px] font-bold uppercase truncate">
                             {userInfo?.parent?.last_name}
                           </p>
@@ -672,7 +651,7 @@ useEffect(() => {
                           <p className="text-black text-[10px] font-semibold uppercase truncate">
                             {formatDate(userInfo?.parent?.birthday)}
                           </p>
-                        </div>
+                        </div> */}
 
                       {/* ACTUAL FONT SIZE */}
                        {/* <div className="absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight gap-2.5">
@@ -682,54 +661,28 @@ useEffect(() => {
                           <p className="text-black text-[11px] font-bold uppercase truncate">
                             {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
                           </p>
+                        </div> */}
+                        <div className={`absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight ${nameStyle.gap}`}>
+                          <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
+                            {userInfo?.parent?.last_name}
+                          </p>
+
+                          <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
+                            {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
+                          </p>
                         </div>
 
                         <div className="absolute top-[124px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
-                            <p className="text-black text-[11px] font-bold uppercase truncate">
+                            {/* <p className="text-black text-[11px] font-bold uppercase truncate ${nameStyle.size}"> */}
+                              <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
                             {userInfo?.parent?.middle_name}
                           </p>
-                          <p className="text-black text-[11px] font-semibold uppercase truncate">
+                          {/* <p className="text-black text-[11px] font-semibold uppercase truncate"> */}
+                            <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
                             {formatDate(userInfo?.parent?.birthday)}
                           </p>
-                        </div> */}
+                        </div>
 
-
-
-                        {/* IGNORE BUT DONT DELETE */}
-                        {/* <p className="absolute top-[70px] left-[183px] text-black text-[11px] font-bold uppercase">
-                          {userInfo?.parent?.last_name} 
-                        </p> 
-                        <p className="absolute top-[93px] left-[183px] text-black text-[11px] font-bold uppercase">
-                          {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
-                        </p> 
-                        <p className="absolute top-[121px] left-[183px] text-black text-[11px] font-bold uppercase">
-                          {userInfo?.parent?.middle_name}
-                        </p> 
-                        <p className="absolute top-[146px] left-[183px] text-black text-[11px] font-semibold capitalize">
-                          {formatDate(userInfo?.parent?.birthday)}
-                        </p> */}
-                        
-
-
-                        {/* <p className="absolute top-[65px] left-[185px] text-black text-xs font-bold uppercase">
-                          {userInfo?.parent?.last_name}
-                        </p> 
-                        <p className="absolute top-[89px] left-[185px] text-black text-xs font-bold uppercase">
-                          {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
-                        </p> 
-                        <p className="absolute top-[117px] left-[185px] text-black text-xs font-bold uppercase">
-                          {userInfo?.parent?.middle_name}
-                        </p>  */}
-
-                        {/* FULL NAME */}
-                        {/* <p className="absolute top-[65px] left-[145px] text-black text-sm font-bold capitalize">
-                          {userInfo?.parent?.first_name} {userInfo?.parent?.middle_name} {userInfo?.parent?.last_name} {userInfo?.parent?.suffix}
-                        </p> */}
-
-                        {/* DATE OF BIRTH */}
-                        {/* <p className="absolute top-[146px] left-[183px] text-black text-xs font-semibold capitalize">
-                          {formatDate(userInfo?.parent?.birthday)}
-                        </p> */}
 
                         {/* ISSUED DATE */}
                         {/* <p className="absolute top-[141px] left-[145px] text-black text-xs font-semibold capitalize">
@@ -748,12 +701,7 @@ useEffect(() => {
                             className="absolute bottom-[10px] left-[53px] w-[83px]"
                           />
                         )}
-                      
-                        {/* <div className="absolute bottom-[12px] left-[20px] w-[130px]">
-                      <p className="text-black text-xs font-semibold">
-                      {formatDate(userInfo?.parent?.birthday)}
-                      </p>
-                      </div> */}
+                   
                 
                         </div>
                       </div>
