@@ -443,9 +443,9 @@ export default function AdminList() {
                       <td className="px-4 py-3">
                         <button
                           onClick={() => handleView(admin)}
-                          className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer"
+                          className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer capitalize"
                         >
-                          View
+                          View information
                         </button>
                       </td>
                     </tr>

@@ -608,7 +608,7 @@ const nameStyle = getTextStyle(fullName);
                  </h3>
 
                   {/* ID CARD */}
-                 <div className="flex flex-col items-center gap-4">
+                 <section className="flex flex-col items-center gap-4">
                    {/* CARD CONTAINER */}
                    <div
                      id="id-card"
@@ -616,7 +616,7 @@ const nameStyle = getTextStyle(fullName);
                    >
                      {!showBack ? (
                        /* ================= FRONT ================= */
-                       <div className="flex flex-col items-center gap-4">
+                       <section className="flex flex-col items-center gap-4">
                         {/* CARD CONTAINER */}
                         <div
                         id="id-card"
@@ -706,10 +706,10 @@ const nameStyle = getTextStyle(fullName);
                    
                 
                         </div>
-                      </div>
+                      </section>
                      ) : (
                        /* ================= BACK ================= */
-                       <div className="flex flex-col items-center gap-4">
+                       <section className="flex flex-col items-center gap-4">
                         {/* CARD CONTAINER */}
                         <div
                         id="id-card"
@@ -732,10 +732,10 @@ const nameStyle = getTextStyle(fullName);
                         </div>
 
                         </div>
-                      </div>
+                      </section>
                      )}
                    </div>
-                 </div>
+                 </section>
 
                  {/* BUTTONS */}
                  <div className="mt-6 flex gap-2">

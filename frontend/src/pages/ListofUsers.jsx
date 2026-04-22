@@ -8,7 +8,9 @@ export default function ListofUsers() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); //view info
+  const [showIdModal, setShowIdModal] = useState(false); //view ID
+  const [showBack, setShowBack] = useState(false); //ID back
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [prevPage, setPrevPage] = useState(null);
@@ -114,6 +116,15 @@ export default function ListofUsers() {
     setIsEdit(false);
     setShowModal(true);
   };
+  const handleViewInfo = (user) => {
+  setSelectedUser(user);
+  setShowModal(true);
+};
+
+const handleViewID = (user) => {
+  setSelectedUser(user);
+  setShowIdModal(true);
+};
   const handleClose = () => {
     setSelectedUser(null);
     setShowModal(false);
@@ -468,12 +479,20 @@ export default function ListofUsers() {
                         >
                           View
                         </button> */}
-                        <button
-                          onClick={() => handleView(u)}
-                          className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer"
+                      <div className="flex gap-5">
+                          <button
+                           onClick={() => handleViewInfo(u)}
+                          className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer capitalize"
                         >
-                          View
+                          View info
                         </button>
+                        <button
+                          onClick={() => handleViewID(u)}
+                          className="text-pink-600 hover:text-pink-700 text-sm hover:underline hover:cursor-pointer capitalize"
+                        >
+                          View ID
+                        </button>
+                      </div>
                       </td>
                     </tr>
                   ))}
@@ -661,7 +680,7 @@ export default function ListofUsers() {
             </div>
           </div>
 
-          {/* MODAL */}
+          {/* MODAL FOR VIEW INFO */}
           {showModal && selectedUser && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
               <div className="relative z-10 w-full max-w-2xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
@@ -975,6 +994,84 @@ export default function ListofUsers() {
               </div>
             </div>
           )}
+
+
+{/* MODAL FOR VIEW ID */}
+          {showIdModal && selectedUser && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+    <div className="relative bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+
+      {/* CLOSE */}
+      <button
+        onClick={() => setShowIdModal(false)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+      >
+        ✕
+      </button>
+
+      <h3 className="text-lg font-semibold text-gray-800 mb-3">
+        Solo Parent ID
+      </h3>
+
+      {/* ID CARD */}
+      <section className="flex flex-col items-center gap-4">
+         {/* CARD CONTAINER */}
+        <div
+          id="admin-id-card"
+          // className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+          className="w-[340px] h-[210px] rounded-xl shadow-xl overflow-hidden relative"
+        >
+          {!showBack ? (
+              /* ================= FRONT ================= */
+          <section className="flex flex-col items-center gap-4">
+             {/* CARD CONTAINER */}
+              <div
+              id="id-card"
+              className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+              >
+                {/* BACKGROUND TEMPLATE */}
+                <img
+                  src="/front-SP.png"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+
+              </div>
+          </section>
+          ) : (
+            <>
+              {/* BACK */}
+              <img
+                src="/back-SP.png"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+
+              <p className="absolute top-[25px] left-[20px] text-[11px] text-center w-[300px]">
+                {selectedUser.house} {selectedUser.street}{" "}
+                {selectedUser.barangay}
+              </p>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* BUTTONS */}
+      <div className="mt-4 flex gap-2">
+         <button
+          onClick={() => window.print()}
+          className="flex-1 bg-pink-600 text-white py-2 rounded-md"
+        >
+          Print
+        </button>
+        <button
+          onClick={() => setShowBack(!showBack)}
+          className="flex-1 bg-red-500 text-white py-2 rounded-md"
+        >
+          {showBack ? "View Front ID" : "View Back ID"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
         </main>
       </div>
     </div>
