@@ -273,6 +273,22 @@ const handleViewID = (user) => {
   };
 
 
+  const formatDate2 = (dateString) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    const month = date.toLocaleString("en-US", {
+    month: "long",
+    });
+
+    return `${month} ${day}, ${year}`;
+  };
+
+
 
 
 const getTextStyle = (text) => {
@@ -1079,7 +1095,7 @@ const nameStyle = getTextStyle(fullName);
     </p>
 
     <p className={`text-black font-semibold uppercase truncate ${nameStyle.size}`}>
-      {formatDate(selectedUser?.birthday)}
+      {formatDate2(selectedUser?.birthday)}
     </p>
   </div>
 </section>
