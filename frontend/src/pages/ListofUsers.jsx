@@ -117,14 +117,14 @@ export default function ListofUsers() {
     setShowModal(true);
   };
   const handleViewInfo = (user) => {
-  setSelectedUser(user);
-  setShowModal(true);
-};
+    setSelectedUser(user);
+    setShowModal(true);
+  };
 
-const handleViewID = (user) => {
-  setSelectedUser(user);
-  setShowIdModal(true);
-};
+  const handleViewID = (user) => {
+    setSelectedUser(user);
+    setShowIdModal(true);
+  };
   const handleClose = () => {
     setSelectedUser(null);
     setShowModal(false);
@@ -272,7 +272,6 @@ const handleViewID = (user) => {
     return `${month}/${day}/${year}`;
   };
 
-
   const formatDate2 = (dateString) => {
     if (!dateString) return "";
 
@@ -282,37 +281,34 @@ const handleViewID = (user) => {
     const year = date.getFullYear();
 
     const month = date.toLocaleString("en-US", {
-    month: "long",
+      month: "long",
     });
 
     return `${month} ${day}, ${year}`;
   };
 
+  const getTextStyle = (text) => {
+    if (!text) return { size: "text-[11px]", gap: "gap-2.5" };
 
+    if (text.length >= 23) {
+      return {
+        size: "text-[10px]",
+        gap: "gap-3",
+      };
+    }
 
-
-const getTextStyle = (text) => {
-  if (!text) return { size: "text-[11px]", gap: "gap-2.5" };
-
-  if (text.length >= 23) {
     return {
-      size: "text-[10px]",
-      gap: "gap-3",
+      size: "text-[11px]",
+      gap: "gap-2.5",
     };
-  }
-
-  return {
-    size: "text-[11px]",
-    gap: "gap-2.5",
   };
-};  
 
+  const fullName = selectedUser
+    ? `${selectedUser.first_name || ""} ${selectedUser.middle_name || ""} ${selectedUser.last_name || ""} ${selectedUser.suffix || ""}`
+    : "";
 
-const fullName = selectedUser
-  ? `${selectedUser.first_name || ""} ${selectedUser.middle_name || ""} ${selectedUser.last_name || ""} ${selectedUser.suffix || ""}`
-  : "";
+  const nameStyle = getTextStyle(fullName);
 
-const nameStyle = getTextStyle(fullName);
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -460,7 +456,7 @@ const nameStyle = getTextStyle(fullName);
                       Status
                     </th>
                     <th className="px-3 py-2 text-left font-semibold">
-                      Action
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -507,34 +503,22 @@ const nameStyle = getTextStyle(fullName);
                         )}
                       </td>
 
-                      {/* ACTION */}
+                      {/* ACTIONS */}
                       <td className="px-4 py-3">
-                        {/* <button
-                          onClick={() => handleView(u)}
-                          className="text-red-600 hover:text-red-700 font-medium"
-                        >
-                          View
-                        </button> */}
-                        {/* <button
-                          
-                          className="cursor-pointer px-3 py-1 text-sm bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition"
-                        >
-                          View
-                        </button> */}
-                      <div className="flex gap-5">
+                        <div className="flex gap-5">
                           <button
-                           onClick={() => handleViewInfo(u)}
-                          className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer capitalize"
-                        >
-                          View info
-                        </button>
-                        <button
-                          onClick={() => handleViewID(u)}
-                          className="text-pink-600 hover:text-pink-700 text-sm hover:underline hover:cursor-pointer capitalize"
-                        >
-                          View ID
-                        </button>
-                      </div>
+                            onClick={() => handleViewInfo(u)}
+                            className="text-red-600 hover:text-red-700 text-sm hover:underline hover:cursor-pointer capitalize"
+                          >
+                            View info
+                          </button>
+                          <button
+                            onClick={() => handleViewID(u)}
+                            className="text-pink-600 hover:text-pink-700 text-sm hover:underline hover:cursor-pointer capitalize"
+                          >
+                            View ID
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -663,9 +647,15 @@ const nameStyle = getTextStyle(fullName);
 
                     <button
                       onClick={() => handleView(u)}
-                      className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+                      className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg capitalize"
                     >
-                      View
+                      View info
+                    </button>
+                    <button
+                      onClick={() => handleViewID(u)}
+                      className="mt-3 w-full bg-pink-600 text-white py-2 rounded-lg"
+                    >
+                      View ID
                     </button>
                   </div>
                 );
@@ -1037,124 +1027,129 @@ const nameStyle = getTextStyle(fullName);
             </div>
           )}
 
-
-{/* MODAL FOR VIEW ID */}
+          {/* MODAL FOR VIEW ID */}
           {showIdModal && selectedUser && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-    <div className="relative bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+              <div className="relative bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+                {/* CLOSE */}
+                <button
+                  onClick={() => setShowIdModal(false)}
+                  className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                >
+                  ✕
+                </button>
 
-      {/* CLOSE */}
-      <button
-        onClick={() => setShowIdModal(false)}
-        className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-      >
-        ✕
-      </button>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  Solo Parent ID
+                </h3>
 
-      <h3 className="text-lg font-semibold text-gray-800 mb-3">
-        Solo Parent ID
-      </h3>
+                {/* ID CARD */}
+                <section className="flex flex-col items-center gap-4">
+                  {/* CARD CONTAINER */}
+                  <div
+                    id="admin-id-card"
+                    // className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+                    className="w-[340px] h-[210px] rounded-xl shadow-xl overflow-hidden relative"
+                  >
+                    {!showBack ? (
+                      /* ================= FRONT ================= */
+                      <section className="flex flex-col items-center gap-4">
+                        {/* CARD CONTAINER */}
+                        <div
+                          id="id-card"
+                          className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+                        >
+                          {/* BACKGROUND TEMPLATE */}
+                          <img
+                            src="/front-SP.png"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
 
-      {/* ID CARD */}
-      <section className="flex flex-col items-center gap-4">
-         {/* CARD CONTAINER */}
-        <div
-          id="admin-id-card"
-          // className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
-          className="w-[340px] h-[210px] rounded-xl shadow-xl overflow-hidden relative"
-        >
-          {!showBack ? (
-              /* ================= FRONT ================= */
-          <section className="flex flex-col items-center gap-4">
-             {/* CARD CONTAINER */}
-              <div
-              id="id-card"
-              className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
-              >
-                {/* BACKGROUND TEMPLATE */}
-                <img
-                  src="/front-SP.png"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                
+                          <section>
+                            <div
+                              className={`absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight ${nameStyle.gap}`}
+                            >
+                              <p
+                                className={`text-black font-bold uppercase truncate ${nameStyle.size}`}
+                              >
+                                {selectedUser?.last_name}
+                              </p>
 
-                <section>
-  <div className={`absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight ${nameStyle.gap}`}>
-    <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
-      {selectedUser?.last_name}
-    </p>
+                              <p
+                                className={`text-black font-bold uppercase truncate ${nameStyle.size}`}
+                              >
+                                {selectedUser?.first_name}{" "}
+                                {selectedUser?.suffix}
+                              </p>
+                            </div>
 
-    <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
-      {selectedUser?.first_name} {selectedUser?.suffix}
-    </p>
-  </div>
+                            <div className="absolute top-[124px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
+                              <p
+                                className={`text-black font-bold uppercase truncate ${nameStyle.size}`}
+                              >
+                                {selectedUser?.middle_name}
+                              </p>
 
-  <div className="absolute top-[124px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
-    <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
-      {selectedUser?.middle_name}
-    </p>
+                              <p
+                                className={`text-black font-semibold uppercase truncate ${nameStyle.size}`}
+                              >
+                                {formatDate2(selectedUser?.birthday)}
+                              </p>
+                            </div>
+                          </section>
 
-    <p className={`text-black font-semibold uppercase truncate ${nameStyle.size}`}>
-      {formatDate2(selectedUser?.birthday)}
-    </p>
-  </div>
-</section>
+                          {/* ID NUMBER */}
+                          <p className="absolute top-[55px] left-[80px] text-black font-bold text-[9px]">
+                            {selectedUser.uuid}
+                          </p>
+                        </div>
+                      </section>
+                    ) : (
+                      /* ================= BACK ================= */
+                      <section className="flex flex-col items-center gap-4">
+                        {/* CARD CONTAINER */}
+                        <div
+                          id="id-card"
+                          className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+                        >
+                          {/* BACKGROUND TEMPLATE */}
+                          <img
+                            src="/back-SP.png"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
 
+                          {/* ADDRESS */}
+                          <div className="absolute text-center top-[25px] left-[20px] w-[310px]">
+                            <p className="text-black text-[11px] font-semibold break-words leading-tight">
+                              {selectedUser.house} {selectedUser.street}{" "}
+                              {selectedUser.subdivision} {selectedUser.barangay}
+                              , {selectedUser.city}, {selectedUser.province}
+                            </p>
+                          </div>
+                        </div>
+                      </section>
+                    )}
+                  </div>
+                </section>
 
-                {/* ID NUMBER */}
-                <p className="absolute top-[55px] left-[80px] text-black font-bold text-[9px]">
-                  {selectedUser.uuid}
-                </p>
+                {/* BUTTONS */}
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => window.print()}
+                    className="flex-1 bg-rose-700 text-white py-2 rounded-md"
+                  >
+                    Print
+                  </button>
+                  <button
+                    onClick={() => setShowBack(!showBack)}
+                    className="flex-1 bg-red-500 text-white py-2 rounded-md"
+                  >
+                    {showBack ? "View Front ID" : "View Back ID"}
+                  </button>
+                </div>
               </div>
-          </section>
-          ) : (
-            /* ================= BACK ================= */
-              <section className="flex flex-col items-center gap-4">
-              {/* CARD CONTAINER */}
-              <div
-              id="id-card"
-              className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
-              >
-
-              {/* BACKGROUND TEMPLATE */}
-              <img
-                src="/back-SP.png"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-
-              {/* ADDRESS */}
-              <div className="absolute text-center top-[25px] left-[20px] w-[310px]">
-              <p className="text-black text-[11px] font-semibold break-words leading-tight">
-              {selectedUser.house} {selectedUser.street}{" "}
-              {selectedUser.subdivision} {selectedUser.barangay},{" "}
-              {selectedUser.city}, {selectedUser.province}
-              </p>
-              </div>
-
-              </div>
-            </section>
+            </div>
           )}
-        </div>
-      </section>
-
-      {/* BUTTONS */}
-      <div className="mt-4 flex gap-2">
-         <button
-          onClick={() => window.print()}
-          className="flex-1 bg-rose-700 text-white py-2 rounded-md"
-        >
-          Print
-        </button>
-        <button
-          onClick={() => setShowBack(!showBack)}
-          className="flex-1 bg-red-500 text-white py-2 rounded-md"
-        >
-          {showBack ? "View Front ID" : "View Back ID"}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
         </main>
       </div>
     </div>
