@@ -131,7 +131,7 @@ useEffect(() => {
 
     const month = date.toLocaleString("en-US", {
     month: "long",
-    }).toUpperCase();
+    });
 
     return `${month} ${day}, ${year}`;
   };
@@ -327,7 +327,7 @@ const nameStyle = getTextStyle(fullName);
 
            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
              {/* LEFT COLUMN */}
-             <div className="lg:col-span-1 space-y-6">
+             <section className="lg:col-span-1 space-y-6">
                {/* PROFILE CARD */}
                <div className="backdrop-blur-lg bg-white border border-gray-200 rounded-2xl shadow-md p-6 text-center">
                  {/* <svg
@@ -455,12 +455,12 @@ const nameStyle = getTextStyle(fullName);
                    )}
                  </div>
                </div>
-             </div>
+             </section>
 
              {/* RIGHT COLUMN */}
-             <div className="lg:col-span-2 space-y-4 md:space-y-7">
+             <section className="lg:col-span-2 space-y-4 md:space-y-7">
                {/* PERSONAL INFORMATION */}
-               <div className="backdrop-blur-lg bg-white border border-gray-200  rounded-2xl shadow-md p-6">
+               <section className="backdrop-blur-lg bg-white border border-gray-200  rounded-2xl shadow-md p-6">
                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
                    Personal Information
                  </h3>
@@ -499,7 +499,8 @@ const nameStyle = getTextStyle(fullName);
                      <div>
                        <h4 className="text-sm text-gray-400">Date of Birth</h4>
                        <p className="font-medium text-lg text-gray-800 mb-3 capitalize">
-                         {userInfo?.parent?.birthday || "N/A"}
+                         {/* {userInfo?.parent?.birthday || "N/A"} */}
+                         {formatDate(userInfo?.parent?.birthday)}
                        </p>
                      </div>
                      <div>
@@ -518,10 +519,10 @@ const nameStyle = getTextStyle(fullName);
                      </p>
                    </div>
                  </div>
-               </div>
+               </section>
 
                {/* CONTACT INFORMATION */}
-               <div className="backdrop-blur-lg bg-white border border-gray-200  rounded-2xl shadow-md p-6">
+               <section className="backdrop-blur-lg bg-white border border-gray-200  rounded-2xl shadow-md p-6">
                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
                    Contact Information
                  </h3>
@@ -587,10 +588,11 @@ const nameStyle = getTextStyle(fullName);
                      </div>
                    </div>
                  </div>
-               </div>
-             </div>
+               </section>
+             </section>
            </div>
-           {/* MODAL */}
+
+           {/* MODAL FOR ID */}
            {showModal && (
              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
                <div className="relative bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
