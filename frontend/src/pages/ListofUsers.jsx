@@ -645,18 +645,20 @@ export default function ListofUsers() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => handleView(u)}
-                      className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg capitalize"
-                    >
-                      View info
-                    </button>
-                    <button
-                      onClick={() => handleViewID(u)}
-                      className="mt-3 w-full bg-pink-600 text-white py-2 rounded-lg"
-                    >
-                      View ID
-                    </button>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleView(u)}
+                        className="mt-3 w-full bg-rose-700  text-white py-2 rounded-lg capitalize"
+                      >
+                        View info
+                      </button>
+                      <button
+                        onClick={() => handleViewID(u)}
+                        className="mt-3 w-full bg-red-600 text-white py-2 rounded-lg"
+                      >
+                        View ID
+                      </button>
+                    </div>
                   </div>
                 );
               })}
