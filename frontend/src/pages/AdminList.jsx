@@ -340,7 +340,7 @@ export default function AdminList() {
           <div className="grid md:grid-cols-3 gap-3 mb-3">
             <div>
               <label className="block text-sm md:text-base text-gray-500 font-medium">
-                Search by
+                Search by Email
               </label>
               <div className="flex justify-center items-center border border-gray-200 py-1.5 rounded-md focus:outline-red-600 px-2">
                 {/* SVG */}
