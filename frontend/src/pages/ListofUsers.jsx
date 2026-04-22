@@ -1038,18 +1038,31 @@ const handleViewID = (user) => {
               </div>
           </section>
           ) : (
-            <>
-              {/* BACK */}
+            /* ================= BACK ================= */
+              <section className="flex flex-col items-center gap-4">
+              {/* CARD CONTAINER */}
+              <div
+              id="id-card"
+              className="w-[340px] h-[210px] relative rounded-xl overflow-hidden shadow-md"
+              >
+
+              {/* BACKGROUND TEMPLATE */}
               <img
                 src="/back-SP.png"
                 className="absolute inset-0 w-full h-full object-cover"
               />
 
-              <p className="absolute top-[25px] left-[20px] text-[11px] text-center w-[300px]">
-                {selectedUser.house} {selectedUser.street}{" "}
-                {selectedUser.barangay}
+              {/* ADDRESS */}
+              <div className="absolute text-center top-[25px] left-[20px] w-[310px]">
+              <p className="text-black text-[11px] font-semibold break-words leading-tight">
+              {selectedUser.house} {selectedUser.street}{" "}
+              {selectedUser.subdivision} {selectedUser.barangay},{" "}
+              {selectedUser.city}, {selectedUser.province}
               </p>
-            </>
+              </div>
+
+              </div>
+            </section>
           )}
         </div>
       </section>
