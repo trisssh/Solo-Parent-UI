@@ -20,6 +20,7 @@ export default function ListofUsers() {
   const [filter, setFilter] = useState("all");
   const [deleteReason, setDeleteReason] = useState("");
   const [customReason, setCustomReason] = useState("");
+
   // const [saving, setSaving] = useState(false);
   // const [page, setPage] = useState(2);
   // const [totalPages, setTotalPages] = useState(1);
@@ -308,6 +309,11 @@ export default function ListofUsers() {
     : "";
 
   const nameStyle = getTextStyle(fullName);
+
+
+  // console.log(selectedUser);
+  // console.log("selectedUser:", selectedUser);
+  // console.log("images:", selectedUser?.image);
 
 
   return (
@@ -645,7 +651,9 @@ export default function ListofUsers() {
                       </div>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div
+                      // className="flex gap-3"
+                    >
                       <button
                         onClick={() => handleView(u)}
                         className="mt-3 w-full bg-rose-700  text-white py-2 rounded-lg capitalize"
