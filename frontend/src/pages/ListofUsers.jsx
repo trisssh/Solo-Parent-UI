@@ -272,6 +272,32 @@ const handleViewID = (user) => {
     return `${month}/${day}/${year}`;
   };
 
+
+
+
+const getTextStyle = (text) => {
+  if (!text) return { size: "text-[11px]", gap: "gap-2.5" };
+
+  if (text.length >= 23) {
+    return {
+      size: "text-[10px]",
+      gap: "gap-3",
+    };
+  }
+
+  return {
+    size: "text-[11px]",
+    gap: "gap-2.5",
+  };
+};  
+
+
+const fullName = selectedUser
+  ? `${selectedUser.first_name || ""} ${selectedUser.middle_name || ""} ${selectedUser.last_name || ""} ${selectedUser.suffix || ""}`
+  : "";
+
+const nameStyle = getTextStyle(fullName);
+
   return (
     <div className="flex bg-white md:h-screen">
       {/* SIDEBAR */}
@@ -1034,7 +1060,35 @@ const handleViewID = (user) => {
                   src="/front-SP.png"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
+                
 
+                <section>
+  <div className={`absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight ${nameStyle.gap}`}>
+    <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
+      {selectedUser?.last_name}
+    </p>
+
+    <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
+      {selectedUser?.first_name} {selectedUser?.suffix}
+    </p>
+  </div>
+
+  <div className="absolute top-[124px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
+    <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
+      {selectedUser?.middle_name}
+    </p>
+
+    <p className={`text-black font-semibold uppercase truncate ${nameStyle.size}`}>
+      {formatDate(selectedUser?.birthday)}
+    </p>
+  </div>
+</section>
+
+
+                {/* ID NUMBER */}
+                <p className="absolute top-[55px] left-[80px] text-black font-bold text-[9px]">
+                  {selectedUser.uuid}
+                </p>
               </div>
           </section>
           ) : (
@@ -1071,7 +1125,7 @@ const handleViewID = (user) => {
       <div className="mt-4 flex gap-2">
          <button
           onClick={() => window.print()}
-          className="flex-1 bg-pink-600 text-white py-2 rounded-md"
+          className="flex-1 bg-rose-700 text-white py-2 rounded-md"
         >
           Print
         </button>

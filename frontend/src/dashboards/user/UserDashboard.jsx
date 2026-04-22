@@ -664,6 +664,9 @@ const nameStyle = getTextStyle(fullName);
                             {userInfo?.parent?.first_name} {userInfo?.parent?.suffix}
                           </p>
                         </div> */}
+                        
+
+                      <section>
                         <div className={`absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight ${nameStyle.gap}`}>
                           <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
                             {userInfo?.parent?.last_name}
@@ -675,15 +678,16 @@ const nameStyle = getTextStyle(fullName);
                         </div>
 
                         <div className="absolute top-[124px] left-[185px] w-[150px] flex flex-col leading-tight gap-3">
-                            {/* <p className="text-black text-[11px] font-bold uppercase truncate ${nameStyle.size}"> */}
-                              <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
+                          <p className={`text-black font-bold uppercase truncate ${nameStyle.size}`}>
                             {userInfo?.parent?.middle_name}
                           </p>
                           {/* <p className="text-black text-[11px] font-semibold uppercase truncate"> */}
                             <p className={`text-black font-semibold uppercase truncate ${nameStyle.size}`}>
                             {formatDate(userInfo?.parent?.birthday)}
                           </p>
-                        </div>
+                        </div>        
+                      </section>
+                      
 
 
                         {/* ISSUED DATE */}
