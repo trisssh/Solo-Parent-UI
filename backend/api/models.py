@@ -401,7 +401,8 @@ class Contact(models.Model):
 
     parent = models.OneToOneField(
         Parent,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='contacts'
     )
 
     def __str__(self):
@@ -454,7 +455,8 @@ class Image(models.Model):
 
     parent = models.ForeignKey(
         Parent,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='images'
     )
 
     def __str__(self):

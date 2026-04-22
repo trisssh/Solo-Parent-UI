@@ -360,7 +360,24 @@ class ParentSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {'user': {'read_only': True}}
 
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'suffix',
+            'phone',
+            'parent',
+        ]
+        extra_kwargs = {'parent': {'read_only': True}}
+
+
 class ParentListSerializer(serializers.ModelSerializer):
+    contacts = ContactSerializer(many=False, read_only=True)
+    images = ImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Parent
         fields = [
@@ -382,25 +399,13 @@ class ParentListSerializer(serializers.ModelSerializer):
             'user',
             'uuid',
             'is_verified',
-            'contact',
+            'contacts',
+            'images',
         ]
         extra_kwargs = {
             'id': {'read_only': True},
             'user': {'read_only': True},
         }
-
-class ContactSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contact
-        fields = [
-            'first_name',
-            'middle_name',
-            'last_name',
-            'suffix',
-            'phone',
-            'parent',
-        ]
-        extra_kwargs = {'parent': {'read_only': True}}
 
 class RegistrationSerializer(serializers.Serializer):
     # only fields that are NOT model-backed

@@ -1,6 +1,6 @@
 import datetime
 from django.db import transaction
-from django.db.models import Avg, Q, F, Count, Sum, FloatField, ExpressionWrapper
+from django.db.models import Avg, Q, F, Count, OuterRef, Sum, FloatField, ExpressionWrapper
 from django.db.models.functions import ExtractYear
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -147,7 +147,10 @@ class ParentInfoView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 class ParentListView(ListAPIView):
-    queryset = Parent.objects.select_related('contact').order_by('last_name')
+    queryset = Parent.objects.prefetch_related(
+        'contacts',
+        'images'
+    ).order_by('last_name')
     permission_classes = [IsAuthenticated]
     serializer_class = ParentListSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
