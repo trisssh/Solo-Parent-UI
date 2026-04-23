@@ -10,14 +10,15 @@ import ChangePasswordForm from "../components/ChangePasswordForm";
 
 export default function ChangePassword() {
   const { authTokens, userInfo } = useContext(AuthContext);
-  const [user, setUser] = useState(null);
+  const [users, setUser] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { user, logoutUser } = useContext(AuthContext);
    
 
     useEffect(() => {
-      const storedUser = localStorage.getItem("user");
+      const storedUser = localStorage.getItem("users");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
@@ -84,7 +85,8 @@ export default function ChangePassword() {
               {/* Email */}
               {/* <span className="hidden md:block font-semibold">{email}</span> */}
               <span className="hidden md:block font-semibold">
-                {user?.parent?.email ?? user?.email ?? "Loading..."}
+                {/* {users?.parent?.email ?? user?.email ?? "Loading..."} */}
+                {user?.email || "No email"}
               </span>
 
               {/* Dropdown icon */}
