@@ -149,8 +149,57 @@ export default function ListofUsers() {
   };
 
   // UPDATE USER
+  // const handleSave = async () => {
+  //   try {
+  //     const res = await fetch(
+  //       `http://127.0.0.1:8000/api/admin/parent/info/${selectedUser.id}`,
+  //       {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${authTokens.access}`,
+  //         },
+  //         body: JSON.stringify(selectedUser),
+  //       },
+  //     );
+
+  //     if (!res.ok) throw new Error("Failed to update user");
+
+  //     const updated = await res.json();
+
+  //     fetchUsers(); // reload updated data
+
+  //     showAlert({
+  //       title: "Success",
+  //       message: "User updated successfully",
+  //       icon: "success",
+  //     });
+
+  //     handleClose();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
   const handleSave = async () => {
     try {
+      const payload = {
+        first_name: selectedUser.first_name,
+        middle_name: selectedUser.middle_name,
+        last_name: selectedUser.last_name,
+        suffix: selectedUser.suffix,
+        birthday: selectedUser.birthday,
+        gender: selectedUser.gender,
+        phone: selectedUser.phone,
+        street: selectedUser.street,
+        house: selectedUser.house,
+        barangay: selectedUser.barangay,
+        subdivision: selectedUser.subdivision,
+        reason: selectedUser.reason,
+        is_verified: selectedUser.is_verified,
+      };
+
+      console.log("SENDING PAYLOAD:", payload);
+
       const res = await fetch(
         `http://127.0.0.1:8000/api/admin/parent/info/${selectedUser.id}`,
         {
@@ -159,25 +208,24 @@ export default function ListofUsers() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authTokens.access}`,
           },
-          body: JSON.stringify(selectedUser),
+          body: JSON.stringify(payload),
         },
       );
 
-      if (!res.ok) throw new Error("Failed to update user");
+      const data = await res.json().catch(() => null);
 
-      const updated = await res.json();
+      console.log("STATUS:", res.status);
+      console.log("BACKEND RESPONSE:", data);
 
-      fetchUsers(); // reload updated data
+      if (!res.ok) {
+        throw new Error(JSON.stringify(data));
+      }
 
-      showAlert({
-        title: "Success",
-        message: "User updated successfully",
-        icon: "success",
-      });
-
+      alert("SUCCESS");
+      fetchUsers();
       handleClose();
     } catch (err) {
-      console.error(err);
+      console.error("SAVE ERROR:", err);
     }
   };
 
@@ -783,7 +831,7 @@ export default function ListofUsers() {
           {/* MODAL FOR VIEW INFO */}
           {showModal && selectedUser && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-              <div className="relative z-10 w-full max-w-2xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
+              <div className="relative z-10 w-full max-w-3xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
                 {/* Close button */}
                 <button
                   onClick={handleClose}
@@ -801,7 +849,7 @@ export default function ListofUsers() {
                 </p>
 
                 <form>
-                  <div className="grid md:grid-cols-3 gap-3">
+                  <div className="grid md:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-gray-700 font-medium">
                         First Name
@@ -896,6 +944,20 @@ export default function ListofUsers() {
                         className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
                       />
                     </div>
+
+                    <div>
+                      <label className="block text-gray-700 font-medium">
+                        House no.
+                      </label>
+                      <input
+                        name="house"
+                        value={selectedUser.house || ""}
+                        onChange={handleChange}
+                        disabled={!isEdit}
+                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
+                      />
+                    </div>
+
                     <div>
                       <label className="block text-gray-700 font-medium">
                         Street
@@ -908,6 +970,7 @@ export default function ListofUsers() {
                         className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
                       />
                     </div>
+
                     <div>
                       <label className="block text-gray-700 font-medium">
                         Barangay
@@ -928,6 +991,7 @@ export default function ListofUsers() {
                         <option value="Onse">Onse</option>
                       </select>
                     </div>
+
                     <div>
                       <label className="block text-gray-700 font-medium">
                         Subdivision
@@ -940,6 +1004,7 @@ export default function ListofUsers() {
                         className="border border-gray-200 p-2 w-full mb-2 rounded-lg"
                       />
                     </div>
+
                     <div>
                       <label className="block text-gray-700 font-medium">
                         Status
@@ -956,48 +1021,45 @@ export default function ListofUsers() {
                         <option value="false">Unverified</option>
                       </select>
                     </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-medium">
-                        Reason
-                      </label>
-                      <select
-                        name="reason"
-                        value={selectedUser.reason || ""}
-                        onChange={handleChange}
-                        disabled={!isEdit}
-                        className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
-                      >
-                        <option value="">Select Reason</option>
-                        <option value="crime_against_chastity">
-                          Crime Against Chastity
-                        </option>
-                        <option value="death_of_spouse">Death of Spouse</option>
-                        <option value="spouse_detained">
-                          Spouse is Detained
-                        </option>
-                        <option value="physical_mental_incapacity">
-                          Physical/Mental Incapacity of Spouse
-                        </option>
-                        <option value="separation">
-                          Legal/De Facto Separation
-                        </option>
-                        <option value="annuled">Annulment of Marriage</option>
-                        <option value="abandonment">
-                          Abandonment of Spouse
-                        </option>
-                        <option value="preferred_to_keep">
-                          Preferred To Keep Child/Children Instead of Giving
-                          Them To Welfare
-                        </option>
-                        <option value="sole_provider">
-                          Solely Provides Parental Care
-                        </option>
-                        <option value="assumed_responsibility">
-                          Assumed Responsibility of Head of Family
-                        </option>
-                      </select>
-                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium">
+                      Category for being a Solo Parent
+                    </label>
+                    <select
+                      name="reason"
+                      value={selectedUser.reason || ""}
+                      onChange={handleChange}
+                      disabled={!isEdit}
+                      className="border border-gray-200 p-2 w-full mb-2 rounded-lg capitalize"
+                    >
+                      <option value="">Select Reason</option>
+                      <option value="crime_against_chastity">
+                        Crime Against Chastity
+                      </option>
+                      <option value="death_of_spouse">Death of Spouse</option>
+                      <option value="spouse_detained">
+                        Spouse is Detained
+                      </option>
+                      <option value="physical_mental_incapacity">
+                        Physical/Mental Incapacity of Spouse
+                      </option>
+                      <option value="separation">
+                        Legal/De Facto Separation
+                      </option>
+                      <option value="annuled">Annulment of Marriage</option>
+                      <option value="abandonment">Abandonment of Spouse</option>
+                      <option value="preferred_to_keep">
+                        Preferred To Keep Child/Children Instead of Giving Them
+                        To Welfare
+                      </option>
+                      <option value="sole_provider">
+                        Solely Provides Parental Care
+                      </option>
+                      <option value="assumed_responsibility">
+                        Assumed Responsibility of Head of Family
+                      </option>
+                    </select>
                   </div>
 
                   <div className="mt-6 ">
@@ -1028,13 +1090,13 @@ export default function ListofUsers() {
 
                         {/* Reason for deletion */}
                         <div className="mt-4">
-                          <label className="block text-gray-700 font-medium">
+                          <label className="block text-red-600 font-medium">
                             Reason for deletion
                           </label>
                           <select
                             value={deleteReason}
                             onChange={(e) => setDeleteReason(e.target.value)}
-                            className="w-full border rounded-md p-2"
+                            className="w-full border-2 rounded-md p-2 text-red-600 "
                           >
                             <option value="">Select reason</option>
                             <option>Improper Profile Picture Upload</option>
