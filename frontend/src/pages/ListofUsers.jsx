@@ -20,6 +20,7 @@ export default function ListofUsers() {
   const [filter, setFilter] = useState("all");
   const [deleteReason, setDeleteReason] = useState("");
   const [customReason, setCustomReason] = useState("");
+  const [cleanSignature, setCleanSignature] = useState(null);
 
   // const [saving, setSaving] = useState(false);
   // const [page, setPage] = useState(2);
@@ -310,36 +311,68 @@ export default function ListofUsers() {
 
   const nameStyle = getTextStyle(fullName);
 
+  //RENDER IMAGES
+  const selectedIdImage = selectedUser?.images?.find(
+    (img) => img.image_type === "id",
+  )?.image;
 
+  const signatureImage = selectedUser?.images?.find(
+    (img) => img.image_type === "signature",
+  )?.image;
+
+  //REMOVE WHITE BG
+  const removeWhiteBg = (imgUrl) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = imgUrl;
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.drawImage(img, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+
+          // detect white pixels
+          if (r > 240 && g > 240 && b > 240) {
+            data[i + 3] = 0; // make transparent
+          }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+
+        resolve(canvas.toDataURL("image/png"));
+      };
+    });
+  };
+
+  //remove WHITEBG E-sign
+  useEffect(() => {
+    if (signatureImage) {
+      removeWhiteBg(signatureImage).then((result) => {
+        setCleanSignature(result);
+      });
+    }
+  }, [signatureImage]);
+
+  // for testing
   // console.log(selectedUser);
   // console.log("selectedUser:", selectedUser);
   // console.log("images:", selectedUser?.image);
 
-  console.log("images:", selectedUser?.images);
-  console.log("selectedUser:", selectedUser);
-
-
-  const selectedIdImage = selectedUser?.images?.find(
-  (img) => img.image_type === "id"
-  )?.image;
-  
- const signatureImage = selectedUser?.images?.find(
-   (img) => img.image_type === "signature",
- )?.image;
-
-//   const selectedIdImage = selectedUser?.image?.find(
-//   (img) => img.image_type === "id"
-// )?.image;
-
-// const selectedIdImageUrl = selectedIdImage
-//   ? `http://127.0.0.1:8000${selectedIdImage}`
-//   : null;
-
-
-  // const BASE_URL = "http//127.0.0.1:8000";
-
-  // const idImage = selectedUser?.
-
+  // console.log("images:", selectedUser?.images);
+  // console.log("selectedUser:", selectedUser);
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -1144,10 +1177,12 @@ export default function ListofUsers() {
                           </p>
 
                           {/* E-SIGNATURE */}
-                          <img
-                            src={signatureImage}
-                            className="absolute bottom-[10px] left-[53px] w-[83px]"
-                          />
+                          {signatureImage && (
+                            <img
+                              src={cleanSignature || signatureImage}
+                              className="absolute bottom-[10px] left-[53px] w-[83px]"
+                            />
+                          )}
                         </div>
                       </section>
                     ) : (
