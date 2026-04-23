@@ -221,7 +221,12 @@ export default function ListofUsers() {
         throw new Error(JSON.stringify(data));
       }
 
-      alert("SUCCESS");
+      // alert("SUCCESS");
+          showAlert({
+            title: "Success",
+            message: "User updated successfully",
+            icon: "success",
+          });
       fetchUsers();
       handleClose();
     } catch (err) {
@@ -309,7 +314,7 @@ export default function ListofUsers() {
 
   const currentPage = Math.floor(offset / limit) + 1;
 
-  // DATE REFORMAT
+  // DATE REFORMAT  (MM/DD/YYYY)
   const formatDate = (dateString) => {
     if (!dateString) return "";
 
@@ -322,6 +327,7 @@ export default function ListofUsers() {
     return `${month}/${day}/${year}`;
   };
 
+  // 2ND DATE REFORMAT  (STRING; MM/DD/YYYY)
   const formatDate2 = (dateString) => {
     if (!dateString) return "";
 
