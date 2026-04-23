@@ -13,6 +13,43 @@
   --red-4: #f31212; /* Hover btn for 1 */
 }
 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #admin-id-card,
+  #admin-id-card * {
+    visibility: visible;
+  }
+
+  #admin-id-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+@media print {
+  #admin-id-card {
+    width: 340px;
+    height: 210px;
+  }
+}
+
+@page {
+  margin: 0;
+}
+
+@media print {
+  #admin-id-card {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+  }
+}
+
 /* HOW TO USE EXAMPLE: 
 bg-[var(--gray-1)] , 
 text-[var(--gray-1)] */
