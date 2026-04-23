@@ -315,6 +315,31 @@ export default function ListofUsers() {
   // console.log("selectedUser:", selectedUser);
   // console.log("images:", selectedUser?.image);
 
+  console.log("images:", selectedUser?.images);
+  console.log("selectedUser:", selectedUser);
+
+
+  const selectedIdImage = selectedUser?.images?.find(
+  (img) => img.image_type === "id"
+  )?.image;
+  
+ const signatureImage = selectedUser?.images?.find(
+   (img) => img.image_type === "signature",
+ )?.image;
+
+//   const selectedIdImage = selectedUser?.image?.find(
+//   (img) => img.image_type === "id"
+// )?.image;
+
+// const selectedIdImageUrl = selectedIdImage
+//   ? `http://127.0.0.1:8000${selectedIdImage}`
+//   : null;
+
+
+  // const BASE_URL = "http//127.0.0.1:8000";
+
+  // const idImage = selectedUser?.
+
 
   return (
     <div className="flex bg-white md:h-screen">
@@ -652,7 +677,7 @@ export default function ListofUsers() {
                     </div>
 
                     <div
-                      // className="flex gap-3"
+                    // className="flex gap-3"
                     >
                       <button
                         onClick={() => handleView(u)}
@@ -1075,6 +1100,11 @@ export default function ListofUsers() {
                             className="absolute inset-0 w-full h-full object-cover"
                           />
 
+                          <img
+                            src={selectedIdImage}
+                            className="absolute top-[67px] left-[47px] w-24 h-24 object-cover rounded border-2"
+                          />
+
                           <section>
                             <div
                               className={`absolute top-[73px] left-[185px] w-[150px] flex flex-col leading-tight ${nameStyle.gap}`}
@@ -1112,6 +1142,12 @@ export default function ListofUsers() {
                           <p className="absolute top-[55px] left-[80px] text-black font-bold text-[9px]">
                             {selectedUser.uuid}
                           </p>
+
+                          {/* E-SIGNATURE */}
+                          <img
+                            src={signatureImage}
+                            className="absolute bottom-[10px] left-[53px] w-[83px]"
+                          />
                         </div>
                       </section>
                     ) : (

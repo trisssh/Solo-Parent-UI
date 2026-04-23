@@ -700,7 +700,7 @@ const nameStyle = getTextStyle(fullName);
                           {userInfo?.parent?.uuid}
                         </p>
 
-                        {/* SIGNATURE */}
+                        {/* E-SIGNATURE */}
                         {signatureImageUrl && (
                           <img
                             src={cleanSignature || signatureImageUrl}
