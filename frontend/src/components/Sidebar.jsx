@@ -65,7 +65,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   return (
     <aside
-      className={`fixed lg:static z-50 h-screen w-64  bg-gradient-to-b from-red-700 to-red-600 text-white transition-transform duration-300
+      className={`fixed flex flex-col lg:static z-50 h-screen w-64  bg-gradient-to-b from-red-700 to-red-600 text-white transition-transform duration-300
       ${sidebarOpen ? "translate-x-0" : "-translate-x-64 lg:translate-x-0"}`}
     >
       {/* HEADER */}
@@ -86,7 +86,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       </div>
 
       {/* NAV */}
-      <nav className="p-3 space-y-1">
+      <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
         {itemsToShow.map((item, index) => {
           // LOGOUT BUTTON
           if (item.action) {
@@ -182,29 +182,29 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
             </Link>
           );
         })}
-
-        {/* USER PROFILE */}
-        <section className="flex items-center justify-between p-4 border-t border-white/20">
-          <div className="flex items-center gap-2">
-            <div className="bg-white size-7 rounded-full border border-red-200 shadow-md flex justify-center items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="size-10 text-red-700"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-
-            <p className="text-sm font-semibold">{user?.email || "No email"}</p>
-          </div>
-        </section>
       </nav>
+
+      {/* USER PROFILE */}
+      <section className="flex items-center justify-between p-4 border-t border-white/20">
+        <div className="flex items-center gap-2">
+          <div className="bg-white size-7 rounded-full border border-red-200 shadow-md flex justify-center items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="size-10 text-red-700"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+
+          <p className="text-sm font-semibold">{user?.email || "No email"}</p>
+        </div>
+      </section>
       {/* <nav className="p-3 space-y-1">
         {itemsToShow.map((item) => {
           if (item.action) {
