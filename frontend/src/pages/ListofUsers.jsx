@@ -21,8 +21,8 @@ export default function ListofUsers() {
   const [deleteReason, setDeleteReason] = useState("");
   const [customReason, setCustomReason] = useState("");
   const [cleanSignature, setCleanSignature] = useState(null);
+  const [saving, setSaving] = useState(false);
 
-  // const [saving, setSaving] = useState(false);
   // const [page, setPage] = useState(2);
   // const [totalPages, setTotalPages] = useState(1);
   //  const [pages, setPages] = useState([]);
@@ -149,38 +149,9 @@ export default function ListofUsers() {
   };
 
   // UPDATE USER
-  // const handleSave = async () => {
-  //   try {
-  //     const res = await fetch(
-  //       `http://127.0.0.1:8000/api/admin/parent/info/${selectedUser.id}`,
-  //       {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${authTokens.access}`,
-  //         },
-  //         body: JSON.stringify(selectedUser),
-  //       },
-  //     );
-
-  //     if (!res.ok) throw new Error("Failed to update user");
-
-  //     const updated = await res.json();
-
-  //     fetchUsers(); // reload updated data
-
-  //     showAlert({
-  //       title: "Success",
-  //       message: "User updated successfully",
-  //       icon: "success",
-  //     });
-
-  //     handleClose();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
   const handleSave = async () => {
+    setSaving(true);
+
     try {
       const payload = {
         first_name: selectedUser.first_name,
@@ -198,7 +169,7 @@ export default function ListofUsers() {
         is_verified: selectedUser.is_verified,
       };
 
-      console.log("SENDING PAYLOAD:", payload);
+      // console.log("SENDING PAYLOAD:", payload);
 
       const res = await fetch(
         `http://127.0.0.1:8000/api/admin/parent/info/${selectedUser.id}`,
@@ -214,24 +185,25 @@ export default function ListofUsers() {
 
       const data = await res.json().catch(() => null);
 
-      console.log("STATUS:", res.status);
-      console.log("BACKEND RESPONSE:", data);
+      // console.log("STATUS:", res.status);
+      // console.log("BACKEND RESPONSE:", data);
 
       if (!res.ok) {
         throw new Error(JSON.stringify(data));
       }
 
       // alert("SUCCESS");
-          showAlert({
-            title: "Success",
-            message: "User updated successfully",
-            icon: "success",
-          });
+      showAlert({
+        title: "Success",
+        message: "User updated successfully",
+        icon: "success",
+      });
       fetchUsers();
       handleClose();
     } catch (err) {
       console.error("SAVE ERROR:", err);
     }
+    setSaving(false);
   };
 
   // DELETE USER
@@ -836,7 +808,7 @@ export default function ListofUsers() {
 
           {/* MODAL FOR VIEW INFO */}
           {showModal && selectedUser && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
               <div className="relative z-10 w-full max-w-3xl mx-4 bg-white shadow-xl rounded-xl p-8 max-h-[90vh] overflow-y-auto">
                 {/* Close button */}
                 <button
@@ -1088,10 +1060,6 @@ export default function ListofUsers() {
                           >
                             Save
                           </button>
-                          {/* <button disabled={saving} 
-                      className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
-                        {saving ? "Saving..." : "Save"}
-                      </button> */}
                         </div>
 
                         {/* Reason for deletion */}
@@ -1159,8 +1127,16 @@ export default function ListofUsers() {
                     )}
                   </div>
                 </form>
+
+                {/* Overlay Loader */}
+                {saving && (
+                  <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10 rounded-lg gap-3">
+                    <div className="h-10 w-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Saving changes...</span>
+                  </div>
+                )}
               </div>
-            </div>
+            </section>
           )}
 
           {/* MODAL FOR VIEW ID */}
