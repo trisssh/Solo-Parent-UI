@@ -289,8 +289,9 @@ export default function SuperAdminDashboard() {
               <label className="block text-sm md:text-base text-gray-500 font-medium">
                 Search by Name of Barangay
               </label>
-              <div className="flex justify-center items-center border border-gray-200 py-1.5 rounded-md focus:outline-red-600 px-2 mb-2">
-                {/* SVG */}
+
+              <div className="relative flex justify-center items-center border border-gray-200 py-1.5 rounded-md focus:outline-red-600 px-2 mb-2">
+                {/* Search Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -305,11 +306,23 @@ export default function SuperAdminDashboard() {
                     d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                   />
                 </svg>
+
+                {/* Input Search */}
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="border-none outline-none w-full ps-2 text-gray-800"
+                  className="border-none outline-none w-full ps-2 pr-8 text-gray-800"
                 />
+
+                {/* Clear Button */}
+                {search && (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="absolute right-2 text-gray-400 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
             </div>
 
