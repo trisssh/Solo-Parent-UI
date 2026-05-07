@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +7,25 @@
  <title>Document</title>
 </head>
 <body>
- <p>
-  Unfortunately, {{ last_name }}, {{ first_name }} , {{ middle_name }} {{ suffix
-  }} you're registration as a solo parent has been denied by the {{ city }}, {{
-  province }} LGU for the following reason:
- </p>
- <p>{{ remarks }}</p>
+ <div>
+  <div style="background: red; height: 60px"></div>
+  <div style="
+   display: flex;
+   flex-direction: column; 
+   align-items: center; 
+   justify-content: center; 
+   width: 800px;
+  ">
+   <img src="{% static 'seal-of-san-juan.png' %}"/>
+   <p style="font-size: 24px">
+    Unfortunately, {{ last_name }}, {{ first_name }} {{ middle_name }} 
+    {% if suffix %}{{ suffix }}{% endif %}
+    you're registration as a solo parent has been denied by the 
+    {{ city }}, {{ province }} LGU for the following reason:
+   </p>
+   <p>{{ remarks }}</p>
+  </div>
+  <div style="background: red; height: 60px"></div>
+ </div>
 </body>
 </html>
