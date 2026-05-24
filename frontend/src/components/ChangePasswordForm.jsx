@@ -22,8 +22,8 @@ export default function ChangePasswordForm() {
     // Check password fields
     if (!form.password || !form.confirm) {
       showAlert({
-        title: "Reminder",
-        message: "Leave blank if you don’t want to change password",
+        title: "Field Empty",
+        message: "Please enter the old password and create a new password",
         icon: "info",
       });
       return;

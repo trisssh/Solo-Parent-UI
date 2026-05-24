@@ -95,9 +95,7 @@ const UserRegister = () => {
   //STEP INDICATOR
   const StepIndicator = () => (
     <div className="mb-6">
-      <p className="text-sm text-gray-500 text-center mb-2">
-        Step {step} of 4
-      </p>
+      <p className="text-sm text-gray-500 text-center mb-2">Step {step} of 4</p>
       <div className="flex items-center justify-between">
         {[1, 2, 3, 4].map((s) => (
           <div
@@ -139,13 +137,13 @@ const UserRegister = () => {
     contact_last_name: false,
     contact_suffix: false,
     contact_phone: false,
-  })
+  });
 
   const [emailCheck, setEmailCheck] = useState("Email cannot be empty.");
   const [phoneCheck, setPhoneCheck] = useState("Phone number cannot be empty");
   const [passCheck, setPassCheck] = useState("Password cannot be empty");
   const [passConfirmCheck, setPassConfirmCheck] = useState(
-    "Password confirmation cannot be empty"
+    "Password confirmation cannot be empty",
   );
 
   const isValidEmail = (email) => {
@@ -255,7 +253,9 @@ const UserRegister = () => {
                 placeholder="example@email.com"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                // className="w-full p-2 border rounded"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 required
               />
               {checks.email && (
@@ -273,7 +273,9 @@ const UserRegister = () => {
                 placeholder=""
                 value={form.password}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                // className="w-full p-2 border rounded"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 required
               />
               {checks.password && (
@@ -291,7 +293,9 @@ const UserRegister = () => {
                 placeholder=""
                 value={form.password_confirmation}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                // className="w-full p-2 border rounded"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 required
               />
               {checks.password_confirmation && (
@@ -313,7 +317,7 @@ const UserRegister = () => {
                 setChecks((prev) => ({ ...prev, ...checking }));
 
                 if (checking.email) {
-                  setEmailCheck("Email is of invalid format.");
+                  setEmailCheck("Email cannot be empty.");
                 }
                 if (checking.password) {
                   setPassCheck(
@@ -362,7 +366,9 @@ const UserRegister = () => {
                   placeholder=""
                   value={form.first_name}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.first_name && (
@@ -374,14 +380,16 @@ const UserRegister = () => {
 
               <div className="flex flex-col gap-0">
                 <label className="block text-gray-700 font-medium">
-                  Middle Name
+                  Middle Name (Optional)
                 </label>
                 <input
                   name="middle_name"
                   placeholder=""
                   value={form.middle_name}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.middle_name && (
@@ -400,7 +408,9 @@ const UserRegister = () => {
                   placeholder=""
                   value={form.last_name}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.last_name && (
@@ -412,14 +422,16 @@ const UserRegister = () => {
 
               <div>
                 <label className="block text-gray-700 font-medium">
-                  Suffix
+                  Suffix (Jr., Sr., III, etc.)
                 </label>
                 <input
                   name="suffix"
                   placeholder=""
                   value={form.suffix}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 />
               </div>
 
@@ -433,7 +445,9 @@ const UserRegister = () => {
                   name="birthday"
                   value={form.birthday}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-3 transition"
                   required
                 />
                 {checks.birthday && (
@@ -453,7 +467,9 @@ const UserRegister = () => {
                   placeholder="Phone (+639XXXXXXXXXX)"
                   value={form.phone}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.phone && (
@@ -472,7 +488,9 @@ const UserRegister = () => {
                   name="gender"
                   value={form.gender}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-3 transition"
                   required
                 >
                   <option value="">Select Gender</option>
@@ -487,6 +505,8 @@ const UserRegister = () => {
               </div>
 
               {/* ADDRESS */}
+
+              {/* HOUSE NO. */}
               <div className="flex flex-col gap-0">
                 <label className="block text-gray-700 font-medium">
                   House No.
@@ -496,7 +516,9 @@ const UserRegister = () => {
                   placeholder=""
                   value={form.house}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.house && (
@@ -516,7 +538,9 @@ const UserRegister = () => {
                   placeholder=""
                   value={form.street}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.street && (
@@ -535,7 +559,9 @@ const UserRegister = () => {
                   name="barangay"
                   value={form.barangay}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 >
                   <option value="">Select Barangay</option>
@@ -563,7 +589,25 @@ const UserRegister = () => {
                   placeholder=""
                   value={form.subdivision}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                />
+              </div>
+
+              {/* RELIGION */}
+              <div>
+                <label className="block text-gray-700 font-medium">
+                  Religion
+                </label>
+                <input
+                  // name="religion"
+                  placeholder=""
+                  // value={form.religion}
+                  // onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 />
               </div>
 
@@ -591,7 +635,9 @@ const UserRegister = () => {
                   name="city"
                   value={form.city}
                   onChange={handleChange}
-                  className="w-full p-2 bg-gray-200 border rounded"
+                  // className="w-full p-2 bg-gray-200 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-200
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                   disabled
                 >
@@ -624,7 +670,9 @@ const UserRegister = () => {
                   name="province"
                   value={form.province}
                   onChange={handleChange}
-                  className="w-full p-2 bg-gray-200 border rounded"
+                  // className="w-full p-2 bg-gray-200 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-200
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                   disabled
                 >
@@ -634,19 +682,49 @@ const UserRegister = () => {
                 </select>
               </div>
 
-              {/* REASON */}
+              {/* CIVIL STATUS */}
               <div className="flex flex-col gap-0">
                 <label className="block text-gray-700 font-medium">
-                  Reason
+                  Civil Status
+                </label>
+                <select
+                  // name="civilstat"
+                  // value={form.civilstat}
+                  // onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                >
+                  <option value="">Select Civil Status</option>
+                  <option value="single">Single</option>
+                  <option value="married">Married</option>
+                  <option value="widowed">Widowed</option>
+                  <option value="seperated">Legally Separated</option>
+                  <option value="annulled">Annulled</option>
+                </select>
+                {/* {checks.civilstat && (
+                  <small className="text-red-700 font-light">
+                    This field cannot be empty.
+                  </small>
+                )} */}
+              </div>
+
+              {/* CATEGORY OF BEING A SOLO PARENT */}
+              <div className="flex flex-col gap-0">
+                <label className="block text-gray-700 font-medium">
+                  Category of being a Solo Parent
                 </label>
                 <select
                   name="reason"
                   value={form.reason}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 >
-                  <option value="">Select Reason</option>
+                  <option value="">Select Category</option>
                   <option value="crime_against_chastity">
                     Crime Against Chastity
                   </option>
@@ -671,7 +749,7 @@ const UserRegister = () => {
                 </select>
                 {checks.reason && (
                   <small className="text-red-700 font-light">
-                    Reason of single parenthood cannot be empty.
+                    Category of being a Solo Parent cannot be empty.
                   </small>
                 )}
               </div>
@@ -742,7 +820,9 @@ const UserRegister = () => {
                   placeholder=""
                   value={form.contact_first_name}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.contact_first_name && (
@@ -751,18 +831,19 @@ const UserRegister = () => {
                   </small>
                 )}
               </div>
-
               {/* Emergency Contact's Middle Name */}
               <div className="flex flex-col gap-0">
                 <label className="block text-gray-700 font-medium">
-                  Emergency Contact's Middle Name
+                  Emergency Contact's Middle Name (Optional)
                 </label>
                 <input
                   name="contact_middle_name"
                   placeholder=""
                   value={form.contact_middle_name}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 />
                 {checks.contact_middle_name && (
                   <small className="text-red-700 font-light">
@@ -770,7 +851,6 @@ const UserRegister = () => {
                   </small>
                 )}
               </div>
-
               {/* Emergency Contact's Last Name */}
               <div className="flex flex-col gap-0">
                 <label className="block text-gray-700 font-medium">
@@ -781,7 +861,9 @@ const UserRegister = () => {
                   placeholder=""
                   value={form.contact_last_name}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
                 />
                 {checks.contact_last_name && (
@@ -790,38 +872,221 @@ const UserRegister = () => {
                   </small>
                 )}
               </div>
-
               {/* Emergency Contact's Suffix */}
               <div>
                 <label className="block text-gray-700 font-medium">
-                  Emergency Contact's Suffix
+                  Emergency Contact's Suffix (Jr., Sr., III, etc.)
                 </label>
                 <input
                   name="contact_suffix"
                   placeholder=""
                   value={form.contact_suffix}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 />
               </div>
-            </div>
 
-            {/* Emergency Contact's Phone Number */}
-            <div className="flex flex-col gap-0 mt-3">
-              <label className="block text-gray-700 font-medium">
-                Emergency Contact's Phone Number
-              </label>
-              <input
-                name="contact_phone"
-                placeholder="Phone (+639XXXXXXXXXX)"
-                value={form.contact_phone}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
-                required
-              />
-              {checks.contact_phone && (
-                <small className="text-red-700 font-light">{phoneCheck}</small>
-              )}
+              {/* Emergency Contact's ADDRESS */}
+
+              {/* HOUSE NO. */}
+              <div className="flex flex-col gap-0">
+                <label className="block text-gray-700 font-medium">
+                  House No.
+                </label>
+                <input
+                  // name="contact_house"
+                  placeholder=""
+                  // value={form.contact_house}
+                  // onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                />
+                {checks.house && (
+                  <small className="text-red-700 font-light">
+                    House number cannot be empty.
+                  </small>
+                )}
+              </div>
+
+              {/* STREET */}
+              <div className="flex flex-col gap-0">
+                <label className="block text-gray-700 font-medium">
+                  Street
+                </label>
+                <input
+                  // name="contact_street"
+                  placeholder=""
+                  // value={form.contact_street}
+                  // onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                />
+                {checks.street && (
+                  <small className="text-red-700 font-light">
+                    Street number cannot be empty.
+                  </small>
+                )}
+              </div>
+
+              {/* BARANGAY */}
+              <div className="flex flex-col gap-0">
+                <label className="block text-gray-700 font-medium">
+                  Barangay
+                </label>
+                <select
+                  // name="contact_barangay"
+                  // value={form.contact_barangay}
+                  // onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                >
+                  <option value="">Select Barangay</option>
+                  <option value="Greenhills">Greenhills</option>
+                  <option value="Maytunas">Maytunas</option>
+                  <option value="Kabayanan">Kabayanan</option>
+                  <option value="Salapan">Salapan</option>
+                  <option value="West Crame">West Crame</option>
+                  <option value="Onse">Onse</option>
+                </select>
+                {checks.barangay && (
+                  <small className="text-red-700 font-light">
+                    Barangay cannot be empty.
+                  </small>
+                )}
+              </div>
+
+              {/* SUBDIVISION */}
+              <div>
+                <label className="block text-gray-700 font-medium">
+                  Subdivision (Optional)
+                </label>
+                <input
+                  // name="contact_subdivision"
+                  placeholder=""
+                  // value={form.contact_subdivision}
+                  // onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                />
+              </div>
+
+              {/* CITY */}
+              <div>
+                <label className="block text-gray-700 font-medium">City</label>
+                {/* <select
+                  name="city"
+                  value={form.city}
+                  onChange={handleChange}
+                  className="w-full p-2 bg-gray-200 border rounded"
+                  required
+                  defaultValue={"san_juan"}
+                  disabled
+                >
+                  <option value="san_juan">City of San Juan</option>
+                  <option value="">Select City</option>
+                  <option value="manila">City of Manila</option>
+                  <option value="quezon">Quezon City</option>
+                  <option value="makati">City of Makati</option>
+                  <option value="pasig">City of Pasig</option>
+                  <option value="taguig">City of Taguig</option>
+                </select> */}
+                <select
+                  // name="contact_city"
+                  // value={form.contact_city}
+                  // onChange={handleChange}
+                  // className="w-full p-2 bg-gray-200 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-200
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                  disabled
+                >
+                  <option value="City of San Juan">City of San Juan</option>
+                </select>
+              </div>
+
+              {/* PROVINCE */}
+              <div>
+                <label className="block text-gray-700 font-medium">
+                  Province
+                </label>
+                {/* <select
+                  name="province"
+                  value={form.province}
+                  onChange={handleChange}
+                  className="w-full p-2 bg-gray-200 border rounded"
+                  required
+                  defaultValue={"ncr"}
+                  disabled
+                >
+                  <option value="ncr">National Capital Region</option>
+                  <option value="">Select Province</option>
+                  <option value="bulacan">Bulacan</option>
+                  <option value="laguna">Laguna</option>
+                  <option value="rizal">Rizal</option>
+                  <option value="cavite">Cavite</option>
+                </select> */}
+                <select
+                  // name="contact_province"
+                  // value={form.contact_province}
+                  // onChange={handleChange}
+                  // className="w-full p-2 bg-gray-200 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-200
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                  disabled
+                >
+                  <option value="National Capital Region">
+                    National Capital Region
+                  </option>
+                </select>
+              </div>
+
+              {/* Emergency Contact's Phone Number */}
+              <div className="flex flex-col gap-0 mt-3">
+                <label className="block text-gray-700 font-medium">
+                  Emergency Contact's Phone Number
+                </label>
+                <input
+                  name="contact_phone"
+                  placeholder="Phone (+639XXXXXXXXXX)"
+                  value={form.contact_phone}
+                  onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                />
+                {checks.contact_phone && (
+                  <small className="text-red-700 font-light">
+                    {phoneCheck}
+                  </small>
+                )}
+              </div>
+
+              {/* Relationship to the Solo Parent */}
+              <div>
+                <label className="block text-gray-700 font-medium mt-3">
+                  Relationship to the Solo Parent
+                </label>
+                <input
+                  // name="contact_relationship"
+                  placeholder=""
+                  // value={form.contact_relationship}
+                  // onChange={handleChange}
+                  // className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                />
+              </div>
             </div>
 
             {/* BUTTONS */}

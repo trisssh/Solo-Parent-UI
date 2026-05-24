@@ -185,6 +185,21 @@ export default function Login4() {
                     Email
                   </label>
                 </div>
+                {/* <div className="flex flex-col gap-0 mb-3">
+                  <label className="block text-gray-500 font-bold uppercase tracking-wide">
+                    Email
+                  </label>
+                  <input
+                    type="text"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                    required
+                  />
+                </div> */}
 
                 {/* Password */}
                 <div className="relative w-full mt-4 rounded-lg">
@@ -250,6 +265,7 @@ export default function Login4() {
                     )}
                   </button>
                 </div>
+
                 {/* Forgot Password Link */}
                 <div className="text-right">
                   <Link
