@@ -7,13 +7,15 @@ const UserRegister = () => {
 
   const [step, setStep] = useState(1);
 
+  const totalSteps = 7;
+
   const [form, setForm] = useState({
-    // Account
+    // 1 - Account
     email: "",
     password: "",
     password_confirmation: "",
 
-    // Parent
+    // 2 - Personal Info
     first_name: "",
     middle_name: "",
     last_name: "",
@@ -21,22 +23,54 @@ const UserRegister = () => {
     birthday: "",
     phone: "",
     gender: "",
+
     house: "",
     street: "",
     barangay: "",
     subdivision: "",
+
     city: "City of San Juan", // Default
     province: "National Capital Region", // Default
-    reason: "",
 
-    // Contact
+    reason: "",
+    religion: "",
+    civilstat: "",
+
+    // 3 - Socio-Economic
+    educational_attainment: "",
+    occupation: "",
+    employment_status: "",
+    company: "",
+    monthly_income: "",
+    family_income: "",
+
+    // 4 - Sectoral
+    pwd: false,
+    senior_citizen: false,
+    indigenous: false,
+    lgbtqia: false,
+    government_subsidy: false,
+    philhealth_specify: "",
+    contact_relationship: "",
+
+    // 5 - Contact
     contact_first_name: "",
     contact_middle_name: "",
     contact_last_name: "",
     contact_suffix: "",
     contact_phone: "",
+    contact_house: "",
+    contact_street: "",
+    contact_barangay: "",
+    contact_subdivision: "",
+    contact_city: "",
+    contact_province: "",
 
-    // Files
+    // 6 - assesstment
+    needs_prob: "",
+    fam_resource: "",
+
+    // 7 - Files
     id: null,
     signature: null,
   });
@@ -95,9 +129,11 @@ const UserRegister = () => {
   //STEP INDICATOR
   const StepIndicator = () => (
     <div className="mb-6">
-      <p className="text-sm text-gray-500 text-center mb-2">Step {step} of 4</p>
+      <p className="text-sm text-gray-500 text-center mb-2">
+        Step {step} of {totalSteps}
+      </p>
       <div className="flex items-center justify-between">
-        {[1, 2, 3, 4].map((s) => (
+        {[1, 2, 3, 4, 5, 6, 7].map((s) => (
           <div
             key={s}
             className={`flex-1 h-2 mx-1 rounded-full ${
@@ -106,30 +142,52 @@ const UserRegister = () => {
           />
         ))}
       </div>
+      {/* <div className="flex items-center justify-between">
+        {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
+          <div
+            key={s}
+            className={`flex-1 h-2 mx-1 rounded-full ${
+              step >= s ? "bg-red-600" : "bg-gray-200"
+            }`}
+          />
+        ))}
+      </div> */}
     </div>
   );
 
   const [checks, setChecks] = useState({
-    // Account
+    // 1 - Account
     email: false,
     password: false,
     password_confirmation: false,
 
-    // Parent
-    first_name: false,
-    middle_name: false,
-    last_name: false,
-    suffix: false,
-    birthday: false,
-    phone: false,
-    gender: false,
-    house: false,
-    street: false,
-    barangay: false,
-    subdivision: false,
-    city: false,
-    province: false,
-    reason: false,
+    // 2 - Personal
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    suffix: "",
+    birthday: "",
+    phone: "",
+    gender: "",
+
+    house: "",
+    street: "",
+    barangay: "",
+    subdivision: "",
+
+    reason: "",
+    civilstat: false,
+
+    //  3 - Socio-Economic
+    educational_attainment: false,
+    employment_status: false,
+    occupation: false,
+    company: false,
+    monthly_income: false,
+    family_income: false,
+
+    // 4 - Sectoral
+    philhealth_specify: false,
 
     // Contact
     contact_first_name: false,
@@ -234,7 +292,7 @@ const UserRegister = () => {
         >
           <StepIndicator />
 
-          {/* STEP 1 - ACCOUNT */}
+          {/* STEP 1 - ACCOUNT INFO */}
           <div style={{ display: step === 1 ? "block" : "none" }}>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
@@ -332,7 +390,8 @@ const UserRegister = () => {
                   setStep(2);
                 }
               }}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-2 rounded-lg"
+              // className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 py-2 rounded-lg"
+              className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold shadow py-2 rounded-lg"
             >
               Continue
             </button>
@@ -345,7 +404,7 @@ const UserRegister = () => {
             </p>
           </div>
 
-          {/* STEP 2 - PARENT */}
+          {/* STEP 2 -  PERSONAL INFO */}
           <div style={{ display: step === 2 ? "block" : "none" }}>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
@@ -390,13 +449,7 @@ const UserRegister = () => {
                   // className="w-full p-2 border rounded"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
-                  required
                 />
-                {checks.middle_name && (
-                  <small className="text-red-700 font-light">
-                    Middle name cannot be empty.
-                  </small>
-                )}
               </div>
 
               <div className="flex flex-col gap-0">
@@ -415,7 +468,7 @@ const UserRegister = () => {
                 />
                 {checks.last_name && (
                   <small className="text-red-700 font-light">
-                    Middle name cannot be empty.
+                    Last name cannot be empty.
                   </small>
                 )}
               </div>
@@ -601,10 +654,10 @@ const UserRegister = () => {
                   Religion
                 </label>
                 <input
-                  // name="religion"
+                  name="religion"
                   placeholder=""
-                  // value={form.religion}
-                  // onChange={handleChange}
+                  value={form.religion}
+                  onChange={handleChange}
                   // className="w-full p-2 border rounded"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
@@ -688,10 +741,9 @@ const UserRegister = () => {
                   Civil Status
                 </label>
                 <select
-                  // name="civilstat"
-                  // value={form.civilstat}
-                  // onChange={handleChange}
-                  // className="w-full p-2 border rounded"
+                  name="civilstat"
+                  value={form.civilstat}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
@@ -703,11 +755,11 @@ const UserRegister = () => {
                   <option value="seperated">Legally Separated</option>
                   <option value="annulled">Annulled</option>
                 </select>
-                {/* {checks.civilstat && (
+                {checks.civilstat && (
                   <small className="text-red-700 font-light">
-                    This field cannot be empty.
+                    Civil Status cannot be empty.
                   </small>
-                )} */}
+                )}
               </div>
 
               {/* CATEGORY OF BEING A SOLO PARENT */}
@@ -760,7 +812,8 @@ const UserRegister = () => {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                // className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                className="w-1/2 bg-gray-400 hover:bg-gray-500 text-white font-semibold shadow py-2 rounded-lg"
               >
                 Back
               </button>
@@ -770,7 +823,6 @@ const UserRegister = () => {
                 onClick={() => {
                   const { isValid, checking } = checkLength([
                     "first_name",
-                    "middle_name",
                     "last_name",
                     "birthday",
                     "phone",
@@ -779,6 +831,7 @@ const UserRegister = () => {
                     "street",
                     "barangay",
                     "reason",
+                    "civilstat",
                   ]);
 
                   setChecks((prev) => ({ ...prev, ...checking }));
@@ -791,15 +844,451 @@ const UserRegister = () => {
                     setStep(3);
                   }
                 }}
-                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                // className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow py-2 rounded-lg"
               >
                 Next
               </button>
             </div>
           </div>
 
-          {/* STEP 3 - CONTACT */}
+          {/* STEP 3 - SOCIO-ECONOMIC INFO */}
           <div style={{ display: step === 3 ? "block" : "none" }}>
+            <article className="mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-1">
+                Socio-Economic Information
+              </h2>
+              <p className="font-semibold text-sm sm:text-base text-gray-600 text-justify">
+                Please enter your information to create an account.
+              </p>
+            </article>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* ================= EDUCATIONAL ATTAINMENT ================= */}
+              <div className="flex flex-col gap-1 md:col-span-2">
+                <label className="block text-gray-700 font-medium">
+                  Educational Attainment
+                </label>
+
+                <select
+                  name="educational_attainment"
+                  value={form.educational_attainment || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+        focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  required
+                >
+                  <option value="">Select educational attainment</option>
+
+                  <option value="no_education">No Education</option>
+                  <option value="elementary_level">Elementary Level</option>
+                  <option value="elementary_graduate">
+                    Elementary Graduate
+                  </option>
+
+                  <option value="highschool_level">High School Level</option>
+                  <option value="highschool_graduate">
+                    High School Graduate
+                  </option>
+
+                  <option value="vocational">Vocational / TVET</option>
+
+                  <option value="college_level">College Level</option>
+                  <option value="college_graduate">College Graduate</option>
+                  <option value="post_college">Post-College</option>
+                </select>
+                {checks.educational_attainment && (
+                  <small className="text-red-700 font-light">
+                    Educational Attainment cannot be empty.
+                  </small>
+                )}
+              </div>
+
+              {/* ================= EMPLOYMENT STATUS ================= */}
+              <div className="flex flex-col gap-1">
+                <label className="block text-gray-700 font-medium">
+                  Employment Status
+                </label>
+
+                <select
+                  name="employment_status"
+                  value={form.employment_status || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+        focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  required
+                >
+                  <option value="">Select status</option>
+                  <option value="employed">Employed</option>
+                  <option value="self_employed">Self-employed</option>
+                  <option value="not_employed">Not Employed</option>
+                </select>
+                {checks.employment_status && (
+                  <small className="text-red-700 font-light">
+                    Employment Status cannot be empty.
+                  </small>
+                )}
+              </div>
+
+              {/* ================= OCCUPATION ================= */}
+              {/* <div className="flex flex-col gap-1">
+                <label className="block text-gray-700 font-medium">
+                  Occupation
+                </label>
+
+                <input
+                  name="occupation"
+                  value={form.occupation || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+        focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  required
+                />
+              </div> */}
+
+              {form.employment_status !== "not_employed" && (
+                <div className="flex flex-col gap-1">
+                  <label className="block text-gray-700 font-medium">
+                    Occupation
+                  </label>
+                  <input
+                    name="occupation"
+                    value={form.occupation || ""}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  />
+                  {checks.occupation && (
+                    <small className="text-red-700 font-light">
+                      Occupation cannot be empty.
+                    </small>
+                  )}
+                </div>
+              )}
+
+              {/* ================= COMPANY / AGENCY ================= */}
+              {/* <div className="flex flex-col gap-1 md:col-span-2">
+                <label className="block text-gray-700 font-medium">
+                  Company / Agency of Work
+                </label>
+
+                <input
+                  name="company"
+                  value={form.company || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+        focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                />
+              </div> */}
+              {form.employment_status !== "not_employed" && (
+                <div className="flex flex-col gap-1">
+                  <label className="block text-gray-700 font-medium">
+                    Company / Agency of Work
+                  </label>
+                  <input
+                    name="company"
+                    value={form.company || ""}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  />
+
+                  {/* ERROR MESSAGE */}
+                  {checks.company && (
+                    <small className="text-red-700 font-light mt-1 text-xs">
+                      Company name is required for employed status.
+                    </small>
+                  )}
+                </div>
+              )}
+
+              {/* ================= MONTHLY PERSONAL INCOME ================= */}
+              <div className="flex flex-col gap-1">
+                <label className="block text-gray-700 font-medium">
+                  Monthly Personal Income
+                </label>
+
+                <select
+                  name="monthly_income"
+                  value={form.monthly_income || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+        focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  required
+                >
+                  <option value="">Select range</option>
+                  <option value="below_5000">Below ₱5,000</option>
+                  <option value="5001_10000">₱5,001 – ₱10,000</option>
+                  <option value="10001_20000">₱10,001 – ₱20,000</option>
+                  <option value="20001_40000">₱20,001 – ₱40,000</option>
+                  <option value="40001_above">₱40,001 and above</option>
+                </select>
+                {checks.monthly_income && (
+                  <small className="text-red-700 font-light">
+                    Monthly Personal Income cannot be empty.
+                  </small>
+                )}
+              </div>
+
+              {/* ================= FAMILY INCOME ================= */}
+              <div className="flex flex-col gap-1">
+                <label className="block text-gray-700 font-medium">
+                  Total Family Income
+                </label>
+
+                <select
+                  name="family_income"
+                  value={form.family_income || ""}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300
+        focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition"
+                  required
+                >
+                  <option value="">Select range</option>
+                  <option value="below_5000">Below ₱5,000</option>
+                  <option value="5001_10000">₱5,001 – ₱10,000</option>
+                  <option value="10001_20000">₱10,001 – ₱20,000</option>
+                  <option value="20001_40000">₱20,001 – ₱40,000</option>
+                  <option value="40001_above">₱40,001 and above</option>
+                </select>
+                {checks.family_income && (
+                  <small className="text-red-700 font-light">
+                    Total Family Income cannot be empty.
+                  </small>
+                )}
+              </div>
+            </div>
+
+            {/* ================= BUTTONS ================= */}
+            <div className="flex gap-3 mt-5">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="w-1/2 bg-gray-400 hover:bg-gray-500 text-white font-semibold shadow py-2 rounded-lg"
+              >
+                Back
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  // "educational_attainment" and "employment_status" are ALWAYS required
+                  const fieldsToValidate = [
+                    "educational_attainment",
+                    "employment_status",
+                  ];
+
+                  // Add validation rules dynamically based on employment status
+                  if (form.employment_status === "employed") {
+                    fieldsToValidate.push(
+                      "occupation",
+                      "company",
+                      "monthly_income",
+                    );
+                  } else if (form.employment_status === "self_employed") {
+                    fieldsToValidate.push("occupation", "monthly_income");
+                    // "company" optional for self-employed
+                  } else if (form.employment_status === "not_employed") {
+                    // For not employed, occupation, company, and monthly income are skipped.
+                  }
+
+                  // Family Income is required for everyone
+                  fieldsToValidate.push("family_income");
+
+                  const { isValid, checking } = checkLength(fieldsToValidate);
+
+                  setChecks((prev) => ({ ...prev, ...checking }));
+
+                  if (isValid) {
+                    setStep(4);
+                  }
+                }}
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow py-2 rounded-lg"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
+          {/* STEP 4 - SECTORAL & GOV ASSIST INFO */}
+          <div style={{ display: step === 4 ? "block" : "none" }}>
+            <article className="mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-1">
+                Sectoral & Government Assistance Information
+              </h2>
+              <p className="font-semibold text-sm sm:text-base text-gray-600 text-justify">
+                Please enter your information to create an account.
+              </p>
+            </article>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* ================= SECTORAL MEMBERSHIP ================= */}
+              <div className="md:col-span-2">
+                <h3 className="font-semibold text-gray-700 mb-2">
+                  Sectoral Membership
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {[
+                    { key: "pwd", label: "PWD" },
+                    { key: "senior_citizen", label: "Senior Citizen" },
+                    { key: "indigenous", label: "Indigenous People" },
+                    { key: "lgbtqia", label: "LGBTQIA+" },
+                  ].map((item) => (
+                    <label
+                      key={item.key}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 text-center items-center flex gap-2 text-lg
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition mt-2"
+                    >
+                      <input
+                        type="checkbox"
+                        name={item.key}
+                        className="accent-red-600 w-4 h-4"
+                        checked={form[item.key] || false}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            [item.key]: e.target.checked,
+                          })
+                        }
+                      />
+                      <span className="text-sm text-gray-700">
+                        {item.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* ================= GOVERNMENT ASSISTANCE ================= */}
+              <div className="md:col-span-2">
+                <h3 className="font-semibold text-gray-700 mb-2">
+                  Government Assistance
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <label
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 text-center items-center flex gap-2 text-lg
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition mt-2"
+                  >
+                    <input
+                      type="checkbox"
+                      className="accent-red-600 w-4 h-4"
+                      checked={form.beneficiary_4ps || false}
+                      onChange={(e) =>
+                        setForm({ ...form, beneficiary_4ps: e.target.checked })
+                      }
+                    />
+                    <span className="text-sm">4Ps Beneficiary</span>
+                  </label>
+
+                  <label
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 text-center items-center flex gap-2 text-lg
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition mt-2"
+                  >
+                    <input
+                      type="checkbox"
+                      className="accent-red-600 w-4 h-4"
+                      checked={form.government_subsidy || false}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          government_subsidy: e.target.checked,
+                        })
+                      }
+                    />
+                    <span className="text-sm">Government Subsidy</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* ================= PHILHEALTH ================= */}
+              <div className="md:col-span-2">
+                <h3 className="font-semibold text-gray-700 mb-2">
+                  PhilHealth Membership
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {["none", "direct", "indirect", "specify"].map((type) => (
+                    <label
+                      key={type}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 text-center items-center flex gap-2 text-lg
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition mt-2"
+                    >
+                      <input
+                        type="radio"
+                        className="accent-red-600 w-4 h-4"
+                        name="philhealth"
+                        value={type}
+                        checked={form.philhealth === type}
+                        onChange={(e) =>
+                          setForm({ ...form, philhealth: e.target.value })
+                        }
+                      />
+                      <span className="text-sm capitalize">{type}</span>
+                    </label>
+                  ))}
+                </div>
+
+                {/* Conditional input */}
+                {form.philhealth === "specify" && (
+                  <div className="flex flex-col gap-0 w-full mt-2">
+                    <input
+                      type="text"
+                      name="philhealth_specify"
+                      placeholder="Please specify membership type"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300
+focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                      value={form.philhealth_specify || ""}
+                      onChange={handleChange}
+                    />
+
+                    {/* THIS IS THE NEW ERROR INDICATOR */}
+                    {checks.philhealth_specify && (
+                      <small className="text-red-700 font-light mt-1">
+                        Please write your specific membership type.
+                      </small>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ================= BUTTONS ================= */}
+            <div className="flex gap-3 mt-5">
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="w-1/2 bg-gray-400 hover:bg-gray-500 text-white font-semibold shadow py-2 rounded-lg"
+              >
+                Back
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const fieldsToValidate = ["philhealth"];
+
+                  // If they chose "specify", required
+                  if (form.philhealth === "specify") {
+                    fieldsToValidate.push("philhealth_specify");
+                  }
+
+                  const { isValid, checking } = checkLength(fieldsToValidate);
+
+                  setChecks((prev) => ({ ...prev, ...checking }));
+
+                  if (isValid) {
+                    setStep(5);
+                  }
+                }}
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow py-2 rounded-lg"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
+          {/* STEP 5 - EMERGENCY CONTACT */}
+          <div style={{ display: step === 5 ? "block" : "none" }}>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
                 Emergency Contact's Information
@@ -896,11 +1385,11 @@ const UserRegister = () => {
                   House No.
                 </label>
                 <input
-                  // name="contact_house"
+                  name="contact_house"
                   placeholder=""
-                  // value={form.contact_house}
-                  // onChange={handleChange}
-                  // className="w-full p-2 border rounded"
+                  value={form.contact_house}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
@@ -918,11 +1407,11 @@ const UserRegister = () => {
                   Street
                 </label>
                 <input
-                  // name="contact_street"
+                  name="contact_street"
                   placeholder=""
-                  // value={form.contact_street}
-                  // onChange={handleChange}
-                  // className="w-full p-2 border rounded"
+                  value={form.contact_street}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
@@ -940,10 +1429,9 @@ const UserRegister = () => {
                   Barangay
                 </label>
                 <select
-                  // name="contact_barangay"
-                  // value={form.contact_barangay}
-                  // onChange={handleChange}
-                  // className="w-full p-2 border rounded"
+                  name="contact_barangay"
+                  value={form.contact_barangay}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                   required
@@ -969,11 +1457,10 @@ const UserRegister = () => {
                   Subdivision (Optional)
                 </label>
                 <input
-                  // name="contact_subdivision"
+                  name="contact_subdivision"
                   placeholder=""
-                  // value={form.contact_subdivision}
-                  // onChange={handleChange}
-                  // className="w-full p-2 border rounded"
+                  value={form.contact_subdivision}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 />
@@ -1000,9 +1487,9 @@ const UserRegister = () => {
                   <option value="taguig">City of Taguig</option>
                 </select> */}
                 <select
-                  // name="contact_city"
-                  // value={form.contact_city}
-                  // onChange={handleChange}
+                  name="contact_city"
+                  value={form.contact_city}
+                  onChange={handleChange}
                   // className="w-full p-2 bg-gray-200 border rounded"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-200
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
@@ -1035,9 +1522,9 @@ const UserRegister = () => {
                   <option value="cavite">Cavite</option>
                 </select> */}
                 <select
-                  // name="contact_province"
-                  // value={form.contact_province}
-                  // onChange={handleChange}
+                  name="contact_province"
+                  value={form.contact_province}
+                  onChange={handleChange}
                   // className="w-full p-2 bg-gray-200 border rounded"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-200
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
@@ -1078,11 +1565,10 @@ const UserRegister = () => {
                   Relationship to the Solo Parent
                 </label>
                 <input
-                  // name="contact_relationship"
+                  name="contact_relationship"
                   placeholder=""
-                  // value={form.contact_relationship}
-                  // onChange={handleChange}
-                  // className="w-full p-2 border rounded"
+                  value={form.contact_relationship}
+                  onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300
     focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 />
@@ -1093,8 +1579,8 @@ const UserRegister = () => {
             <div className="flex gap-3 mt-3">
               <button
                 type="button"
-                onClick={() => setStep(2)}
-                className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                onClick={() => setStep(4)}
+                className="w-1/2 bg-gray-400 hover:bg-gray-500 text-white font-semibold shadow py-2 rounded-lg"
               >
                 Back
               </button>
@@ -1116,18 +1602,113 @@ const UserRegister = () => {
                   }
 
                   if (isValid) {
-                    setStep(4);
+                    setStep(6);
                   }
                 }}
-                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow py-2 rounded-lg"
               >
                 Next
               </button>
             </div>
           </div>
 
-          {/* STEP 4 - FILE UPLOAD */}
-          <div style={{ display: step === 4 ? "block" : "none" }}>
+          {/* STEP 6 - ASSESSNENT & FAM SUPPORT */}
+          <div style={{ display: step === 6 ? "block" : "none" }}>
+            <article className="mb-2">
+              <h2 className="text-2xl font-bold text-gray-800 mb-1">
+                Needs Assessment & Family Support
+              </h2>
+              <p className="font-semibold text-sm sm:text-base text-gray-600 text-justify">
+                Please enter your information to create an account.
+              </p>
+            </article>
+
+            <div className="grid grid-cols-1  gap-3">
+              {/* Needs and Problems Encountered of Being a Solo Parent */}
+              <div className="flex flex-col gap-0">
+                <label className="block text-gray-700 font-medium">
+                  Needs and Problems Encountered of Being a Solo Parent
+                </label>
+                <textarea
+                  name="needs_prob"
+                  placeholder="Enter your needs or concerns..."
+                  value={form.needs_prob}
+                  onChange={handleChange}
+                  rows="4"
+                  cols="50"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 text-justify
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                  required
+                />
+                {checks.needs_prob && (
+                  <small className="text-red-700 font-light">
+                    Contact first name cannot be empty.
+                  </small>
+                )}
+              </div>
+
+              {/* Family Resources that Supply the needs of you */}
+              <div className="flex flex-col gap-0">
+                <label className="block text-gray-700 font-medium">
+                  Family Resources that Supply the needs of your child/children
+                </label>
+                <textarea
+                  name="fam_resource"
+                  placeholder="Enter your family resources..."
+                  value={form.fam_resource}
+                  onChange={handleChange}
+                  rows="4"
+                  cols="50"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 text-justify
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
+                />
+                {checks.fam_resource && (
+                  <small className="text-red-700 font-light">
+                    Field cannot be empty.
+                  </small>
+                )}
+              </div>
+            </div>
+
+            {/* BUTTONS */}
+            <div className="flex gap-3 mt-3">
+              <button
+                type="button"
+                onClick={() => setStep(5)}
+                className="w-1/2 bg-gray-400 hover:bg-gray-500 text-white font-semibold shadow py-2 rounded-lg"
+              >
+                Back
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const { isValid, checking } = checkLength([
+                    "contact_first_name",
+                    "contact_last_name",
+                    "contact_middle_name",
+                    "contact_phone",
+                  ]);
+
+                  setChecks((prev) => ({ ...prev, ...checking }));
+
+                  if (checking.contact_phone) {
+                    setPhoneCheck("Invalid phone number format");
+                  }
+
+                  if (isValid) {
+                    setStep(7);
+                  }
+                }}
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow py-2 rounded-lg"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+
+          {/* STEP 7 - UPLOAD REQUIREMENTS */}
+          <div style={{ display: step === 7 ? "block" : "none" }}>
             <article className="mb-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-1">
                 Upload Requirements
@@ -1154,7 +1735,9 @@ const UserRegister = () => {
               <input
                 type="file"
                 name="id"
-                className="w-full p-2 border rounded"
+                // className="w-full p-2 border rounded"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 text-justify
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 onChange={handleChange}
                 accept="image/*"
                 required
@@ -1178,7 +1761,8 @@ const UserRegister = () => {
               <input
                 type="file"
                 name="signature"
-                className="w-full p-2 border rounded"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 text-justify
+    focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 pr-12 transition"
                 onChange={handleChange}
                 accept="image/*"
                 required
@@ -1189,19 +1773,21 @@ const UserRegister = () => {
             <div className="flex gap-3 mt-3">
               <button
                 type="button"
-                onClick={() => setStep(3)}
-                className="w-1/2 bg-[var(--gray-2)] text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg"
+                onClick={() => setStep(6)}
+                className="w-1/2 bg-gray-400 hover:bg-gray-500 text-white font-semibold shadow py-2 rounded-lg"
               >
                 Back
               </button>
               <button
                 type="submit"
-                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow shadow-gray-700 w-1/2 py-2 rounded-lg text-sm md:text-base"
+                className="w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold shadow py-2 rounded-lg"
               >
                 Submit Registration
               </button>
             </div>
           </div>
+
+          {/* STEP 8 - REVIEW & SUBMIT */}
         </form>
       </section>
     </main>
