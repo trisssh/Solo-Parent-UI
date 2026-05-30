@@ -42,23 +42,10 @@ class RegistrationView(GenericAPIView):
     serializer_class = RegistrationSerializer
 
     def post(self, request):
-        data = request.data.copy()
-        images = []
-
-        if 'id' in request.FILES:
-            images.append({
-                'image': request.FILES['id'], 
-                'image_type': 'id'
-            })
-        if 'signature' in request.FILES:
-            images.append({
-                'image': request.FILES['signature'], 
-                'image_type': 'signature'
-            })
-
-        data['images'] = images
-
-        serializer = self.get_serializer(data=data)
+        serializer = self.get_serializer(
+            data=request.data, 
+            context={'request': request}
+        )
         serializer.is_valid(raise_exception=True)
 
         try:

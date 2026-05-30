@@ -75,7 +75,7 @@ class Parent(models.Model):
     last_name = models.CharField(max_length=180)
     suffix = models.CharField(max_length=180, blank=True, null=True)
     phone = PhoneNumberField(unique=True)
-    phylsis = models.CharField(max_length=16)
+    religion = models.CharField(max_length=32)
     birthday = models.DateField()
 
     GENDER_CHOICES = (
@@ -276,8 +276,6 @@ class Parent(models.Model):
         default='City of San Juan'
     )
 
-
-
     PROVINCE_CHOICES = (
         ('National Capital Region', 'National Capital Region'),
         ('Ilocos Norte', 'Ilocos Norte'),
@@ -370,11 +368,17 @@ class Parent(models.Model):
     ) 
 
     EDUCATION_CHOICES = (
-        ('Kindergarten', 'Kindergarten'),
-        ('Primary', 'Primary'),
-        ('Secondary', 'Secondary'),
-        ('Undergraduate', 'Undergraduate'),
-        ('Graduate', 'Graduate'),
+        ('No Education', 'No Education'),
+        ('Kindergarten Level', 'Kindergarten Level'),
+        ('Kindergarten Graduate', 'Kindergarten Graduate'),
+        ('Elementary Level', 'Elementary Level'),
+        ('Elementary Graduate', 'Elementary Graduate'),
+        ('High School Level', 'High School Level'),
+        ('High School Graduate', 'High School Graduate'),
+        ('Vocational / TVET', 'Vocational / TVET'),
+        ('College Level', 'College Level'),
+        ('College Graduate', 'College Graduate'),
+        ('Post-College', 'Post-College'),
     )
     educational_attainment = models.CharField(
         max_length=32,
@@ -386,7 +390,7 @@ class Parent(models.Model):
 
     EMPLOYMENT_CHOICES = (
         ('Employed', 'Employed'),
-        ('Self-Employed', 'Self-Employed'),
+        ('Self-employed', 'Self-employed'),
         ('Not Employed', 'Not Employed'),
     )
     employment = models.CharField(
@@ -397,13 +401,18 @@ class Parent(models.Model):
 
     company = models.CharField(max_length=180, blank=True, null=True)
 
-    monthly_income = models.DecimalField(
-        max_digits=9, 
-        decimal_places=2, 
+    INCOME_CHOICES = (
+        ('Php 20834 and above', 'Php 20834 and above'),
+        ('Minimum wage to Php 20833', 'Minimum wage to Php 20833'),
+        ('Minimum wage and below', 'Minimum wage and below'),
     )
-    total_family_income = models.DecimalField(
-        max_digits=9, 
-        decimal_places=2, 
+    monthly_income = models.CharField(
+        max_length=64, 
+        choices=INCOME_CHOICES
+    )
+    total_family_income = models.CharField(
+        max_length=64, 
+        choices=INCOME_CHOICES
     )
 
     REASON_CHOICES = (
@@ -431,44 +440,31 @@ class Parent(models.Model):
         default='Separated'
     )
 
-    with_disability = models.CharField(max_length=32, blank=True, null=True)
-
-    BENEFIT_CHOICES = (
-        ('4Ps', '4Ps'),
-        ('Government Subsidy', 'Government Subsidy'),
+    pantawid_beneficiary = models.CharField(
+        max_length=24, 
+        blank=True, 
+        null=True
     )
-    benefits = MultiSelectField(
+
+    philhealth = models.CharField(max_length=64)
+
+    SECTOR_CHOICES = (
+        ('PWD', 'PWD'),
+        ('Senior Citizen', 'Senior Citizen'),
+        ('LGBTQIA+', 'LGBTQIA+'),
+    )
+    sector = MultiSelectField(
         max_length=32, 
-        choices=BENEFIT_CHOICES, 
+        choices=SECTOR_CHOICES, 
         max_choices=2,
         blank=True,
         null=True,
     )
 
-    PHILHEALTH_CHOICES = (
-        ('Direct Contributors', 'Direct Contributors'),
-        ('Indirect Contributors', 'Indirect Contributors'),
-    )
-    philhealth = models.CharField(
-        max_length=32,
-        choices=PHILHEALTH_CHOICES,
-        blank=True,
-        null=True,
-    )
-    indirect_contributor = models.CharField(max_length=32, blank=True, null=True)
+    indigenous_person = models.CharField(max_length=32, blank=True, null=True)
 
-    SECTOR_CHOICES = (
-        ('Senior Citizen', 'Senior Citizen'),
-        ('Indigenous Person', 'Indigenous Person'),
-        ('LGBTQ+', 'LGBTQ+'),
-    )
-    sector = MultiSelectField(
-        max_length=32, 
-        choices=SECTOR_CHOICES, 
-        max_choices=3,
-        blank=True,
-        null=True,
-    )
+    needs_and_problems = models.TextField()
+    family_resources = models.TextField()
 
     is_verified = models.BooleanField(default=False)
     verified_at = models.DateTimeField(blank=True, null=True)
@@ -786,6 +782,7 @@ class Child(models.Model):
     last_name = models.CharField(max_length=180)
     suffix = models.CharField(max_length=180, blank=True, null=True)
     birthday = models.DateField()
+    relation = models.CharField(max_length=32)
     
     GENDER_CHOICES = (
         ('female', 'Female'),
@@ -795,6 +792,37 @@ class Child(models.Model):
         max_length=32,
         choices=GENDER_CHOICES,
         default='female'
+    )
+
+    EDUCATION_CHOICES = (
+        ('No Education', 'No Education'),
+        ('Kindergarten Level', 'Kindergarten Level'),
+        ('Kindergarten Graduate', 'Kindergarten Graduate'),
+        ('Elementary Level', 'Elementary Level'),
+        ('Elementary Graduate', 'Elementary Graduate'),
+        ('High School Level', 'High School Level'),
+        ('High School Graduate', 'High School Graduate'),
+        ('Vocational / TVET', 'Vocational / TVET'),
+        ('College Level', 'College Level'),
+        ('College Graduate', 'College Graduate'),
+        ('Post-College', 'Post-College'),
+    )
+    educational_attainment = models.CharField(
+        max_length=32,
+        choices=EDUCATION_CHOICES,
+        default='Kindergarten'
+    )
+
+    occupation = models.CharField(max_length=32)
+
+    INCOME_CHOICES = (
+        ('Php 20834 and above', 'Php 20834 and above'),
+        ('Minimum wage to Php 20833', 'Minimum wage to Php 20833'),
+        ('Minimum wage and below', 'Minimum wage and below'),
+    )
+    monthly_income = models.CharField(
+        max_length=64, 
+        choices=INCOME_CHOICES
     )
 
     is_incapable = models.BooleanField(default=False)
@@ -815,6 +843,7 @@ class Image(models.Model):
     IMAGE_TYPE_CHOICES = (
         ('id', 'ID'),
         ('signature', 'Signature'),
+        ('document', 'Document'),
     )
     image_type = models.CharField(
         max_length=32,

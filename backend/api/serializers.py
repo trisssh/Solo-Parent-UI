@@ -60,15 +60,32 @@ class ParentInfoSerializer(serializers.ModelSerializer):
             'suffix',
             'birthday',
             'phone',
+            'religion',
             'gender',
+            'civil_status',
             'house',
             'street',
             'barangay',
             'subdivision',
             'city',
             'province',
+            'educational_attainment',
+            'occupation',
+            'employment',
+            'company',
+            'monthly_income',
+            'total_family_income',
             'reason',
+            'pantawid_beneficiary',
+            'philhealth',
+            'sector',
+            'indigenous_person',
+            'needs_and_problems',
+            'family_resources',
             'is_verified',
+            'verified_at',
+            'is_terminated',
+            'is_transferred',
         ]
 
 class CreateAdminSerializer(serializers.ModelSerializer):
@@ -340,23 +357,40 @@ class ParentSerializer(serializers.ModelSerializer):
         model = Parent
         fields = [
             'id',
-            'first_name', 
+            'first_name',
             'middle_name',
             'last_name',
             'suffix',
             'birthday',
             'phone',
+            'religion',
             'gender',
+            'civil_status',
             'house',
             'street',
             'barangay',
             'subdivision',
             'city',
             'province',
+            'educational_attainment',
+            'occupation',
+            'employment',
+            'company',
+            'monthly_income',
+            'total_family_income',
             'reason',
-            'user',
+            'pantawid_beneficiary',
+            'philhealth',
+            'sector',
+            'indigenous_person',
+            'needs_and_problems',
+            'family_resources',
+            'is_verified',
+            'verified_at',
+            'is_terminated',
+            'is_transferred',
             'uuid',
-            'is_verified'
+            'user',
         ]
         extra_kwargs = {'user': {'read_only': True}}
 
@@ -369,6 +403,13 @@ class ContactSerializer(serializers.ModelSerializer):
             'last_name',
             'suffix',
             'phone',
+            'relation',
+            'house',
+            'street',
+            'barangay',
+            'subdivision',
+            'city',
+            'province',
             'parent',
         ]
         extra_kwargs = {'parent': {'read_only': True}}
@@ -382,23 +423,40 @@ class ParentListSerializer(serializers.ModelSerializer):
         model = Parent
         fields = [
             'id',
-            'first_name', 
+            'first_name',
             'middle_name',
             'last_name',
             'suffix',
             'birthday',
             'phone',
+            'religion',
             'gender',
+            'civil_status',
             'house',
             'street',
             'barangay',
             'subdivision',
             'city',
             'province',
+            'educational_attainment',
+            'occupation',
+            'employment',
+            'company',
+            'monthly_income',
+            'total_family_income',
             'reason',
+            'pantawid_beneficiary',
+            'philhealth',
+            'sector',
+            'indigenous_person',
+            'needs_and_problems',
+            'family_resources',
+            'is_verified',
+            'verified_at',
+            'is_terminated',
+            'is_transferred',
             'user',
             'uuid',
-            'is_verified',
             'contacts',
             'images',
         ]
@@ -427,10 +485,18 @@ class RegistrationSerializer(serializers.Serializer):
             'last_name': request.data.get('contact_last_name'),
             'suffix': request.data.get('contact_suffix'),
             'phone': request.data.get('contact_phone'),
+            'relation': request.data.get('contact_relation'),
+            'house': request.data.get('contact_house'),
+            'street': request.data.get('contact_street'),
+            'barangay': request.data.get('contact_barangay'),
+            'subdivision': request.data.get('contact_subdivision'),
+            'city': request.data.get('contact_city'),
+            'province': request.data.get('contact_province'),
         }
 
         parent_data = request.data
         images = request.FILES
+        documents = request.FILES.getlist('documents')
 
         user_serializer = EmailPasswordSerializer(data=user_data)
         parent_serializer = ParentSerializer(data=parent_data)
@@ -447,6 +513,9 @@ class RegistrationSerializer(serializers.Serializer):
 
         if 'id' not in images or 'signature' not in images:
             errors['images'] = 'ID and signature are required.'
+
+        if len(documents) == 0:
+            errors['documents'] = 'Verification documents are required.'
 
         if errors:
             raise serializers.ValidationError(errors)
@@ -475,6 +544,14 @@ class RegistrationSerializer(serializers.Serializer):
                 image_type='signature'
             )
 
+            documents = request.FILES.getlist('documents')
+            for document in documents:
+                Image.objects.create(
+                    parent=parent,
+                    image=document,
+                    image_type='document'
+                )
+
         response = {
             'user': {
                 'id': user.id,
@@ -489,6 +566,20 @@ class RegistrationSerializer(serializers.Serializer):
                 'birthday': parent.birthday,
                 'phone': str(parent.phone),
                 'gender': parent.gender,
+                'religion': parent.religion,
+                'civil_status': parent.civil_status,
+                'educational_attainment': parent.educational_attainment,
+                'occupation': parent.occupation,
+                'employment': parent.employment,
+                'company': parent.company,
+                'monthly_income': parent.monthly_income,
+                'total_family_income': parent.total_family_income,
+                'pantawid_beneficiary': parent.pantawid_beneficiary,
+                'philhealth': parent.philhealth,
+                'sector': parent.sector,
+                'indigenous_person': parent.indigenous_person,
+                'needs_and_problems': parent.needs_and_problems,
+                'family_resources': parent.family_resources,
                 'house': parent.house,
                 'street': parent.street,
                 'barangay': parent.barangay,
@@ -503,6 +594,13 @@ class RegistrationSerializer(serializers.Serializer):
                 'middle_name': contact.middle_name,
                 'last_name': contact.last_name,
                 'suffix': contact.suffix,
+                'relation': contact.relation,
+                'house': contact.house,
+                'street': contact.street,
+                'barangay': contact.barangay,
+                'subdivision': contact.subdivision,
+                'city': contact.city,
+                'province': contact.province,
                 'phone': str(contact.phone),
             }
         }
@@ -577,7 +675,12 @@ class ChildSerializer(serializers.ModelSerializer):
             'last_name',
             'suffix',
             'birthday',
+            'relation',
             'gender',
+            'educational_attainment',
+            'occupation',
+            'employment',
+            'monthly_income',
             'is_incapable',
             'parent',
         ]
